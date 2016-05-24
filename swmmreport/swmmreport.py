@@ -94,13 +94,21 @@ class ReportFile(object):
         """
         startlines = {
             'surcharge': ('Node Surcharge Summary', 9),
-            'depth': ('Node Depth Summary', 8)
+            'depth': ('Node Depth Summary', 8),
+            # todo:
+            #'inflow':,
+            #'flooding':,
+            #'volume':,
+            #'loading':,
+            #'link_flow':,
+            #'classification':,
+            #'conduit_surcharge':,
         }
 
 
         blockstart, comment_lines = startlines[block]
 
-        return self._find_line(blockstart) + comment_lines #b/c comments
+        return self._find_line(blockstart) + comment_lines #b/c variable comment lines
 
     @property
     def surcharge_results(self):

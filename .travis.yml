@@ -5,11 +5,11 @@ matrix:
     - python: 3.4
       env:
         - COVERAGE=false
-        - ARGS="--mpl --cov --verbose"
+        - ARGS="--cov --verbose"
     - python: 3.5
       env:
         - COVERAGE=true
-        - ARGS="--mpl --cov --verbose"
+        - ARGS="--cov --verbose"
 
 before_install:
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
