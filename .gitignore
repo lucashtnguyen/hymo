@@ -63,3 +63,6 @@ target/
 
 #Development
 Scratch/
+
+#VScode
+.vscode/
