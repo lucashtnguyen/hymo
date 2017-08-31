@@ -29,15 +29,36 @@ class base_ReportFileMixin(object):
         assert hasattr(self.rpt, 'orig_file')
         assert isinstance(self.rpt.orig_file, list)
 
-        assert hasattr(self.rpt, 'surcharge_results')
-        assert isinstance(self.rpt.surcharge_results, pd.DataFrame)
+        assert hasattr(self.rpt, 'node_surcharge_results')
+        assert isinstance(self.rpt.node_surcharge_results, pd.DataFrame)
         for col in self.known_surcharge_columns:
-            assert col in self.rpt.surcharge_results.columns.tolist()
+            assert col in self.rpt.node_surcharge_results.columns.tolist()
 
-        assert hasattr(self.rpt, 'depth_results')
-        assert isinstance(self.rpt.depth_results, pd.DataFrame)
+        assert hasattr(self.rpt, 'node_depth_results')
+        assert isinstance(self.rpt.node_depth_results, pd.DataFrame)
         for col in self.known_depth_columns:
-            assert col in self.rpt.depth_results.columns.tolist()
+            assert col in self.rpt.node_depth_results.columns.tolist()
+
+        with pytest.raises(NotImplementedError):
+            assert hasattr(self.rpt, 'node_inflow_results')
+
+        with pytest.raises(NotImplementedError):
+            assert hasattr(self.rpt, 'node_flooding_results')
+
+        with pytest.raises(NotImplementedError):
+            assert hasattr(self.rpt, 'storage_volume_results')
+
+        with pytest.raises(NotImplementedError):
+            assert hasattr(self.rpt, 'outfall_loading_results')
+
+        with pytest.raises(NotImplementedError):
+            assert hasattr(self.rpt, 'link_flow_results')
+
+        with pytest.raises(NotImplementedError):
+            assert hasattr(self.rpt, 'flow_classification_results')
+
+        with pytest.raises(NotImplementedError):
+            assert hasattr(self.rpt, 'conduit_surcharge_results')
 
 
 class Test_ReportFile(base_ReportFileMixin):
@@ -46,7 +67,7 @@ class Test_ReportFile(base_ReportFileMixin):
         self.surcharge_file = data_path('test_surcharge_data.csv')
         self.depth_file = data_path('test_depth_data.csv')
 
-        self.known_surcharge_results = pd.read_csv(
+        self.known_node_surcharge_results = pd.read_csv(
             self.surcharge_file, index_col=[0])
 
         self.known_depth_results = pd.read_csv(
@@ -56,7 +77,7 @@ class Test_ReportFile(base_ReportFileMixin):
 
 
     def test_depth_results(self):
-        pdtest.assert_frame_equal(self.rpt.depth_results, self.known_depth_results)
+        pdtest.assert_frame_equal(self.rpt.node_depth_results, self.known_depth_results)
 
     def test_surcharge_results(self):
-        pdtest.assert_frame_equal(self.rpt.surcharge_results, self.known_surcharge_results)
+        pdtest.assert_frame_equal(self.rpt.node_surcharge_results, self.known_node_surcharge_results)

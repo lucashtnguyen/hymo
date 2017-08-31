@@ -10,9 +10,16 @@ class ReportFile(object):
         - path: str, the full file path to the existing SWMM model .inp.
         """
         self.path = path
-        self._orig_file = None #self.read_rpt(path)
-        self._surcharge_results = None
-        self._depth_results = None
+        self._orig_file = None
+        self._node_surcharge_results = None
+        self._node_depth_results = None
+        self._node_inflow_results = None
+        self._node_flooding_results = None
+        self._storage_volume_results = None
+        self._outfall_loading_results = None
+        self._link_flow_results = None
+        self._flow_classification_results = None
+        self._conduit_surcharge_results = None
 
     @property
     def orig_file(self):
@@ -85,18 +92,19 @@ class ReportFile(object):
         'Node Surcharge Summary' block.
 
         Requires:
-        - block: str, acceptable values include: 'surcharge',
-            'depth'
+        - block: str, acceptable values include:
+            - 'node_surcharge',
+            - 'node_depth'
 
         Returns:
         blockstart: int, the start of the block after the
         comment lines.
         """
         startlines = {
-            'surcharge': ('Node Surcharge Summary', 9),
-            'depth': ('Node Depth Summary', 8),
+            'node_surcharge': ('Node Surcharge Summary', 9),
+            'node_depth': ('Node Depth Summary', 8),
             # todo:
-            #'inflow':,
+            #'inflow':('Node Inflow Summary', 9),
             #'flooding':,
             #'volume':,
             #'loading':,
@@ -111,36 +119,87 @@ class ReportFile(object):
         return self._find_line(blockstart) + comment_lines #b/c variable comment lines
 
     @property
-    def surcharge_results(self):
+    def node_surcharge_results(self):
         """
-        The parsed surcharge results as a pandas DataFrame
+        The parsed node surcharge results as a pandas DataFrame
         """
-        if self._surcharge_results is None:
-            skiprows = self.find_block('surcharge')
+        if self._node_surcharge_results is None:
+            skiprows = self.find_block('node_surcharge')
             skipfooter = self._find_end(skiprows)
             names = ['Node', 'Type', 'Hours', 'Max_Above_Crown_Feet',
                 'Min_Below_Rim_Feet']
 
             df = pd.read_csv(self.path, sep='\s+', header=None,
                 names=names, skiprows=skiprows, skipfooter=skipfooter, index_col=[0])
-            self._surcharge_results = df
+            self._node_surcharge_results = df
 
-        return self._surcharge_results
+        return self._node_surcharge_results
 
     @property
-    def depth_results(self):
+    def node_depth_results(self):
         """
-        The parsed depth results as a pandas DataFrame
+        The parsed node depth results as a pandas DataFrame
         """
-        if self._depth_results is None:
-            skiprows = self.find_block('depth')
+        if self._node_depth_results is None:
+            skiprows = self.find_block('node_depth')
             skipfooter = self._find_end(skiprows)
             names = ['Node', 'Type', 'Avg_Depth_Feet', 'Max_Depth_Feet',
                 'Max_HGL_Feet', 'Day_of_max', 'Time_of_max', 'Reported_Max']
 
             df = pd.read_csv(self.path, sep='\s+', header=None,
                 names=names, skiprows=skiprows, skipfooter=skipfooter, index_col=[0])
-            self._depth_results = df
+            self._node_depth_results = df
 
-        return self._depth_results
+        return self._node_depth_results
 
+    @property
+    def node_inflow_results(self):
+        """
+        The parsed node inflow results as a pandas DataFrame
+        """
+        if self._node_inflow_results is None:
+            raise(NotImplementedError)
+
+        return self._node_inflow_results
+
+    @property
+    def node_flooding_results(self):
+        if self._node_flooding_results is None:
+            raise(NotImplementedError)
+
+        return self._node_flooding_results
+
+    @property
+    def storage_volume_results(self):
+        if self._storage_volume_results is None:
+            raise(NotImplementedError)
+
+        return self._storage_volume_results
+
+    @property
+    def outfall_loading_results(self):
+        if self._outfall_loading_results is None:
+            raise(NotImplementedError)
+
+        return self._outfall_loading_results
+
+    @property
+    def link_flow_results(self):
+        if self._link_flow_results is None:
+            raise(NotImplementedError)
+
+        return self._link_flow_results
+
+    @property
+    def flow_classification_results(self):
+        if self._flow_classification_results is None:
+            raise(NotImplementedError)
+
+        return self._flow_classification_results
+
+    @property
+    def conduit_surcharge_results(self):
+        if self._conduit_surcharge_results is None:
+            raise(NotImplementedError)
+
+        return self._conduit_surcharge_results
