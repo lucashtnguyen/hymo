@@ -13,10 +13,10 @@ def data_path(filename):
     return path
 
 class base_ReportFileMixin(object):
-    known_surcharge_columns = ['Type', 'Hours',
+    known_node_surcharge_columns = ['Type', 'Hours',
         'Max_Above_Crown_Feet', 'Min_Below_Rim_Feet'
     ]
-    known_depth_columns = ['Type', 'Avg_Depth_Feet', 'Max_Depth_Feet',
+    known_node_depth_columns = ['Type', 'Avg_Depth_Feet', 'Max_Depth_Feet',
         'Max_HGL_Feet', 'Day_of_max', 'Time_of_max', 'Reported_Max'
     ]
     def teardown(self):
@@ -31,12 +31,12 @@ class base_ReportFileMixin(object):
 
         assert hasattr(self.rpt, 'node_surcharge_results')
         assert isinstance(self.rpt.node_surcharge_results, pd.DataFrame)
-        for col in self.known_surcharge_columns:
+        for col in self.known_node_surcharge_columns:
             assert col in self.rpt.node_surcharge_results.columns.tolist()
 
         assert hasattr(self.rpt, 'node_depth_results')
         assert isinstance(self.rpt.node_depth_results, pd.DataFrame)
-        for col in self.known_depth_columns:
+        for col in self.known_node_depth_columns:
             assert col in self.rpt.node_depth_results.columns.tolist()
 
         with pytest.raises(NotImplementedError):
@@ -64,20 +64,20 @@ class base_ReportFileMixin(object):
 class Test_ReportFile(base_ReportFileMixin):
     def setup(self):
         self.known_path = data_path('test_rpt.rpt')
-        self.surcharge_file = data_path('test_surcharge_data.csv')
-        self.depth_file = data_path('test_depth_data.csv')
+        self.node_surcharge_file = data_path('test_node_surcharge_data.csv')
+        self.node_depth_file = data_path('test_node_depth_data.csv')
 
         self.known_node_surcharge_results = pd.read_csv(
-            self.surcharge_file, index_col=[0])
+            self.node_surcharge_file, index_col=[0])
 
-        self.known_depth_results = pd.read_csv(
-            self.depth_file, index_col=[0])
+        self.known_node_depth_results = pd.read_csv(
+            self.node_depth_file, index_col=[0])
 
         self.rpt = ReportFile(self.known_path)
 
 
     def test_depth_results(self):
-        pdtest.assert_frame_equal(self.rpt.node_depth_results, self.known_depth_results)
+        pdtest.assert_frame_equal(self.rpt.node_depth_results, self.known_node_depth_results)
 
     def test_surcharge_results(self):
         pdtest.assert_frame_equal(self.rpt.node_surcharge_results, self.known_node_surcharge_results)

@@ -26,7 +26,7 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
 ]
-INSTALL_REQUIRES = ['pandas']
+INSTALL_REQUIRES = ['pandas', 'pytest']
 PACKAGE_DATA = {
     'swmmreport.tests._data': [ '*.csv', '*.rpt'],
 }
