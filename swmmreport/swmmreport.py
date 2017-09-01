@@ -103,8 +103,8 @@ class ReportFile(object):
         startlines = {
             'node_surcharge': ('Node Surcharge Summary', 9),
             'node_depth': ('Node Depth Summary', 8),
+            'node_inflow':('Node Inflow Summary', 9),
             # todo:
-            #'inflow':('Node Inflow Summary', 9),
             #'flooding':,
             #'volume':,
             #'loading':,
@@ -158,7 +158,18 @@ class ReportFile(object):
         The parsed node inflow results as a pandas DataFrame
         """
         if self._node_inflow_results is None:
-            raise(NotImplementedError)
+            skiprows = self.find_block('node_inflow')
+            skipfooter = self._find_end(skiprows)
+            names = ['Node', 'Type',
+                'Maximum_Lateral_Inflow_cfs', 'Maximum_Total_Inflow_CFS',
+                'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
+                'Lateral_Inflow_Volume_mgals', 'Total_Inflow_Volume_mgals',
+                'Flow_Balance_Error_Percent', 'flag'
+            ]
+            df = pd.read_csv(self.path, sep='\s+', header=None,
+                names=names, skiprows=skiprows, skipfooter=skipfooter, index_col=[0])
+            
+            self._node_inflow_results = df
 
         return self._node_inflow_results
 
