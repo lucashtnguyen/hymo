@@ -1,4 +1,4 @@
-Node,Hours_Flooded,Maximum_Rate_cfs,Time_of_Max_Occurrence_days,Time_of_Max_Occurrence_hours,Total_Flood_Volume_mgal,Maximum_Ponded_Depth_ft
+Node,Hours_Flooded,Maximum_Rate_CFS,Time_of_Max_Occurrence_days,Time_of_Max_Occurrence_hours,Total_Flood_Volume_mgal,Maximum_Ponded_Depth_Feet
 4A0609,0.01,5.2,0,02:01,0.0,0.001
 4A0622,0.01,26.82,0,00:47,0.0,0.001
 4A0625,0.01,6.76,0,00:52,0.0,0.0

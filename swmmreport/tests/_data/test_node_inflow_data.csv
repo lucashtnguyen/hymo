@@ -1,4 +1,4 @@
-Node,Type,Maximum_Lateral_Inflow_cfs,Maximum_Total_Inflow_CFS,Time_of_Max_Occurrence_days,Time_of_Max_Occurrence_hours,Lateral_Inflow_Volume_mgals,Total_Inflow_Volume_mgals,Flow_Balance_Error_Percent,flag
+Node,Type,Maximum_Lateral_Inflow_CFS,Maximum_Total_Inflow_CFS,Time_of_Max_Occurrence_days,Time_of_Max_Occurrence_hours,Lateral_Inflow_Volume_mgals,Total_Inflow_Volume_mgals,Flow_Balance_Error_Percent,flag
 4A1042_R_nP.1,JUNCTION,0.0,0.1,0,03:00,0.0,0.00639,0.264,
 4A1042_R_P.1,JUNCTION,1.94,1.94,0,00:33,0.0533,0.0533,0.001,
 4A1042_R_nB.1,JUNCTION,0.0,0.19,0,03:00,0.0,0.0133,0.18600000000000003,
