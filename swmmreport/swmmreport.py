@@ -106,12 +106,12 @@ class ReportFile(object):
             'node_depth': ('Node Depth Summary', 8),
             'node_inflow': ('Node Inflow Summary', 9),
             'node_flooding': ('Node Flooding Summary', 10)
-            # todo:
-            #'volume':,
-            #'loading':,
-            #'link_flow':,
-            #'classification':,
-            #'conduit_surcharge':,
+            #TODO:
+            # 'storage_volume': ('Storage Volume Summary', 8),
+            # 'outfall_loading': ('Outfall Loading Summary', 8), #special conditions at end of block
+            # 'link_flow': ('Link Flow Summary', 8),
+            # 'flow_classification': ('Flow Classification Summary', 8),
+            # 'conduit_surcharge':, ('Conduit Surcharge Summary', 8) #special conditions EOF
         }
 
 
@@ -119,20 +119,27 @@ class ReportFile(object):
 
         return self._find_line(blockstart) + comment_lines #b/c variable comment lines
 
+    def _make_df(self, block, names):
+        """
+        Helper function to parse pd.DataFrame for result properties.
+        """
+        skiprows = self.find_block(block)
+        skipfooter = self._find_end(skiprows)
+
+        return pd.read_csv(self.path, sep='\s+', header=None,
+                           names=names, skiprows=skiprows,
+                           skipfooter=skipfooter, index_col=[0])
+
     @property
     def node_surcharge_results(self):
         """
         The parsed node surcharge results as a pandas DataFrame
         """
         if self._node_surcharge_results is None:
-            skiprows = self.find_block('node_surcharge')
-            skipfooter = self._find_end(skiprows)
             names = ['Node', 'Type', 'Hours', 'Max_Above_Crown_Feet',
                 'Min_Below_Rim_Feet']
 
-            df = pd.read_csv(self.path, sep='\s+', header=None,
-                names=names, skiprows=skiprows, skipfooter=skipfooter, index_col=[0])
-            self._node_surcharge_results = df
+            self._node_surcharge_results = self._make_df('node_surcharge', names)
 
         return self._node_surcharge_results
 
@@ -142,14 +149,10 @@ class ReportFile(object):
         The parsed node depth results as a pandas DataFrame
         """
         if self._node_depth_results is None:
-            skiprows = self.find_block('node_depth')
-            skipfooter = self._find_end(skiprows)
             names = ['Node', 'Type', 'Avg_Depth_Feet', 'Max_Depth_Feet',
                 'Max_HGL_Feet', 'Day_of_max', 'Time_of_max', 'Reported_Max']
 
-            df = pd.read_csv(self.path, sep='\s+', header=None,
-                names=names, skiprows=skiprows, skipfooter=skipfooter, index_col=[0])
-            self._node_depth_results = df
+            self._node_depth_results = self._make_df('node_depth', names)
 
         return self._node_depth_results
 
@@ -159,8 +162,6 @@ class ReportFile(object):
         The parsed node inflow results as a pandas DataFrame
         """
         if self._node_inflow_results is None:
-            skiprows = self.find_block('node_inflow')
-            skipfooter = self._find_end(skiprows)
             names = [
                 'Node', 'Type',
                 'Maximum_Lateral_Inflow_cfs', 'Maximum_Total_Inflow_CFS',
@@ -168,18 +169,14 @@ class ReportFile(object):
                 'Lateral_Inflow_Volume_mgals', 'Total_Inflow_Volume_mgals',
                 'Flow_Balance_Error_Percent', 'flag'
             ]
-            df = pd.read_csv(self.path, sep='\s+', header=None,
-                names=names, skiprows=skiprows, skipfooter=skipfooter, index_col=[0])
             
-            self._node_inflow_results = df
+            self._node_inflow_results = self._make_df('node_inflow', names)
 
         return self._node_inflow_results
 
     @property
     def node_flooding_results(self):
         if self._node_flooding_results is None:
-            skiprows = self.find_block('node_flooding')
-            skipfooter = self._find_end(skiprows)
             names = [
                 'Node',
                 'Hours_Flooded', 'Maximum_Rate_cfs',
@@ -187,10 +184,7 @@ class ReportFile(object):
                 'Total_Flood_Volume_mgal', 'Maximum_Ponded_Depth_ft'
             ]
             
-            df = pd.read_csv(self.path, sep='\s+', header=None,
-                names=names, skiprows=skiprows, skipfooter=skipfooter, index_col=[0])
-            
-            self._node_flooding_results = df
+            self._node_flooding_results = self._make_df('node_flooding', names)
 
         return self._node_flooding_results
 
