@@ -101,11 +101,12 @@ class ReportFile(object):
         comment lines.
         """
         startlines = {
+            #dict = {'block_name': ('rpt_header', n_comment_lines)}
             'node_surcharge': ('Node Surcharge Summary', 9),
             'node_depth': ('Node Depth Summary', 8),
-            'node_inflow':('Node Inflow Summary', 9),
+            'node_inflow': ('Node Inflow Summary', 9),
+            'node_flooding': ('Node Flooding Summary', 10)
             # todo:
-            #'flooding':,
             #'volume':,
             #'loading':,
             #'link_flow':,
@@ -160,7 +161,8 @@ class ReportFile(object):
         if self._node_inflow_results is None:
             skiprows = self.find_block('node_inflow')
             skipfooter = self._find_end(skiprows)
-            names = ['Node', 'Type',
+            names = [
+                'Node', 'Type',
                 'Maximum_Lateral_Inflow_cfs', 'Maximum_Total_Inflow_CFS',
                 'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
                 'Lateral_Inflow_Volume_mgals', 'Total_Inflow_Volume_mgals',
@@ -176,7 +178,19 @@ class ReportFile(object):
     @property
     def node_flooding_results(self):
         if self._node_flooding_results is None:
-            raise(NotImplementedError)
+            skiprows = self.find_block('node_flooding')
+            skipfooter = self._find_end(skiprows)
+            names = [
+                'Node',
+                'Hours_Flooded', 'Maximum_Rate_cfs',
+                'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
+                'Total_Flood_Volume_mgal', 'Maximum_Ponded_Depth_ft'
+            ]
+            
+            df = pd.read_csv(self.path, sep='\s+', header=None,
+                names=names, skiprows=skiprows, skipfooter=skipfooter, index_col=[0])
+            
+            self._node_flooding_results = df
 
         return self._node_flooding_results
 

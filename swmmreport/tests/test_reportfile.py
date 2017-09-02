@@ -27,6 +27,11 @@ class base_ReportFileMixin(object):
         'Lateral_Inflow_Volume_mgals', 'Total_Inflow_Volume_mgals',
         'Flow_Balance_Error_Percent', 'flag'
     ]
+    known_node_flooding_columns = [
+        'Hours_Flooded', 'Maximum_Rate_cfs',
+        'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
+        'Total_Flood_Volume_mgal', 'Maximum_Ponded_Depth_ft'
+    ]
 
     def teardown(self):
         None
@@ -53,13 +58,12 @@ class base_ReportFileMixin(object):
         for col in self.known_node_inflow_columns:
             assert col in self.rpt.node_inflow_results.columns.tolist()
 
-        #TODO
-        with pytest.raises(NotImplementedError):
-            assert hasattr(self.rpt, 'node_flooding_results')
-            assert isinstance(self.rpt.node_flooding_results, pd.DataFrame)
-            for col in self.known_node_flooding_columns:
-                assert col in self.rpt.node_flooding_results.columns.tolist()
+        assert hasattr(self.rpt, 'node_flooding_results')
+        assert isinstance(self.rpt.node_flooding_results, pd.DataFrame)
+        for col in self.known_node_flooding_columns:
+            assert col in self.rpt.node_flooding_results.columns.tolist()
 
+        #TODO
         with pytest.raises(NotImplementedError):
             assert hasattr(self.rpt, 'storage_volume_results')
             assert isinstance(self.rpt.storage_volume_results, pd.DataFrame)
@@ -97,18 +101,18 @@ class Test_ReportFile(base_ReportFileMixin):
         self.node_surcharge_file = data_path('test_node_surcharge_data.csv')
         self.node_depth_file = data_path('test_node_depth_data.csv')
         self.node_inflow_file = data_path('test_node_inflow_data.csv')
+        self.node_flooding_file = data_path('test_node_flooding_data.csv')
 
         self.rpt = ReportFile(self.known_path)
 
         self.known_node_surcharge_results = pd.read_csv(
             self.node_surcharge_file, index_col=[0])
-
         self.known_node_depth_results = pd.read_csv(
             self.node_depth_file, index_col=[0])
-
         self.known_node_inflow_results = pd.read_csv(
-            self.node_inflow_file, index_col=[0]
-        )
+            self.node_inflow_file, index_col=[0])
+        self.known_node_flooding_results = pd.read_csv(
+            self.node_flooding_file, index_col=[0])
 
 
     def test_node_depth_results(self):
@@ -127,4 +131,10 @@ class Test_ReportFile(base_ReportFileMixin):
         pdtest.assert_frame_equal(
             self.rpt.node_inflow_results,
             self.known_node_inflow_results
+        )
+    
+    def test_node_flooding_results(self):
+        pdtest.assert_frame_equal(
+            self.rpt.node_flooding_results,
+            self.known_node_flooding_results
         )
