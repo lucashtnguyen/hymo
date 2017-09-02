@@ -192,6 +192,8 @@ class ReportFile(object):
     def storage_volume_results(self):
         if self._storage_volume_results is None:
             raise(NotImplementedError)
+            names = []
+            self._storage_volume_results = self._make_df('storage_volume', names)
 
         return self._storage_volume_results
 
@@ -199,6 +201,10 @@ class ReportFile(object):
     def outfall_loading_results(self):
         if self._outfall_loading_results is None:
             raise(NotImplementedError)
+            # special conditions at end of block
+            # summary stats -> either parse or recalculate?
+            names = []
+            self._outfall_loading_results = self._make_df('outfall_loading', names)
 
         return self._outfall_loading_results
 
@@ -206,6 +212,8 @@ class ReportFile(object):
     def link_flow_results(self):
         if self._link_flow_results is None:
             raise(NotImplementedError)
+            names = []
+            self._link_flow_results = self._make_df('link_flow', names)
 
         return self._link_flow_results
 
@@ -213,6 +221,8 @@ class ReportFile(object):
     def flow_classification_results(self):
         if self._flow_classification_results is None:
             raise(NotImplementedError)
+            names = []
+            self._flow_classification_results = self._make_df('flow_classification', names)
 
         return self._flow_classification_results
 
@@ -220,5 +230,8 @@ class ReportFile(object):
     def conduit_surcharge_results(self):
         if self._conduit_surcharge_results is None:
             raise(NotImplementedError)
+            # There are some EOF lines that we need to exclude
+            names = []
+            self._conduit_surcharge_results = self._make_df('conduit_surcharge', names)
 
         return self._conduit_surcharge_results

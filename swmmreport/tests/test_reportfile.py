@@ -102,6 +102,11 @@ class Test_ReportFile(base_ReportFileMixin):
         self.node_depth_file = data_path('test_node_depth_data.csv')
         self.node_inflow_file = data_path('test_node_inflow_data.csv')
         self.node_flooding_file = data_path('test_node_flooding_data.csv')
+        # self.storage_volume_file = data_path('storage_volume_data.csv')
+        # self.outfall_loading_file = data_path('outfall_loading_data.csv')
+        # self.link_flow_file = data_path('link_flow_data.csv')
+        # self.flow_classification_file = data_path('flow_classification_data.csv')
+        # self.conduit_surcharge_file = data_path('conduit_surcharge_data.csv')
 
         self.rpt = ReportFile(self.known_path)
 
@@ -113,6 +118,17 @@ class Test_ReportFile(base_ReportFileMixin):
             self.node_inflow_file, index_col=[0])
         self.known_node_flooding_results = pd.read_csv(
             self.node_flooding_file, index_col=[0])
+        #TODO
+        # self.known_storage_volume_results = pd.read_csv(
+        #     self.storage_volume_file, index_col=[0])
+        # self.known_outfall_loading_results = pd.read_csv(
+        #     self.outfall_loading_file, index_col=[0])
+        # self.known_link_flow_results = pd.read_csv(
+        #     self.link_flow_file, index_col=[0])
+        # self.known_flow_classification_results = pd.read_csv(
+        #     self.flow_classification_file, index_col=[0])
+        # self.known_conduit_surcharge_results = pd.read_csv(
+        #     self.conduit_surcharge_file, index_col=[0])
 
 
     def test_node_depth_results(self):
@@ -138,3 +154,30 @@ class Test_ReportFile(base_ReportFileMixin):
             self.rpt.node_flooding_results,
             self.known_node_flooding_results
         )
+
+    #TODO
+    # def test_storage_volume_results(self):
+    #     pdtest.assert_frame_equal(
+    #         self.rpt.storage_volume_results,
+    #         self.known_storage_volume_results
+    #     )
+    # def test_outfall_loading_results(self):
+    #     pdtest.assert_frame_equal(
+    #         self.rpt.outfall_loading_results,
+    #         self.known_outfall_loading_results
+    #     )
+    # def test_link_flow_results(self):
+    #     pdtest.assert_frame_equal(
+    #         self.rpt.link_flow_results,
+    #         self.known_link_flow_results
+    #     )
+    # def test_flow_classification_results(self):
+    #     pdtest.assert_frame_equal(
+    #         self.rpt.flow_classification_results,
+    #         self.known_flow_classification_results
+    #     )
+    # def test_conduit_surcharge_results(self):
+    #     pdtest.assert_frame_equal(
+    #         self.rpt.conduit_surcharge_results,
+    #         self.known_conduit_surcharge_results
+    #     )
