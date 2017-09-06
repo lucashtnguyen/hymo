@@ -47,10 +47,8 @@ class base_ReportFileMixin(object):
         assert hasattr(self.rpt, 'flow_classification_results')
         assert isinstance(self.rpt.flow_classification_results, pd.DataFrame)
        
-        #TODO
-        with pytest.raises(NotImplementedError):
-            assert hasattr(self.rpt, 'conduit_surcharge_results')
-            assert isinstance(self.rpt.conduit_surcharge_results, pd.DataFrame)
+        assert hasattr(self.rpt, 'conduit_surcharge_results')
+        assert isinstance(self.rpt.conduit_surcharge_results, pd.DataFrame)
 
 
 class Test_ReportFile(base_ReportFileMixin):
@@ -64,7 +62,7 @@ class Test_ReportFile(base_ReportFileMixin):
         self.outfall_loading_file = data_path('test_outfall_loading_data.csv')
         self.link_flow_file = data_path('test_link_flow_data.csv')
         self.flow_classification_file = data_path('test_flow_classification_data.csv')
-        # self.conduit_surcharge_file = data_path('test_conduit_surcharge_data.csv')
+        self.conduit_surcharge_file = data_path('test_conduit_surcharge_data.csv')
 
         self.rpt = ReportFile(self.known_path)
 
@@ -84,9 +82,8 @@ class Test_ReportFile(base_ReportFileMixin):
             self.link_flow_file, index_col=[0])
         self.known_flow_classification_results = pd.read_csv(
             self.flow_classification_file, index_col=[0])
-        #TODO
-        # self.known_conduit_surcharge_results = pd.read_csv(
-        #     self.conduit_surcharge_file, index_col=[0])
+        self.known_conduit_surcharge_results = pd.read_csv(
+            self.conduit_surcharge_file, index_col=[0])
 
 
     def test_node_depth_results(self):
@@ -133,9 +130,8 @@ class Test_ReportFile(base_ReportFileMixin):
             self.rpt.flow_classification_results,
             self.known_flow_classification_results
         )
-    #TODO
-    # def test_conduit_surcharge_results(self):
-    #     pdtest.assert_frame_equal(
-    #         self.rpt.conduit_surcharge_results,
-    #         self.known_conduit_surcharge_results
-    #     )
+    def test_conduit_surcharge_results(self):
+        pdtest.assert_frame_equal(
+            self.rpt.conduit_surcharge_results,
+            self.known_conduit_surcharge_results
+        )
