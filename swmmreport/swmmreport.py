@@ -11,6 +11,7 @@ class ReportFile(object):
         """
         self.path = path
         self._orig_file = None
+
         self._node_depth_results = None
         self._node_inflow_results = None
         self._node_surcharge_results = None
@@ -21,13 +22,26 @@ class ReportFile(object):
         self._flow_classification_results = None
         self._conduit_surcharge_results = None
 
+        self._startlines = {
+            #dict = {'block_name': ('rpt_header', n_comment_lines)}
+            'node_depth': ('Node Depth Summary', 8),
+            'node_inflow': ('Node Inflow Summary', 9),
+            'node_surcharge': ('Node Surcharge Summary', 9),
+            'node_flooding': ('Node Flooding Summary', 10),
+            'storage_volume': ('Storage Volume Summary', 8),
+            'outfall_loading': ('Outfall Loading Summary', 8), #special conditions at end of block
+            'link_flow': ('Link Flow Summary', 8),
+            'flow_classification': ('Flow Classification Summary', 8),
+            'conduit_surcharge': ('Conduit Surcharge Summary', 8) #special conditions EOF
+        }
+
     @property
     def orig_file(self):
         """
         Unmodified .rpt file read from disk.
         """
         if self._orig_file is None:
-            self._orig_file = self.read_rpt(self.path)
+            self._orig_file = self.read_file(self.path)
         return self._orig_file
 
     def _find_line(self, line):
@@ -73,7 +87,7 @@ class ReportFile(object):
         footers = int(len(currentfile) - end_row)
         return footers
 
-    def read_rpt(self, filename):
+    def read_file(self, filename):
         """
         A wrapper for the standard `open` function implemented using
         `with`.
@@ -103,22 +117,7 @@ class ReportFile(object):
         blockstart: int, the start of the block after the
         comment lines.
         """
-        startlines = {
-            #dict = {'block_name': ('rpt_header', n_comment_lines)}
-            'node_depth': ('Node Depth Summary', 8),
-            'node_inflow': ('Node Inflow Summary', 9),
-            'node_surcharge': ('Node Surcharge Summary', 9),
-            'node_flooding': ('Node Flooding Summary', 10),
-            'storage_volume': ('Storage Volume Summary', 8),
-            'outfall_loading': ('Outfall Loading Summary', 8), #special conditions at end of block
-            'link_flow': ('Link Flow Summary', 8),
-            'flow_classification': ('Flow Classification Summary', 8),
-            #TODO:
-            'conduit_surcharge': ('Conduit Surcharge Summary', 8) #special conditions EOF
-        }
-
-
-        blockstart, comment_lines = startlines[block]
+        blockstart, comment_lines = self._startlines[block]
 
         return self._find_line(blockstart) + comment_lines #b/c variable comment lines
 
@@ -265,14 +264,13 @@ class ReportFile(object):
     @property
     def conduit_surcharge_results(self):
         if self._conduit_surcharge_results is None:
-            raise(NotImplementedError)
             # There are some EOF lines that we need to exclude.
             # For now the _find_end function detects the end of 
             # block because of the 2xSpace+return.
             names = [
                 'Conduit', 'Hours_Full_Both_Ends',
                 'Hours_Full_Upstream', 'Hours_Full_Dnstream',
-                'Hours_Above_Full_Normal_Flow', 'Hours Capacity Limited',
+                'Hours_Above_Full_Normal_Flow', 'Hours_Capacity_Limited',
             ]
             self._conduit_surcharge_results = self._make_df('conduit_surcharge', names)
 
