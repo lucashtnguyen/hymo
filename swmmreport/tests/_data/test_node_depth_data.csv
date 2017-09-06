@@ -1,4 +1,4 @@
-Node,Type,Avg_Depth_Feet,Max_Depth_Feet,Max_HGL_Feet,Day_of_max,Time_of_max,Reported_Max
+Node,Type,Average_Depth_Feet,Maximum_Depth_Feet,Maximum_HGL_Feet,Time_of_Max_Occurrence_days,Time_of_Max_Occurrence_hours,Reported_Max_Depth_Feet
 4A1042_R_nP.1,JUNCTION,0.02,0.02,35.52,0,03:00,0.02
 4A1042_R_P.1,JUNCTION,0.11,0.31,48.3,0,00:33,0.3
 4A1042_R_nB.1,JUNCTION,0.03,0.04,35.53,0,03:00,0.04

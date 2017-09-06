@@ -11,9 +11,9 @@ class ReportFile(object):
         """
         self.path = path
         self._orig_file = None
-        self._node_surcharge_results = None
         self._node_depth_results = None
         self._node_inflow_results = None
+        self._node_surcharge_results = None
         self._node_flooding_results = None
         self._storage_volume_results = None
         self._outfall_loading_results = None
@@ -60,7 +60,10 @@ class ReportFile(object):
         - n: int, the line number where line exists.
         """
         currentfile = self.orig_file.copy()
-        line = '  \n'
+        # At the end of every block SWMM adds a space, space, return
+        # If this changes in new versions then the `line` var will require
+        # an update
+        line = '  \n' 
         breaks = []
         for n, l in enumerate(currentfile):
             if l.find(line) > -1:
@@ -101,16 +104,17 @@ class ReportFile(object):
         comment lines.
         """
         startlines = {
-            'node_surcharge': ('Node Surcharge Summary', 9),
+            #dict = {'block_name': ('rpt_header', n_comment_lines)}
             'node_depth': ('Node Depth Summary', 8),
-            # todo:
-            #'inflow':('Node Inflow Summary', 9),
-            #'flooding':,
-            #'volume':,
-            #'loading':,
-            #'link_flow':,
-            #'classification':,
-            #'conduit_surcharge':,
+            'node_inflow': ('Node Inflow Summary', 9),
+            'node_surcharge': ('Node Surcharge Summary', 9),
+            'node_flooding': ('Node Flooding Summary', 10),
+            'storage_volume': ('Storage Volume Summary', 8),
+            'outfall_loading': ('Outfall Loading Summary', 8), #special conditions at end of block
+            'link_flow': ('Link Flow Summary', 8),
+            'flow_classification': ('Flow Classification Summary', 8),
+            #TODO:
+            'conduit_surcharge': ('Conduit Surcharge Summary', 8) #special conditions EOF
         }
 
 
@@ -118,37 +122,32 @@ class ReportFile(object):
 
         return self._find_line(blockstart) + comment_lines #b/c variable comment lines
 
-    @property
-    def node_surcharge_results(self):
+    def _make_df(self, block, names):
         """
-        The parsed node surcharge results as a pandas DataFrame
+        Helper function to parse pd.DataFrame for result properties.
         """
-        if self._node_surcharge_results is None:
-            skiprows = self.find_block('node_surcharge')
-            skipfooter = self._find_end(skiprows)
-            names = ['Node', 'Type', 'Hours', 'Max_Above_Crown_Feet',
-                'Min_Below_Rim_Feet']
+        skiprows = self.find_block(block)
+        skipfooter = self._find_end(skiprows)
 
-            df = pd.read_csv(self.path, sep='\s+', header=None,
-                names=names, skiprows=skiprows, skipfooter=skipfooter, index_col=[0])
-            self._node_surcharge_results = df
-
-        return self._node_surcharge_results
-
+        return pd.read_csv(self.path, sep='\s+', header=None,
+                           names=names, skiprows=skiprows,
+                           skipfooter=skipfooter, index_col=[0])
+    
     @property
     def node_depth_results(self):
         """
         The parsed node depth results as a pandas DataFrame
         """
         if self._node_depth_results is None:
-            skiprows = self.find_block('node_depth')
-            skipfooter = self._find_end(skiprows)
-            names = ['Node', 'Type', 'Avg_Depth_Feet', 'Max_Depth_Feet',
-                'Max_HGL_Feet', 'Day_of_max', 'Time_of_max', 'Reported_Max']
+            #TODO check names and make consistent with new properties
+            names = [
+                'Node', 'Type',
+                'Average_Depth_Feet', 'Maximum_Depth_Feet',
+                'Maximum_HGL_Feet', 'Time_of_Max_Occurrence_days',
+                'Time_of_Max_Occurrence_hours', 'Reported_Max_Depth_Feet'
+            ]
 
-            df = pd.read_csv(self.path, sep='\s+', header=None,
-                names=names, skiprows=skiprows, skipfooter=skipfooter, index_col=[0])
-            self._node_depth_results = df
+            self._node_depth_results = self._make_df('node_depth', names)
 
         return self._node_depth_results
 
@@ -158,42 +157,108 @@ class ReportFile(object):
         The parsed node inflow results as a pandas DataFrame
         """
         if self._node_inflow_results is None:
-            raise(NotImplementedError)
+            names = [
+                'Node', 'Type',
+                'Maximum_Lateral_Inflow_CFS', 'Maximum_Total_Inflow_CFS',
+                'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
+                'Lateral_Inflow_Volume_mgals', 'Total_Inflow_Volume_mgals',
+                'Flow_Balance_Error_Percent', 'flag'
+            ]
+            
+            self._node_inflow_results = self._make_df('node_inflow', names)
 
         return self._node_inflow_results
 
     @property
+    def node_surcharge_results(self):
+        """
+        The parsed node surcharge results as a pandas DataFrame
+        """
+        if self._node_surcharge_results is None:
+            #TODO check names and make consistent with new properties
+            names = [
+                'Node', 'Type',
+                'Hours_Surcharged', 'Max_Height_Above_Crown_Feet',
+                'Min_Depth_Below_Rim_Feet'
+            ]
+
+            self._node_surcharge_results = self._make_df('node_surcharge', names)
+
+        return self._node_surcharge_results
+
+    @property
     def node_flooding_results(self):
         if self._node_flooding_results is None:
-            raise(NotImplementedError)
+            names = [
+                'Node',
+                'Hours_Flooded', 'Maximum_Rate_CFS',
+                'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
+                'Total_Flood_Volume_mgal', 'Maximum_Ponded_Depth_Feet'
+            ]
+            
+            self._node_flooding_results = self._make_df('node_flooding', names)
 
         return self._node_flooding_results
 
     @property
     def storage_volume_results(self):
         if self._storage_volume_results is None:
-            raise(NotImplementedError)
+            names = [
+                'Storage_Unit', 'Average_Volume_1000_ft3',
+                'Avg_Pcnt_Full', 'Evap_Pcnt_Loss',
+                'Exfil_Pcnt_Loss', 'Maximum_Volume_1000_ft3',
+                'Max_Pcnt_Full', 'Time_of_Max_Occurrence_days',
+                'Time_of_Max_Occurrence_hours', 'Maximum_Outflow_CFS'    
+            ]
+
+            self._storage_volume_results = self._make_df('storage_volume', names)
 
         return self._storage_volume_results
 
     @property
     def outfall_loading_results(self):
         if self._outfall_loading_results is None:
-            raise(NotImplementedError)
+            # special conditions at end of block
+            # summary stats -> parse all and drop sep '---' 
+            names = [
+                'Outfall_Node', 'Flow_Freq_Pcnt',
+                'Avg_Flow_CFS', 'Max_Flow_CFS',
+                'Total_Volume_mgal'
+            ]
+            df = self._make_df('outfall_loading', names)
+            # drop sep
+            drop_from_index = [_ for _ in df.index if '-' in _]
+            df = df.drop(drop_from_index)
+
+            self._outfall_loading_results = df
 
         return self._outfall_loading_results
 
     @property
     def link_flow_results(self):
         if self._link_flow_results is None:
-            raise(NotImplementedError)
+            names = [
+                'Link', 'Type',
+                'Maximum_Flow_CFS', 'Time_of_Max_Occurrence_days',
+                'Time_of_Max_Occurrence_hours', 'Maximum_Veloc_ftsec',
+                'Max_Full_Flow', 'Max_Full_Depth'
+            ]
+            self._link_flow_results = self._make_df('link_flow', names)
 
         return self._link_flow_results
 
     @property
     def flow_classification_results(self):
         if self._flow_classification_results is None:
-            raise(NotImplementedError)
+            names = [
+                'Conduit', 'Adjusted_Actual_Length',
+                'Fraction_of_Time_Dry', 'Fraction_of_Time_Up_Dry',
+                'Fraction_of_Time_Down_Dry', 'Fraction_of_Time_Sub_Crit',
+                'Fraction_of_Time_Sup_Crit', 'Fraction_of_Time_Up_Crit',
+                'Fraction_of_Time_Down_Crit', 'Fraction_of_Time_Norm_Ltd',
+                'Fraction_of_Time_Inlet_Ctrl',
+            ]
+            self._flow_classification_results = self._make_df('flow_classification', names)
 
         return self._flow_classification_results
 
@@ -201,5 +266,14 @@ class ReportFile(object):
     def conduit_surcharge_results(self):
         if self._conduit_surcharge_results is None:
             raise(NotImplementedError)
+            # There are some EOF lines that we need to exclude.
+            # For now the _find_end function detects the end of 
+            # block because of the 2xSpace+return.
+            names = [
+                'Conduit', 'Hours_Full_Both_Ends',
+                'Hours_Full_Upstream', 'Hours_Full_Dnstream',
+                'Hours_Above_Full_Normal_Flow', 'Hours Capacity Limited',
+            ]
+            self._conduit_surcharge_results = self._make_df('conduit_surcharge', names)
 
         return self._conduit_surcharge_results
