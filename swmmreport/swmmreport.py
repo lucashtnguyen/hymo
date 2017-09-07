@@ -1,6 +1,8 @@
+from .base_reader import BaseReader
+
 import pandas as pd
 
-class ReportFile(object):
+class ReportFile(BaseReader):
     """
     A class to read a SWMM model report file.
     """
@@ -9,8 +11,7 @@ class ReportFile(object):
         Requires:
         - path: str, the full file path to the existing SWMM model .inp.
         """
-        self.path = path
-        self._orig_file = None
+        BaseReader.__init__(self, path)
 
         self._node_depth_results = None
         self._node_inflow_results = None
@@ -34,103 +35,6 @@ class ReportFile(object):
             'flow_classification': ('Flow Classification Summary', 8),
             'conduit_surcharge': ('Conduit Surcharge Summary', 8) #special conditions EOF
         }
-
-    @property
-    def orig_file(self):
-        """
-        Unmodified .rpt file read from disk.
-        """
-        if self._orig_file is None:
-            self._orig_file = self.read_file(self.path)
-        return self._orig_file
-
-    def _find_line(self, line):
-        """
-        Given a text string returns the line number that the string
-        appears in.
-
-        Requires:
-        - line: str, text to look up.
-
-        Returns:
-        - n: int, the line number where line exists.
-        """
-        currentfile = self.orig_file.copy()
-        for n, l in enumerate(currentfile):
-            if l.find(line) > -1:
-                break
-        return n
-
-    def _find_end(self, linenum):
-        """
-        Given the start of the block returns the number of rows
-        needed to for skipfooter in pandas.read_table to only read
-        the block.
-
-        Requires:
-        - line: str, tetx to look up.
-
-        Returns:
-        - n: int, the line number where line exists.
-        """
-        currentfile = self.orig_file.copy()
-        # At the end of every block SWMM adds a space, space, return
-        # If this changes in new versions then the `line` var will require
-        # an update
-        line = '  \n' 
-        breaks = []
-        for n, l in enumerate(currentfile):
-            if l.find(line) > -1:
-                breaks.append(n)
-        end_row = [a for a in breaks if a > linenum][0]
-
-        footers = int(len(currentfile) - end_row)
-        return footers
-
-    def read_file(self, filename):
-        """
-        A wrapper for the standard `open` function implemented using
-        `with`.
-
-        Requires:
-        - filename: str, the path to the text file.
-
-        Returns:
-        - lines: list, a list of lines from `open(filename).readlines()`
-        """
-
-        with open(filename, 'r') as openfile:
-            lines = openfile.readlines()
-        return lines
-
-    def find_block(self, block):
-        """
-        Finds the start of a SWMM parameter block such as the
-        'Node Surcharge Summary' block.
-
-        Requires:
-        - block: str, acceptable values include:
-            - 'node_surcharge',
-            - 'node_depth'
-
-        Returns:
-        blockstart: int, the start of the block after the
-        comment lines.
-        """
-        blockstart, comment_lines = self._startlines[block]
-
-        return self._find_line(blockstart) + comment_lines #b/c variable comment lines
-
-    def _make_df(self, block, names):
-        """
-        Helper function to parse pd.DataFrame for result properties.
-        """
-        skiprows = self.find_block(block)
-        skipfooter = self._find_end(skiprows)
-
-        return pd.read_csv(self.path, sep='\s+', header=None,
-                           names=names, skiprows=skiprows,
-                           skipfooter=skipfooter, index_col=[0])
     
     @property
     def node_depth_results(self):
@@ -146,7 +50,7 @@ class ReportFile(object):
                 'Time_of_Max_Occurrence_hours', 'Reported_Max_Depth_Feet'
             ]
 
-            self._node_depth_results = self._make_df('node_depth', names)
+            self._node_depth_results = self._make_df('node_depth', names, line='  \n')
 
         return self._node_depth_results
 
@@ -164,7 +68,7 @@ class ReportFile(object):
                 'Flow_Balance_Error_Percent', 'flag'
             ]
             
-            self._node_inflow_results = self._make_df('node_inflow', names)
+            self._node_inflow_results = self._make_df('node_inflow', names, line='  \n')
 
         return self._node_inflow_results
 
@@ -181,7 +85,7 @@ class ReportFile(object):
                 'Min_Depth_Below_Rim_Feet'
             ]
 
-            self._node_surcharge_results = self._make_df('node_surcharge', names)
+            self._node_surcharge_results = self._make_df('node_surcharge', names, line='  \n')
 
         return self._node_surcharge_results
 
@@ -195,7 +99,7 @@ class ReportFile(object):
                 'Total_Flood_Volume_mgal', 'Maximum_Ponded_Depth_Feet'
             ]
             
-            self._node_flooding_results = self._make_df('node_flooding', names)
+            self._node_flooding_results = self._make_df('node_flooding', names, line='  \n')
 
         return self._node_flooding_results
 
@@ -210,7 +114,7 @@ class ReportFile(object):
                 'Time_of_Max_Occurrence_hours', 'Maximum_Outflow_CFS'    
             ]
 
-            self._storage_volume_results = self._make_df('storage_volume', names)
+            self._storage_volume_results = self._make_df('storage_volume', names, line='  \n')
 
         return self._storage_volume_results
 
@@ -224,7 +128,7 @@ class ReportFile(object):
                 'Avg_Flow_CFS', 'Max_Flow_CFS',
                 'Total_Volume_mgal'
             ]
-            df = self._make_df('outfall_loading', names)
+            df = self._make_df('outfall_loading', names, line='  \n')
             # drop sep
             drop_from_index = [_ for _ in df.index if '-' in _]
             df = df.drop(drop_from_index)
@@ -242,7 +146,7 @@ class ReportFile(object):
                 'Time_of_Max_Occurrence_hours', 'Maximum_Veloc_ftsec',
                 'Max_Full_Flow', 'Max_Full_Depth'
             ]
-            self._link_flow_results = self._make_df('link_flow', names)
+            self._link_flow_results = self._make_df('link_flow', names, line='  \n')
 
         return self._link_flow_results
 
@@ -257,7 +161,7 @@ class ReportFile(object):
                 'Fraction_of_Time_Down_Crit', 'Fraction_of_Time_Norm_Ltd',
                 'Fraction_of_Time_Inlet_Ctrl',
             ]
-            self._flow_classification_results = self._make_df('flow_classification', names)
+            self._flow_classification_results = self._make_df('flow_classification', names, line='  \n')
 
         return self._flow_classification_results
 
@@ -272,6 +176,6 @@ class ReportFile(object):
                 'Hours_Full_Upstream', 'Hours_Full_Dnstream',
                 'Hours_Above_Full_Normal_Flow', 'Hours_Capacity_Limited',
             ]
-            self._conduit_surcharge_results = self._make_df('conduit_surcharge', names)
+            self._conduit_surcharge_results = self._make_df('conduit_surcharge', names, line='  \n')
 
         return self._conduit_surcharge_results
