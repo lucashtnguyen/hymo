@@ -6,11 +6,7 @@ import pandas as pd
 import pandas.util.testing as pdtest
 
 from swmmreport import ReportFile
-
-
-def data_path(filename):
-    path = resource_filename("swmmreport.tests._data", filename)
-    return path
+from .utils import data_path
 
 class base_ReportFileMixin(object):
     def teardown(self):

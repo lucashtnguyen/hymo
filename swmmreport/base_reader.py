@@ -1,15 +1,18 @@
+from io import StringIO
+
 import pandas as pd
 
 class BaseReader(object):
     """
     A class to read a SWMM model report file.
     """
-    def __init__(self, path):
+    def __init__(self, path, endline='  \n'):
         """
         Requires:
         - path: str, the full file path to the existing SWMM model .inp.
         """
         self.path = path
+        self.endline = endline
         self._orig_file = None
 
         self._startlines = {}
@@ -60,7 +63,11 @@ class BaseReader(object):
         for n, l in enumerate(currentfile):
             if l.find(line) > -1:
                 breaks.append(n)
-        end_row = [a for a in breaks if a > linenum][0]
+
+        if linenum > breaks[-1]:
+            end_row = len(currentfile)
+        else:
+            end_row = [a for a in breaks if a > linenum][0]
 
         footers = int(len(currentfile) - end_row)
         return footers
@@ -99,13 +106,19 @@ class BaseReader(object):
 
         return self._find_line(blockstart) + comment_lines #b/c variable comment lines
 
-    def _make_df(self, block, names, line='  \n'):
+    def raw_block(self, block):
+        """
+        Returns the string representation of the block.
+        """
+        skiprows = self.find_block(block)
+        skipfooter = self._find_end(skiprows, self.endline)
+
+        return ''.join(self.orig_file[skiprows:-skipfooter])
+
+    def _make_df(self, block, names, **kwargs):
         """
         Helper function to parse pd.DataFrame for result properties.
         """
-        skiprows = self.find_block(block)
-        skipfooter = self._find_end(skiprows, line)
-
-        return pd.read_csv(self.path, sep='\s+', header=None,
-                           names=names, skiprows=skiprows,
-                           skipfooter=skipfooter, index_col=[0])
+        return pd.read_csv(StringIO(self.raw_block(block)),
+                           sep='\s+', header=None,
+                           names=names, index_col=[0], **kwargs)
