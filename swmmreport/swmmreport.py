@@ -1,6 +1,8 @@
+from .base_reader import BaseReader
+
 import pandas as pd
 
-class ReportFile(object):
+class ReportFile(BaseReader):
     """
     A class to read a SWMM model report file.
     """
@@ -9,9 +11,9 @@ class ReportFile(object):
         Requires:
         - path: str, the full file path to the existing SWMM model .inp.
         """
-        self.path = path
-        self._orig_file = None
+        BaseReader.__init__(self, path)
 
+        self._subcatchment_runoff_results = None
         self._node_depth_results = None
         self._node_inflow_results = None
         self._node_surcharge_results = None
@@ -24,6 +26,7 @@ class ReportFile(object):
 
         self._startlines = {
             #dict = {'block_name': ('rpt_header', n_comment_lines)}
+            'subcatchment_runoff': ('Subcatchment Runoff Summary', 8),
             'node_depth': ('Node Depth Summary', 8),
             'node_inflow': ('Node Inflow Summary', 9),
             'node_surcharge': ('Node Surcharge Summary', 9),
@@ -36,101 +39,22 @@ class ReportFile(object):
         }
 
     @property
-    def orig_file(self):
+    def subcatchment_runoff_results(self):
         """
-        Unmodified .rpt file read from disk.
+        The parsed node depth results as a pandas DataFrame
         """
-        if self._orig_file is None:
-            self._orig_file = self.read_file(self.path)
-        return self._orig_file
+        if self._subcatchment_runoff_results is None:
+            names = [
+            'Subcatchment', 'Total_Precip_in',
+            'Total_Runon_in', 'Total_Evap_in',
+            'Total_Infil_in', 'Total_Runoff_in',
+            'Total_Runoff_mgal', 'Peak_Runoff_CFS',
+            'Runoff_Coeff'
+            ]
 
-    def _find_line(self, line):
-        """
-        Given a text string returns the line number that the string
-        appears in.
+            self._subcatchment_runoff_results = self._make_df('subcatchment_runoff', names)
 
-        Requires:
-        - line: str, text to look up.
-
-        Returns:
-        - n: int, the line number where line exists.
-        """
-        currentfile = self.orig_file.copy()
-        for n, l in enumerate(currentfile):
-            if l.find(line) > -1:
-                break
-        return n
-
-    def _find_end(self, linenum):
-        """
-        Given the start of the block returns the number of rows
-        needed to for skipfooter in pandas.read_table to only read
-        the block.
-
-        Requires:
-        - line: str, tetx to look up.
-
-        Returns:
-        - n: int, the line number where line exists.
-        """
-        currentfile = self.orig_file.copy()
-        # At the end of every block SWMM adds a space, space, return
-        # If this changes in new versions then the `line` var will require
-        # an update
-        line = '  \n' 
-        breaks = []
-        for n, l in enumerate(currentfile):
-            if l.find(line) > -1:
-                breaks.append(n)
-        end_row = [a for a in breaks if a > linenum][0]
-
-        footers = int(len(currentfile) - end_row)
-        return footers
-
-    def read_file(self, filename):
-        """
-        A wrapper for the standard `open` function implemented using
-        `with`.
-
-        Requires:
-        - filename: str, the path to the text file.
-
-        Returns:
-        - lines: list, a list of lines from `open(filename).readlines()`
-        """
-
-        with open(filename, 'r') as openfile:
-            lines = openfile.readlines()
-        return lines
-
-    def find_block(self, block):
-        """
-        Finds the start of a SWMM parameter block such as the
-        'Node Surcharge Summary' block.
-
-        Requires:
-        - block: str, acceptable values include:
-            - 'node_surcharge',
-            - 'node_depth'
-
-        Returns:
-        blockstart: int, the start of the block after the
-        comment lines.
-        """
-        blockstart, comment_lines = self._startlines[block]
-
-        return self._find_line(blockstart) + comment_lines #b/c variable comment lines
-
-    def _make_df(self, block, names):
-        """
-        Helper function to parse pd.DataFrame for result properties.
-        """
-        skiprows = self.find_block(block)
-        skipfooter = self._find_end(skiprows)
-
-        return pd.read_csv(self.path, sep='\s+', header=None,
-                           names=names, skiprows=skiprows,
-                           skipfooter=skipfooter, index_col=[0])
+        return self._subcatchment_runoff_results
     
     @property
     def node_depth_results(self):

@@ -6,11 +6,7 @@ import pandas as pd
 import pandas.util.testing as pdtest
 
 from swmmreport import ReportFile
-
-
-def data_path(filename):
-    path = resource_filename("swmmreport.tests._data", filename)
-    return path
+from .utils import data_path
 
 class base_ReportFileMixin(object):
     def teardown(self):
@@ -23,8 +19,8 @@ class base_ReportFileMixin(object):
         assert hasattr(self.rpt, 'orig_file')
         assert isinstance(self.rpt.orig_file, list)
 
-        assert hasattr(self.rpt, 'node_surcharge_results')
-        assert isinstance(self.rpt.node_surcharge_results, pd.DataFrame)
+        assert hasattr(self.rpt, 'subcatchment_runoff_results')
+        assert isinstance(self.rpt.subcatchment_runoff_results, pd.DataFrame)
 
         assert hasattr(self.rpt, 'node_depth_results')
         assert isinstance(self.rpt.node_depth_results, pd.DataFrame)
@@ -32,6 +28,9 @@ class base_ReportFileMixin(object):
         assert hasattr(self.rpt, 'node_inflow_results')
         assert isinstance(self.rpt.node_inflow_results, pd.DataFrame)
 
+        assert hasattr(self.rpt, 'node_surcharge_results')
+        assert isinstance(self.rpt.node_surcharge_results, pd.DataFrame)
+        
         assert hasattr(self.rpt, 'node_flooding_results')
         assert isinstance(self.rpt.node_flooding_results, pd.DataFrame)
 
@@ -53,6 +52,9 @@ class base_ReportFileMixin(object):
 
 class Test_ReportFile(base_ReportFileMixin):
     def setup(self):
+        # TODO
+        # subcatchment results
+
         self.known_path = data_path('test_rpt.rpt')
         self.node_surcharge_file = data_path('test_node_surcharge_data.csv')
         self.node_depth_file = data_path('test_node_depth_data.csv')
