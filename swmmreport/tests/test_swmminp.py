@@ -76,9 +76,8 @@ class base_InpFileMixin(object):
             assert hasattr(self.inp, 'orifices')
             assert isinstance(self.inp.orifices, pd.DataFrame)
 
-        with pytest.raises(NotImplementedError):
-            assert hasattr(self.inp, 'weirs')
-            assert isinstance(self.inp.weirs, pd.DataFrame)
+        assert hasattr(self.inp, 'weirs')
+        assert isinstance(self.inp.weirs, pd.DataFrame)
 
         assert hasattr(self.inp, 'xsections')
         assert isinstance(self.inp.xsections, pd.DataFrame)
@@ -87,8 +86,8 @@ class base_InpFileMixin(object):
         assert isinstance(self.inp.curves, pd.DataFrame)
 
         with pytest.raises(NotImplementedError):
-            assert hasattr(self.inp, 'transect')
-            assert isinstance(self.inp.transect, pd.DataFrame)
+            assert hasattr(self.inp, 'transects')
+            assert isinstance(self.inp.transects, pd.DataFrame)
 
         assert hasattr(self.inp, 'losses')
         assert isinstance(self.inp.losses, pd.DataFrame)

@@ -86,7 +86,7 @@ class InpFile(BaseReader):
             'map': ('[MAP]', 2),
             'coordinates': ('[COORDINATES]', 2),
             'vertices': ('[VERTICES]', 2),
-            'polygons': ('[POLYGONS]', 2),
+            'polygons': ('[Polygons]', 2),
             'symbols': ('[SYMBOLS]', 2),
             # TODO
             # controls
@@ -370,10 +370,12 @@ class InpFile(BaseReader):
 
     @property
     def weirs(self):
-        raise(NotImplementedError)
-
         if self._weirs is None:
-            names = []
+            names = [
+                'Name', 'From_Node', 'To_Node', 'Type',
+                'CrestHt', 'Qcoeff', 'Gated', 'EndCon',
+                'EndCoeff', 'Surcharge', 'RoadWidth', 'RoadSurf'
+            ]
             self._weirs = self._clean_comments(
                 self._make_df('weirs', names))
 

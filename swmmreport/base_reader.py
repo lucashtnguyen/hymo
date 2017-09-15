@@ -65,11 +65,11 @@ class BaseReader(object):
                 breaks.append(n)
 
         if linenum > breaks[-1]:
-            end_row = len(currentfile)
+            footers = len(currentfile) * -1
         else:
             end_row = [a for a in breaks if a > linenum][0]
+            footers = int(len(currentfile) - end_row)
 
-        footers = int(len(currentfile) - end_row)
         return footers
 
     def read_file(self, filename):

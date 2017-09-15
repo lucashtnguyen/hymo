@@ -13,6 +13,7 @@ class ReportFile(BaseReader):
         """
         BaseReader.__init__(self, path)
 
+        self._subcatchment_runoff_results = None
         self._node_depth_results = None
         self._node_inflow_results = None
         self._node_surcharge_results = None
@@ -25,6 +26,7 @@ class ReportFile(BaseReader):
 
         self._startlines = {
             #dict = {'block_name': ('rpt_header', n_comment_lines)}
+            'subcatchment_runoff': ('Subcatchment Runoff Summary', 8),
             'node_depth': ('Node Depth Summary', 8),
             'node_inflow': ('Node Inflow Summary', 9),
             'node_surcharge': ('Node Surcharge Summary', 9),
@@ -35,6 +37,24 @@ class ReportFile(BaseReader):
             'flow_classification': ('Flow Classification Summary', 8),
             'conduit_surcharge': ('Conduit Surcharge Summary', 8) #special conditions EOF
         }
+
+    @property
+    def subcatchment_runoff_results(self):
+        """
+        The parsed node depth results as a pandas DataFrame
+        """
+        if self._subcatchment_runoff_results is None:
+            names = [
+            'Subcatchment', 'Total_Precip_in',
+            'Total_Runon_in', 'Total_Evap_in',
+            'Total_Infil_in', 'Total_Runoff_in',
+            'Total_Runoff_mgal', 'Peak_Runoff_CFS',
+            'Runoff_Coeff'
+            ]
+
+            self._subcatchment_runoff_results = self._make_df('subcatchment_runoff', names)
+
+        return self._subcatchment_runoff_results
     
     @property
     def node_depth_results(self):
