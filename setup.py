@@ -1,4 +1,4 @@
-# Setup script for the pylspc package
+# Setup script for the lspcreport package
 #
 # Usage: python setup.py install
 #
@@ -6,14 +6,14 @@ import os
 from setuptools import setup, find_packages
 
 
-DESCRIPTION = "pylspc: LSPC File reader"
-pylspc = DESCRIPTION
-NAME = "pylspc"
+DESCRIPTION = "lspcreport: LSPC File reader"
+lspcreport = DESCRIPTION
+NAME = "lspcreport"
 VERSION = "0.0.1"
 AUTHOR = "Lucas Nguyen (Geosyntec Consultants)"
 AUTHOR_EMAIL = "lnguyen@geosyntec.com"
-URL = "https://github.com/lucashtnguyen/pylspc"
-DOWNLOAD_URL = "https://github.com/lucashtnguyen/pylspc/archive/master.zip"
+URL = "https://github.com/lucashtnguyen/lspcreport"
+DOWNLOAD_URL = "https://github.com/lucashtnguyen/lspcreport/archive/master.zip"
 LICENSE = "BSD 3-clause"
 PACKAGES = find_packages()
 PLATFORMS = "Python 2.7, 3.4 and later."
@@ -28,7 +28,7 @@ CLASSIFIERS = [
 ]
 INSTALL_REQUIRES = ['pandas', 'pytest', 'swmmreport']
 PACKAGE_DATA = {
-    'pylspc.tests._data': [ '*.csv', '*.rpt'],
+    'lspcreport.tests._data': [ '*.csv', '*.rpt'],
 }
 
 setup(

@@ -4,7 +4,7 @@ from io import StringIO
 import pandas as pd
 import pandas.util.testing as pdtest
 
-from pylspc import LSPCResults
+from lspcreport import LSPCResults
 from .utils import data_path
 
 RESULT_STRING = ("""    subbasin  deluid     parmname  value1

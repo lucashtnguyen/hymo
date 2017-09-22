@@ -1,9 +1,9 @@
 import pytest
 from pkg_resources import resource_filename
 
-import pylspc
+import lspcreport
 
 def test(*args):
-    options = [resource_filename('pylspc', 'tests')]
+    options = [resource_filename('lspcreport', 'tests')]
     options.extend(list(args))
     return pytest.main(options)
