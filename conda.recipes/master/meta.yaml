@@ -1,0 +1,32 @@
+{% set data = load_setuptools()%}
+package:
+  name: pylspc
+  version: 0.0.1
+
+source:
+  path: ../../
+
+build:
+  script: python setup.py install
+  number: 1
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - pandas
+    - pytest
+    - swmmreport
+  run:
+    - python
+    - setuptools
+    - pandas
+test:
+  requires:
+    - pytest
+
+about:
+  home: https://github.com/lucashtnguyen/pylspc.git
+  license:  BSD License
+  summary: 'Basic water quality inflow/outflow analysis tools'
+
