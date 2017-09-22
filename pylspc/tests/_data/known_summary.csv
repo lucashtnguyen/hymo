@@ -1,0 +1,63 @@
+,description,unit
+AGWO,total groundwater outflow rate volume (in-acre/year),in-acre/year
+AO_Entero,groundwater flux of QUAL Entero (#/year),#/year
+AO_FECAL,groundwater flux of QUAL FECAL (#/year),#/year
+AO_TCU,groundwater flux of QUAL TCU (lb/year),lb/year
+AO_TN,groundwater flux of QUAL TN (lb/year),lb/year
+AO_TP,groundwater flux of QUAL TP (lb/year),lb/year
+AO_TPB,groundwater flux of QUAL TPB (lb/year),lb/year
+AO_TZN,groundwater flux of QUAL TZN (lb/year),lb/year
+AO_Total,groundwater flux of QUAL Total (#/year),#/year
+AREA,average area (acre),acre
+IFWO,total interflow outflow rate volume (in-acre/year),in-acre/year
+IGWI,total groundwater deep percolation volume (in-acre/year),in-acre/year
+IO_Entero,interflow flux of QUAL Entero (#/year),#/year
+IO_FECAL,interflow flux of QUAL FECAL (#/year),#/year
+IO_TCU,interflow flux of QUAL TCU (lb/year),lb/year
+IO_TN,interflow flux of QUAL TN (lb/year),lb/year
+IO_TP,interflow flux of QUAL TP (lb/year),lb/year
+IO_TPB,interflow flux of QUAL TPB (lb/year),lb/year
+IO_TZN,interflow flux of QUAL TZN (lb/year),lb/year
+IO_Total,interflow flux of QUAL Total (#/year),#/year
+IRRCAN,irrigation requirement applied over the canopy (in-acre/year),in-acre/year
+IRRGWS,"irrigation water entering directly into the local groundwater, such as seepage irrigation (in-acre/year)",in-acre/year
+IRRLZS,irrigation water likewise applied to the lower soil zone (in-acre/year),in-acre/year
+IRRSUR,irrigation water applied directly to the soil surface (in-acre/year),in-acre/year
+IRRUZS,irrigation water applied to the upper soil zone via buried systems (in-acre/year),in-acre/year
+PERO,total outflow rate volume (in-acre/year),in-acre/year
+PO_Entero,total flux of QUAL Entero (#/year),#/year
+PO_FECAL,total flux of QUAL FECAL (#/year),#/year
+PO_TCU,total flux of QUAL TCU (lb/year),lb/year
+PO_TN,total flux of QUAL TN (lb/year),lb/year
+PO_TP,total flux of QUAL TP (lb/year),lb/year
+PO_TPB,total flux of QUAL TPB (lb/year),lb/year
+PO_TZN,total flux of QUAL TZN (lb/year),lb/year
+PO_Total,total flux of QUAL Total (#/year),#/year
+PREC,total precipitation (rain + snow) volume (in-acre/year),in-acre/year
+SEDAGWO,sediments load from land (tons/year),tons/year
+SEDIFWO,sediments load from land (tons/year),tons/year
+SEDLOAD,sediments load from land (tons/year),tons/year
+SEDSCRS,sediments load from land (tons/year),tons/year
+SEDSCRS_TCU,total flux of sediment associated QUAL TCU (lb/year),lb/year
+SEDSCRS_TPB,total flux of sediment associated QUAL TPB (lb/year),lb/year
+SEDSCRS_TZN,total flux of sediment associated QUAL TZN (lb/year),lb/year
+SEDSURO,sediments load from land (tons/year),tons/year
+SEDWSSD,sediments load from land (tons/year),tons/year
+SEDWSSD_TCU,total flux of sediment associated QUAL TCU (lb/year),lb/year
+SEDWSSD_TPB,total flux of sediment associated QUAL TPB (lb/year),lb/year
+SEDWSSD_TZN,total flux of sediment associated QUAL TZN (lb/year),lb/year
+SED_TCU,total flux of sediment associated QUAL TCU (lb/year),lb/year
+SED_TPB,total flux of sediment associated QUAL TPB (lb/year),lb/year
+SED_TZN,total flux of sediment associated QUAL TZN (lb/year),lb/year
+SOLIDS,sediments in surface storage on the land (tons/year),tons/year
+SO_Entero,surface flux of QUAL Entero (#/year),#/year
+SO_FECAL,surface flux of QUAL FECAL (#/year),#/year
+SO_TCU,surface flux of QUAL TCU (lb/year),lb/year
+SO_TN,surface flux of QUAL TN (lb/year),lb/year
+SO_TP,surface flux of QUAL TP (lb/year),lb/year
+SO_TPB,surface flux of QUAL TPB (lb/year),lb/year
+SO_TZN,surface flux of QUAL TZN (lb/year),lb/year
+SO_Total,surface flux of QUAL Total (#/year),#/year
+SURO,total surface outflow rate volume (in-acre/year),in-acre/year
+SWEPTS,sediments swept from surface storage on the land (tons/year),tons/year
+TAET,total actual evapo-transpiration volume (in-acre/year),in-acre/year
