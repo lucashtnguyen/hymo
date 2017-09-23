@@ -34,6 +34,7 @@ class InpFile(BaseReader):
         self._outlets = None
         self._weirs = None
         self._xsections = None
+        self._pollutants = None
         self._curves = None
         self._transects = None
         self._losses = None
@@ -88,10 +89,10 @@ class InpFile(BaseReader):
             'vertices': ('[VERTICES]', 2),
             'polygons': ('[Polygons]', 2),
             'symbols': ('[SYMBOLS]', 2),
+            'pollutants': ('[POLLUTANTS]', 2)
             # TODO
             # controls
             # snowpacks
-            # pollutants
             # loadings
             # patterns
             # washoff
@@ -511,3 +512,13 @@ class InpFile(BaseReader):
 
         return self._symbols
 
+    @property
+    def pollutants(self):
+        if self._pollutants is None:
+            names = ['Name', 'Units', 'Crain', 'Cgw',
+                        'Crdii', 'Kdecay', 'SnowOnly',
+                        'Co_Pollutant', 'Co_Frac', 'Cdwf', 'Cinit']
+            self._pollutants = self._clean_comments(
+                self._make_df('pollutants', names))
+
+        return self._pollutants

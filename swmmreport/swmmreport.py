@@ -23,6 +23,7 @@ class ReportFile(BaseReader):
         self._link_flow_results = None
         self._flow_classification_results = None
         self._conduit_surcharge_results = None
+        self._link_pollutant_load_results = None
 
         self._startlines = {
             #dict = {'block_name': ('rpt_header', n_comment_lines)}
@@ -35,7 +36,8 @@ class ReportFile(BaseReader):
             'outfall_loading': ('Outfall Loading Summary', 8), #special conditions at end of block
             'link_flow': ('Link Flow Summary', 8),
             'flow_classification': ('Flow Classification Summary', 8),
-            'conduit_surcharge': ('Conduit Surcharge Summary', 8) #special conditions EOF
+            'conduit_surcharge': ('Conduit Surcharge Summary', 8), #special conditions EOF
+            'link_pollutant_load': ('Link Pollutant Load Summary', 7)
         }
 
     @property
@@ -199,3 +201,15 @@ class ReportFile(BaseReader):
             self._conduit_surcharge_results = self._make_df('conduit_surcharge', names)
 
         return self._conduit_surcharge_results
+
+    @property
+    def link_pollutant_load_results(self):
+        if self._link_pollutant_load_results is None:
+            # there will be more than one pollutant
+            # we will need to think about a proper
+            # name parser.
+            names = ['Link', 'Pollutant_lbs']
+
+            self._link_pollutant_load_results = self._make_df('link_pollutant_load', names)
+
+        return self._link_pollutant_load_results
