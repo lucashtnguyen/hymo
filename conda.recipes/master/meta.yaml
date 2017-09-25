@@ -1,14 +1,14 @@
 {% set data = load_setuptools()%}
 package:
   name: swmmreport
-  version: 0.0.1
+  version: "0.0.1"
 
 source:
-  path: ../
+  path: ../../
 
 build:
   script: python setup.py install
-  number: 1
+  number: 3
 
 requirements:
   build:
@@ -20,9 +20,15 @@ requirements:
     - python
     - setuptools
     - pandas
+
 test:
   requires:
     - pytest
+  imports:
+    - swmmreport
+  commands:
+    - python -c "print('hello world')"
+    - python -c "import sys, swmmreport; sys.exit(swmmreport.test())"
 
 about:
   home: https://github.com/lucashtnguyen/swmmreport.git
