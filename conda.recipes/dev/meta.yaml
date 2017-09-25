@@ -1,6 +1,6 @@
 {% set data = load_setuptools()%}
 package:
-  name: pylspc
+  name: lspcreport
   version: 0.0.1
 
 source:
@@ -26,7 +26,7 @@ test:
     - pytest
 
 about:
-  home: https://github.com/lucashtnguyen/pylspc.git
+  home: https://github.com/lucashtnguyen/lspcreport.git
   license:  BSD License
   summary: 'Basic water quality inflow/outflow analysis tools'
 
