@@ -26,9 +26,9 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
 ]
-INSTALL_REQUIRES = ['pandas', 'pytest', 'swmmreport']
+INSTALL_REQUIRES = ['pandas', 'pytest']
 PACKAGE_DATA = {
-    'lspcreport.tests._data': [ '*.csv', '*.rpt'],
+    'lspcreport.tests._data': [ '*.csv', '*.out'],
 }
 
 setup(
@@ -45,4 +45,6 @@ setup(
     platforms=PLATFORMS,
     classifiers=CLASSIFIERS,
     install_requires=INSTALL_REQUIRES,
+    zip_safe=False,
+    py_modules=['lspcreport']
 )

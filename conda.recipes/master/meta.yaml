@@ -1,14 +1,14 @@
 {% set data = load_setuptools()%}
 package:
-  name: pylspc
-  version: 0.0.1
+  name: lspcreport
+  version: "0.0.1"
 
 source:
   path: ../../
 
 build:
   script: python setup.py install
-  number: 1
+  number: 3
 
 requirements:
   build:
@@ -21,12 +21,20 @@ requirements:
     - python
     - setuptools
     - pandas
+    - swmmreport
+
 test:
   requires:
     - pytest
+    - swmmreport
+  imports:
+    - lspcreport
+  commands:
+    - python -c "print('hello world')"
+    - python -c "import sys, lspcreport; sys.exit(lspcreport.test())"
 
 about:
-  home: https://github.com/lucashtnguyen/pylspc.git
+  home: https://github.com/lucashtnguyen/lspcreport.git
   license:  BSD License
   summary: 'Basic water quality inflow/outflow analysis tools'
 
