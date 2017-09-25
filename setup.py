@@ -7,7 +7,6 @@ from setuptools import setup, find_packages
 
 
 DESCRIPTION = "swmmreport: EPA SWMM Report File reader"
-swmmreport = DESCRIPTION
 NAME = "swmmreport"
 VERSION = "0.0.1"
 AUTHOR = "Lucas Nguyen (Geosyntec Consultants)"
@@ -28,7 +27,7 @@ CLASSIFIERS = [
 ]
 INSTALL_REQUIRES = ['pandas', 'pytest']
 PACKAGE_DATA = {
-    'swmmreport.tests._data': [ '*.csv', '*.rpt'],
+    'swmmreport.tests._data': [ '*.csv', '*.rpt', '*.inp'],
 }
 
 setup(
@@ -45,4 +44,6 @@ setup(
     platforms=PLATFORMS,
     classifiers=CLASSIFIERS,
     install_requires=INSTALL_REQUIRES,
+    zip_safe=False,
+    py_modules=['swmmreport']
 )
