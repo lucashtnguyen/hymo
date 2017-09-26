@@ -1,0 +1,37 @@
+{% set data = load_setuptools()%}
+package:
+  name: swmmreport
+  version: "0.0.1"
+
+source:
+  path: ../../
+
+build:
+  script: python setup.py install
+  number: 3
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - pandas
+    - pytest
+  run:
+    - python
+    - setuptools
+    - pandas
+
+test:
+  requires:
+    - pytest
+  imports:
+    - swmmreport
+  commands:
+    - python -c "print('hello world')"
+    - python -c "import sys, swmmreport; sys.exit(swmmreport.test())"
+
+about:
+  home: https://github.com/lucashtnguyen/swmmreport.git
+  license:  BSD License
+  summary: 'Basic water quality inflow/outflow analysis tools'
+

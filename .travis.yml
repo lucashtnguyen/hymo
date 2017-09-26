@@ -1,0 +1,33 @@
+language: python
+
+matrix:
+  include:
+    - python: 3.4
+      env:
+        - COVERAGE=true
+        - ARGS="--cov --verbose"
+    - python: 3.5
+      env:
+        - COVERAGE=true
+        - ARGS="--cov --verbose"
+
+before_install:
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda update --yes conda
+
+install:
+  - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION
+  - source activate test
+  - conda install --yes pandas
+  - conda install --yes coverage docopt requests pyyaml pytest pytest-cov mock
+  - pip install coveralls
+  - pip install .
+
+script:
+  - python check_swmmreport.py ${ARGS}
+
+after_success:
+  - if [ ${COVERAGE} = true ]; then coveralls; fi
