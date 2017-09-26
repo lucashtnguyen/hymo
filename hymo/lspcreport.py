@@ -1,6 +1,6 @@
 import pandas as pd
 
-from swmmreport.base_reader import BaseReader
+from .base_reader import BaseReader
 
 class LSPCResults(object):
     """

@@ -1,16 +1,16 @@
 # .coveragerc to control coverage.py
 [run]
-source = swmmreport
+source = hymo
 branch = True
-include = swmmreport/*.py
+include = hymo/*.py
 omit =
-    swmmreport/tests/*
+    hymo/tests/*
 
 [report]
-include = swmmreport/*.py
+include = hymo/*.py
 ignore_errors = True
 omit =
-    swmmreport/tests/*
+    hymo/tests/*
 
 # Regexes for lines to exclude from consideration
 exclude_lines =

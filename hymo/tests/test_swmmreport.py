@@ -5,7 +5,7 @@ import pytest
 import pandas as pd
 import pandas.util.testing as pdtest
 
-from swmmreport import ReportFile
+from hymo import ReportFile
 from .utils import data_path
 
 class base_ReportFileMixin(object):

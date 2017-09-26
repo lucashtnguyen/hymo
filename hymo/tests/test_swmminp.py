@@ -5,12 +5,8 @@ import pytest
 import pandas as pd
 import pandas.util.testing as pdtest
 
-from swmmreport import InpFile
+from hymo import InpFile
 from .utils import data_path
-
-def data_path(filename):
-    path = resource_filename("swmmreport.tests._data", filename)
-    return path
 
 class base_InpFileMixin(object):
     def teardown(self):

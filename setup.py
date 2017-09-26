@@ -1,4 +1,4 @@
-# Setup script for the lspcreport package
+# Setup script for the hymo package
 #
 # Usage: python setup.py install
 #
@@ -6,17 +6,16 @@ import os
 from setuptools import setup, find_packages
 
 
-DESCRIPTION = "lspcreport: LSPC File reader"
-lspcreport = DESCRIPTION
-NAME = "lspcreport"
+DESCRIPTION = "hymo: EPA SWMM Report File reader"
+NAME = "hymo"
 VERSION = "0.0.1"
 AUTHOR = "Lucas Nguyen (Geosyntec Consultants)"
 AUTHOR_EMAIL = "lnguyen@geosyntec.com"
-URL = "https://github.com/lucashtnguyen/lspcreport"
-DOWNLOAD_URL = "https://github.com/lucashtnguyen/lspcreport/archive/master.zip"
+URL = "https://github.com/lucashtnguyen/hymo"
+DOWNLOAD_URL = "https://github.com/lucashtnguyen/hymo/archive/master.zip"
 LICENSE = "BSD 3-clause"
 PACKAGES = find_packages()
-PLATFORMS = "Python 2.7, 3.4 and later."
+PLATFORMS = "Python 3.4, 3.5 and later."
 CLASSIFIERS = [
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
@@ -28,7 +27,7 @@ CLASSIFIERS = [
 ]
 INSTALL_REQUIRES = ['pandas', 'pytest']
 PACKAGE_DATA = {
-    'lspcreport.tests._data': [ '*.csv', '*.out'],
+    'hymo.tests._data': [ '*.csv', '*.rpt', '*.inp', '*.out'],
 }
 
 setup(
@@ -46,5 +45,5 @@ setup(
     classifiers=CLASSIFIERS,
     install_requires=INSTALL_REQUIRES,
     zip_safe=False,
-    py_modules=['lspcreport']
+    py_modules=['hymo']
 )
