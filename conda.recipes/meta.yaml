@@ -1,0 +1,37 @@
+{% set data = load_setuptools()%}
+package:
+  name: hymo
+  version: "0.0.1"
+
+source:
+  path: ../../
+
+build:
+  script: python setup.py install
+  number: 1
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - pandas
+    - pytest
+  run:
+    - python
+    - setuptools
+    - pandas
+
+test:
+  requires:
+    - pytest
+  imports:
+    - hymo
+  commands:
+    - python -c "print('hello world')"
+    - python -c "import sys, hymo; sys.exit(hymo.test())"
+
+about:
+  home: https://github.com/lucashtnguyen/hymo.git
+  license:  BSD License
+  summary: 'A Hydro Model reader '
+
