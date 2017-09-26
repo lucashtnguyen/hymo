@@ -1,0 +1,80 @@
+TT-----------------------------------------------------------------------------------------
+TT LSPC -- Loading Simulation Program, C++
+TT Version 5.0 - October 10, 2015
+TT
+TT Designed and maintained by:
+TT     Tetra Tech, Inc.
+TT     10306 Eaton Place, Suite 340
+TT     Fairfax, VA 22030
+TT     (703) 385-6000
+TT-----------------------------------------------------------------------------------------
+TT LSPC MODEL LANDUSE SUMMARY HEADER FILE
+TT This header file was created at 03:21:14pm on 08/28/2017
+TT Output start time:  10/1/2002
+TT Output end time:    9/30/2003
+TT Simulation time step:   60 min
+TT Label   
+TT AREA     average area (acre)
+TT PREC     total precipitation (rain + snow) volume (in-acre/year) 
+TT SURO     total surface outflow rate volume (in-acre/year) 
+TT IFWO     total interflow outflow rate volume (in-acre/year) 
+TT AGWO     total groundwater outflow rate volume (in-acre/year) 
+TT PERO     total outflow rate volume (in-acre/year) 
+TT TAET     total actual evapo-transpiration volume (in-acre/year) 
+TT IGWI     total groundwater deep percolation volume (in-acre/year) 
+TT IRRCAN     irrigation requirement applied over the canopy (in-acre/year) 
+TT IRRSUR     irrigation water applied directly to the soil surface (in-acre/year) 
+TT IRRUZS     irrigation water applied to the upper soil zone via buried systems (in-acre/year) 
+TT IRRLZS     irrigation water likewise applied to the lower soil zone (in-acre/year) 
+TT IRRGWS     irrigation water entering directly into the local groundwater, such as seepage irrigation (in-acre/year) 
+TT SEDLOAD  sediments load from land (tons/year) 
+TT SEDWSSD  sediments load from land (tons/year)
+TT SEDSCRS  sediments load from land (tons/year)
+TT SEDSURO  sediments load from land (tons/year)
+TT SEDIFWO  sediments load from land (tons/year)
+TT SEDAGWO  sediments load from land (tons/year)
+TT SOLIDS   sediments in surface storage on the land (tons/year)
+TT SWEPTS   sediments swept from surface storage on the land (tons/year)
+TT SO_TN surface flux of QUAL TN (lb/year) 
+TT IO_TN interflow flux of QUAL TN (lb/year) 
+TT AO_TN groundwater flux of QUAL TN (lb/year) 
+TT PO_TN total flux of QUAL TN (lb/year) 
+TT SO_TP surface flux of QUAL TP (lb/year) 
+TT IO_TP interflow flux of QUAL TP (lb/year) 
+TT AO_TP groundwater flux of QUAL TP (lb/year) 
+TT PO_TP total flux of QUAL TP (lb/year) 
+TT SO_TCU surface flux of QUAL TCU (lb/year) 
+TT IO_TCU interflow flux of QUAL TCU (lb/year) 
+TT AO_TCU groundwater flux of QUAL TCU (lb/year) 
+TT PO_TCU total flux of QUAL TCU (lb/year) 
+TT SED_TCU total flux of sediment associated QUAL TCU (lb/year) 
+TT SEDWSSD_TCU total flux of sediment associated QUAL TCU (lb/year) 
+TT SEDSCRS_TCU total flux of sediment associated QUAL TCU (lb/year) 
+TT SO_TPB surface flux of QUAL TPB (lb/year) 
+TT IO_TPB interflow flux of QUAL TPB (lb/year) 
+TT AO_TPB groundwater flux of QUAL TPB (lb/year) 
+TT PO_TPB total flux of QUAL TPB (lb/year) 
+TT SED_TPB total flux of sediment associated QUAL TPB (lb/year) 
+TT SEDWSSD_TPB total flux of sediment associated QUAL TPB (lb/year) 
+TT SEDSCRS_TPB total flux of sediment associated QUAL TPB (lb/year) 
+TT SO_TZN surface flux of QUAL TZN (lb/year) 
+TT IO_TZN interflow flux of QUAL TZN (lb/year) 
+TT AO_TZN groundwater flux of QUAL TZN (lb/year) 
+TT PO_TZN total flux of QUAL TZN (lb/year) 
+TT SED_TZN total flux of sediment associated QUAL TZN (lb/year) 
+TT SEDWSSD_TZN total flux of sediment associated QUAL TZN (lb/year) 
+TT SEDSCRS_TZN total flux of sediment associated QUAL TZN (lb/year) 
+TT SO_FECAL surface flux of QUAL FECAL (#/year) 
+TT IO_FECAL interflow flux of QUAL FECAL (#/year) 
+TT AO_FECAL groundwater flux of QUAL FECAL (#/year) 
+TT PO_FECAL total flux of QUAL FECAL (#/year) 
+TT SO_Total surface flux of QUAL Total (#/year) 
+TT IO_Total interflow flux of QUAL Total (#/year) 
+TT AO_Total groundwater flux of QUAL Total (#/year) 
+TT PO_Total total flux of QUAL Total (#/year) 
+TT SO_Entero surface flux of QUAL Entero (#/year) 
+TT IO_Entero interflow flux of QUAL Entero (#/year) 
+TT AO_Entero groundwater flux of QUAL Entero (#/year) 
+TT PO_Entero total flux of QUAL Entero (#/year) 
+TT
+TT     This is header file for the landuse summary file landuse.csv
