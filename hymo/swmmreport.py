@@ -2,7 +2,7 @@ from .base_reader import BaseReader
 
 import pandas as pd
 
-class ReportFile(BaseReader):
+class SWMMReportFile(BaseReader):
     """
     A class to read a SWMM model report file.
     """
@@ -12,6 +12,12 @@ class ReportFile(BaseReader):
         - path: str, the full file path to the existing SWMM model .inp.
         """
         BaseReader.__init__(self, path)
+
+        # check units
+        self.unit = self.orig_file[self._find_line('Flow Units')].split('.')[-1].strip()
+
+        if self.unit.upper() != 'CFS':
+            raise ValueError
 
         self._subcatchment_runoff_results = None
         self._node_depth_results = None

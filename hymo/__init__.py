@@ -1,6 +1,7 @@
-from .swmmreport import ReportFile
-from .swmminp import InpFile
-from .lspcreport import LSPCResults, LSPCInp
+from .swmmreport import SWMMReportFile
+from .swmminp import SWMMInpFile
+from .lspcreport import LSPCResultsFile
+from .lspcinp import LSPCInpFile
 from .tests import test
 
 # TODO

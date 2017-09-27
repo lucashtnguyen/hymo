@@ -1,10 +1,11 @@
+import os
 import pytest
 from io import StringIO
 
 import pandas as pd
 import pandas.util.testing as pdtest
 
-from hymo import LSPCResults
+from hymo import LSPCResultsFile
 from .utils import data_path
 
 RESULT_STRING = ("""    subbasin  deluid     parmname  value1
@@ -157,8 +158,8 @@ TT     This is header file for the landuse summary file landuse.csv
 class Test_LSPCResults(object):
     def setup(self):
 
-        self.known_results_path = data_path('landuse.csv')
-        self.known_summary_path = data_path('landuse.out')
+        self.known_results_path = data_path(os.path.join('lspc', 'landuse.csv'))
+        self.known_summary_path = data_path(os.path.join('lspc', 'landuse.out'))
         self.known_summary_EOF = -2
 
         self.known_results = pd.read_csv(
@@ -167,12 +168,12 @@ class Test_LSPCResults(object):
         self.known_raw_summary = SUMMARY_STRING
 
         self.known_parsed_summary = pd.read_csv(
-            data_path('known_summary.csv'), index_col=[0])
+            data_path(os.path.join('lspc', 'known_summary.csv')), index_col=[0])
 
         self.known_parsed_results = pd.read_csv(
-            data_path('known_parsed_results.csv'))
+            data_path(os.path.join('lspc', 'known_parsed_results.csv')))
 
-        self.lspc = LSPCResults(self.known_results_path,
+        self.lspc = LSPCResultsFile(self.known_results_path,
                                  self.known_summary_path,
                                  self.known_summary_EOF)
         
@@ -187,11 +188,11 @@ class Test_LSPCResults(object):
 
     def test_summary_EOF(self):
         with pytest.raises(ValueError):
-            LSPCResults(self.known_results_path,
+            LSPCResultsFile(self.known_results_path,
                         self.known_summary_path,
                         1)
         with pytest.raises(ValueError):
-            LSPCResults(self.known_results_path,
+            LSPCResultsFile(self.known_results_path,
                         self.known_summary_path,
                         -1.1)
 
