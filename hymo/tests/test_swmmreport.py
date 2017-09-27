@@ -1,3 +1,4 @@
+import os
 import pytest
 from pkg_resources import resource_filename
 
@@ -55,16 +56,16 @@ class Test_ReportFile(base_ReportFileMixin):
         # TODO
         # subcatchment results
 
-        self.known_path = data_path('test_rpt.rpt')
-        self.node_surcharge_file = data_path('test_node_surcharge_data.csv')
-        self.node_depth_file = data_path('test_node_depth_data.csv')
-        self.node_inflow_file = data_path('test_node_inflow_data.csv')
-        self.node_flooding_file = data_path('test_node_flooding_data.csv')
-        self.storage_volume_file = data_path('test_storage_volume_data.csv')
-        self.outfall_loading_file = data_path('test_outfall_loading_data.csv')
-        self.link_flow_file = data_path('test_link_flow_data.csv')
-        self.flow_classification_file = data_path('test_flow_classification_data.csv')
-        self.conduit_surcharge_file = data_path('test_conduit_surcharge_data.csv')
+        self.known_path = data_path(os.path.join('swmm', 'test_rpt.rpt'))
+        self.node_surcharge_file = data_path(os.path.join('swmm', 'test_node_surcharge_data.csv'))
+        self.node_depth_file = data_path(os.path.join('swmm', 'test_node_depth_data.csv'))
+        self.node_inflow_file = data_path(os.path.join('swmm', 'test_node_inflow_data.csv'))
+        self.node_flooding_file = data_path(os.path.join('swmm', 'test_node_flooding_data.csv'))
+        self.storage_volume_file = data_path(os.path.join('swmm', 'test_storage_volume_data.csv'))
+        self.outfall_loading_file = data_path(os.path.join('swmm', 'test_outfall_loading_data.csv'))
+        self.link_flow_file = data_path(os.path.join('swmm', 'test_link_flow_data.csv'))
+        self.flow_classification_file = data_path(os.path.join('swmm', 'test_flow_classification_data.csv'))
+        self.conduit_surcharge_file = data_path(os.path.join('swmm', 'test_conduit_surcharge_data.csv'))
 
         self.rpt = ReportFile(self.known_path)
 

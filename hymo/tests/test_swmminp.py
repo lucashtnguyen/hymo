@@ -1,3 +1,4 @@
+import os
 import pytest
 from pkg_resources import resource_filename
 
@@ -117,5 +118,5 @@ class base_InpFileMixin(object):
 
 class Test_InpFile(base_InpFileMixin):
     def setup(self):
-        self.known_path = data_path('test_inp.inp')
+        self.known_path = data_path(os.path.join('swmm', 'test_inp.inp'))
         self.inp = InpFile(self.known_path)
