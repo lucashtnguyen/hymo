@@ -3,7 +3,7 @@ import pandas as pd
 
 from .base_reader import BaseReader
 
-class InpFile(BaseReader):
+class SWMMInpFile(BaseReader):
     """
     A class to read a SWMM model report file.
     """

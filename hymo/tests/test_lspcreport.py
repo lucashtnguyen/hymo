@@ -5,7 +5,7 @@ from io import StringIO
 import pandas as pd
 import pandas.util.testing as pdtest
 
-from hymo import LSPCResults
+from hymo import LSPCResultsFile
 from .utils import data_path
 
 RESULT_STRING = ("""    subbasin  deluid     parmname  value1
@@ -173,7 +173,7 @@ class Test_LSPCResults(object):
         self.known_parsed_results = pd.read_csv(
             data_path(os.path.join('lspc', 'known_parsed_results.csv')))
 
-        self.lspc = LSPCResults(self.known_results_path,
+        self.lspc = LSPCResultsFile(self.known_results_path,
                                  self.known_summary_path,
                                  self.known_summary_EOF)
         
@@ -188,11 +188,11 @@ class Test_LSPCResults(object):
 
     def test_summary_EOF(self):
         with pytest.raises(ValueError):
-            LSPCResults(self.known_results_path,
+            LSPCResultsFile(self.known_results_path,
                         self.known_summary_path,
                         1)
         with pytest.raises(ValueError):
-            LSPCResults(self.known_results_path,
+            LSPCResultsFile(self.known_results_path,
                         self.known_summary_path,
                         -1.1)
 

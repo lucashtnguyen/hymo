@@ -1,6 +1,6 @@
 import pandas as pd
 
-class LSPCResults(object):
+class LSPCResultsFile(object):
     """
     A light weight LSPC results parser.
     """

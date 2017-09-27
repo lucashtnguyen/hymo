@@ -1,6 +1,6 @@
 from .base_reader import BaseReader
 
-class LSPCInp(BaseReader):
+class LSPCInpFile(BaseReader):
     """
     A class to read a LSPC model inp file.
     """

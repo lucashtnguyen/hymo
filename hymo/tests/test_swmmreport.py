@@ -6,7 +6,7 @@ import pytest
 import pandas as pd
 import pandas.util.testing as pdtest
 
-from hymo import ReportFile
+from hymo import SWMMReportFile
 from .utils import data_path
 
 class base_ReportFileMixin(object):
@@ -67,7 +67,7 @@ class Test_ReportFile(base_ReportFileMixin):
         self.flow_classification_file = data_path(os.path.join('swmm', 'test_flow_classification_data.csv'))
         self.conduit_surcharge_file = data_path(os.path.join('swmm', 'test_conduit_surcharge_data.csv'))
 
-        self.rpt = ReportFile(self.known_path)
+        self.rpt = SWMMReportFile(self.known_path)
 
         self.known_node_surcharge_results = pd.read_csv(
             self.node_surcharge_file, index_col=[0])
