@@ -150,7 +150,8 @@ class LSPCInp(BaseReader):
             names = ['deluid', 'deluname', 'premult', 'petmult']
 
             self._c70 = self._clean_comments(
-                self._make_df('c70', names, skiprows=1))
+                self._make_df('c70', sep='\s+', header=None,
+                              names=names, skiprows=1))
 
         return self._c70
     
@@ -161,6 +162,7 @@ class LSPCInp(BaseReader):
                      'perimp', 'area_ac', 'slsur', 'lsur',]
 
             self._c90 = self._clean_comments(
-                self._make_df('c90', names, skiprows=1))
+                self._make_df('c90', sep='\s+', header=None,
+                              names=names, skiprows=1))
 
         return self._c90

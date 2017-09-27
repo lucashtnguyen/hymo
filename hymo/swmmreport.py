@@ -54,7 +54,8 @@ class ReportFile(BaseReader):
             'Runoff_Coeff'
             ]
 
-            self._subcatchment_runoff_results = self._make_df('subcatchment_runoff', names)
+            self._subcatchment_runoff_results = self._make_df(
+                'subcatchment_runoff', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._subcatchment_runoff_results
     
@@ -72,7 +73,8 @@ class ReportFile(BaseReader):
                 'Time_of_Max_Occurrence_hours', 'Reported_Max_Depth_Feet'
             ]
 
-            self._node_depth_results = self._make_df('node_depth', names)
+            self._node_depth_results = self._make_df(
+                'node_depth', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._node_depth_results
 
@@ -90,7 +92,8 @@ class ReportFile(BaseReader):
                 'Flow_Balance_Error_Percent', 'flag'
             ]
             
-            self._node_inflow_results = self._make_df('node_inflow', names)
+            self._node_inflow_results = self._make_df(
+                'node_inflow', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._node_inflow_results
 
@@ -107,7 +110,8 @@ class ReportFile(BaseReader):
                 'Min_Depth_Below_Rim_Feet'
             ]
 
-            self._node_surcharge_results = self._make_df('node_surcharge', names)
+            self._node_surcharge_results = self._make_df(
+                'node_surcharge', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._node_surcharge_results
 
@@ -121,7 +125,8 @@ class ReportFile(BaseReader):
                 'Total_Flood_Volume_mgal', 'Maximum_Ponded_Depth_Feet'
             ]
             
-            self._node_flooding_results = self._make_df('node_flooding', names)
+            self._node_flooding_results = self._make_df(
+                'node_flooding', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._node_flooding_results
 
@@ -136,7 +141,8 @@ class ReportFile(BaseReader):
                 'Time_of_Max_Occurrence_hours', 'Maximum_Outflow_CFS'    
             ]
 
-            self._storage_volume_results = self._make_df('storage_volume', names)
+            self._storage_volume_results = self._make_df(
+                'storage_volume', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._storage_volume_results
 
@@ -150,7 +156,8 @@ class ReportFile(BaseReader):
                 'Avg_Flow_CFS', 'Max_Flow_CFS',
                 'Total_Volume_mgal'
             ]
-            df = self._make_df('outfall_loading', names)
+            df = self._make_df('outfall_loading'
+            , sep='\s+', header=None, names=names, index_col=[0])
             # drop sep
             drop_from_index = [_ for _ in df.index if '-' in _]
             df = df.drop(drop_from_index)
@@ -168,7 +175,8 @@ class ReportFile(BaseReader):
                 'Time_of_Max_Occurrence_hours', 'Maximum_Veloc_ftsec',
                 'Max_Full_Flow', 'Max_Full_Depth'
             ]
-            self._link_flow_results = self._make_df('link_flow', names)
+            self._link_flow_results = self._make_df(
+                'link_flow', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._link_flow_results
 
@@ -183,7 +191,8 @@ class ReportFile(BaseReader):
                 'Fraction_of_Time_Down_Crit', 'Fraction_of_Time_Norm_Ltd',
                 'Fraction_of_Time_Inlet_Ctrl',
             ]
-            self._flow_classification_results = self._make_df('flow_classification', names)
+            self._flow_classification_results = self._make_df(
+                'flow_classification', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._flow_classification_results
 
@@ -198,7 +207,8 @@ class ReportFile(BaseReader):
                 'Hours_Full_Upstream', 'Hours_Full_Dnstream',
                 'Hours_Above_Full_Normal_Flow', 'Hours_Capacity_Limited',
             ]
-            self._conduit_surcharge_results = self._make_df('conduit_surcharge', names)
+            self._conduit_surcharge_results = self._make_df(
+                'conduit_surcharge', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._conduit_surcharge_results
 
@@ -210,6 +220,7 @@ class ReportFile(BaseReader):
             # name parser.
             names = ['Link', 'Pollutant_lbs']
 
-            self._link_pollutant_load_results = self._make_df('link_pollutant_load', names)
+            self._link_pollutant_load_results = self._make_df(
+                'link_pollutant_load', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._link_pollutant_load_results

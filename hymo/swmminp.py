@@ -152,7 +152,8 @@ class InpFile(BaseReader):
             names = ['Option', 'Value']
 
             self._options = self._clean_comments(
-                self._make_df('options', names))
+                self._make_df('options', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._options
 
@@ -165,7 +166,8 @@ class InpFile(BaseReader):
             names = ['Data_Source', 'Parameters']
 
             self._evaporation = self._clean_comments(
-                self._make_df('evaporation', names))
+                self._make_df('evaporation', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._evaporation
 
@@ -177,7 +179,8 @@ class InpFile(BaseReader):
             names = ['Data_Element', 'Values']
 
             self._temperature = self._clean_comments(
-                self._make_df('temperature', names))
+                self._make_df('temperature', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._temperature
 
@@ -191,7 +194,8 @@ class InpFile(BaseReader):
             ]
 
             self._raingages = self._clean_comments(
-                self._make_df('raingages', names))
+                self._make_df('raingages', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._raingages
 
@@ -208,7 +212,8 @@ class InpFile(BaseReader):
             ]
 
             self._subcatchments = self._clean_comments(
-                self._make_df('subcatchments', names))
+                self._make_df('subcatchments', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._subcatchments
 
@@ -223,7 +228,8 @@ class InpFile(BaseReader):
             ]
 
             self._subareas = self._clean_comments(
-                self._make_df('subareas', names))
+                self._make_df('subareas', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._subareas
 
@@ -233,7 +239,8 @@ class InpFile(BaseReader):
             names = ['Subcatchment', 'Suction', 'HydCon', 'IMDmax']
 
             self._infiltration = self._clean_comments(
-                self._make_df('infiltration', names))
+                self._make_df('infiltration', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._infiltration
 
@@ -245,7 +252,8 @@ class InpFile(BaseReader):
         if self._lid_controls is None:
             names = []
             self._lid_controls = self._clean_comments(
-                self._make_df('lid_controls', names))
+                self._make_df('lid_controls', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._lid_controls
 
@@ -257,7 +265,8 @@ class InpFile(BaseReader):
         if self._lid_usage is None:
             names = []
             self._lid_usage = self._clean_comments(
-                self._make_df('lid_usage', names))
+                self._make_df('lid_usage', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._lid_usage
 
@@ -269,7 +278,8 @@ class InpFile(BaseReader):
         if self._aquifers is None:
             names = []
             self._aquifers = self._clean_comments(
-                self._make_df('aquifers', names))
+                self._make_df('aquifers', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._aquifers
 
@@ -281,7 +291,8 @@ class InpFile(BaseReader):
         if self._groundwater is None:
             names = []
             self._groundwater = self._clean_comments(
-                self._make_df('groundwater', names))
+                self._make_df('groundwater', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._groundwater
 
@@ -295,7 +306,8 @@ class InpFile(BaseReader):
                 'Surcharge_Depth', 'Ponded_Area'
                 ]
             self._junctions = self._clean_comments(
-                self._make_df('junctions', names))
+                self._make_df('junctions', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._junctions
 
@@ -309,7 +321,8 @@ class InpFile(BaseReader):
                 'Tide_Gate', 'Route_To'
             ]
             self._outfalls = self._clean_comments(
-                self._make_df('outfalls', names, skiprows=1))
+                self._make_df('outfalls', sep='\s+', header=None,
+                              names=names, index_col=[0], skiprows=1))
 
         return self._outfalls
 
@@ -321,7 +334,8 @@ class InpFile(BaseReader):
         if self._storage is None:
             names = []
             self._storage = self._clean_comments(
-                self._make_df('storage', names))
+                self._make_df('storage', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._storage
 
@@ -337,7 +351,8 @@ class InpFile(BaseReader):
                 'Max_Flow',
             ]
             self._conduits = self._clean_comments(
-                self._make_df('conduits', names))
+                self._make_df('conduits', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._conduits
 
@@ -349,7 +364,8 @@ class InpFile(BaseReader):
         if self._orifices is None:
             names = []
             self._orifices = self._clean_comments(
-                self._make_df('orifices', names))
+                self._make_df('orifices', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._orifices
 
@@ -364,7 +380,8 @@ class InpFile(BaseReader):
                 'Qexpon', 'Flap_Gate',
             ]
             self._outlets = self._clean_comments(
-                self._make_df('outlets', names))
+                self._make_df('outlets', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._outlets
 
@@ -378,7 +395,8 @@ class InpFile(BaseReader):
                 'EndCoeff', 'Surcharge', 'RoadWidth', 'RoadSurf'
             ]
             self._weirs = self._clean_comments(
-                self._make_df('weirs', names))
+                self._make_df('weirs', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._weirs
 
@@ -392,7 +410,8 @@ class InpFile(BaseReader):
                 'Barrels'
             ]
             self._xsections = self._clean_comments(
-                self._make_df('xsections', names))
+                self._make_df('xsections', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._xsections
 
@@ -403,7 +422,8 @@ class InpFile(BaseReader):
         if self._transects is None:
             names = []
             self._transects = self._clean_comments(
-                self._make_df('transects', names))
+                self._make_df('transects', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._transects
 
@@ -415,7 +435,8 @@ class InpFile(BaseReader):
                 'Average', 'Flap_Gate', 'SeepageRate'
             ]
             self._losses = self._clean_comments(
-                self._make_df('losses', names))
+                self._make_df('losses', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._losses
 
@@ -424,7 +445,8 @@ class InpFile(BaseReader):
         if self._curves is None:
             names = ['Name', 'Type', 'X_Value', 'Y_Value']
             self._curves = self._clean_comments(
-                self._make_df('curves', names))
+                self._make_df('curves', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._curves
 
@@ -434,7 +456,8 @@ class InpFile(BaseReader):
         if self._timeseries is None:
             names = ['Name', 'Date', 'Time', 'Value']
             self._timeseries = self._clean_comments(
-                self._make_df('timeseries', names))
+                self._make_df('timeseries', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._timeseries
 
@@ -444,7 +467,8 @@ class InpFile(BaseReader):
         if self._report is None:
             names = ['Param', 'Value']
             self._report = self._clean_comments(
-                self._make_df('report', names))
+                self._make_df('report', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._report
 
@@ -456,7 +480,8 @@ class InpFile(BaseReader):
         if self._tags is None:
             names = ['Object', 'Name', 'Type']
             self._tags = self._clean_comments(
-                self._make_df('tags', names))
+                self._make_df('tags', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._tags
 
@@ -468,7 +493,8 @@ class InpFile(BaseReader):
         if self._map is None:
             names = []
             self._map = self._clean_comments(
-                self._make_df('map', names))
+                self._make_df('map', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._map
 
@@ -478,7 +504,8 @@ class InpFile(BaseReader):
         if self._coordinates is None:
             names = ['Node', 'X_Coord', 'Y_Coord']
             self._coordinates = self._clean_comments(
-                self._make_df('coordinates', names))
+                self._make_df('coordinates', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._coordinates
 
@@ -488,7 +515,8 @@ class InpFile(BaseReader):
         if self._vertices is None:
             names = ['Link', 'X_Coord', 'Y_Coord']
             self._vertices = self._clean_comments(
-                self._make_df('vertices', names))
+                self._make_df('vertices', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._vertices
 
@@ -498,7 +526,8 @@ class InpFile(BaseReader):
         if self._polygons is None:
             names = ['Subcatchment', 'X_Coord', 'Y_Coord']
             self._polygons = self._clean_comments(
-                self._make_df('polygons', names))
+                self._make_df('polygons', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._polygons
 
@@ -508,7 +537,8 @@ class InpFile(BaseReader):
         if self._symbols is None:
             names = ['Gage', 'X_Coord', 'Y_Coord']
             self._symbols = self._clean_comments(
-                self._make_df('symbols', names))
+                self._make_df('symbols', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._symbols
 
@@ -519,6 +549,7 @@ class InpFile(BaseReader):
                         'Crdii', 'Kdecay', 'SnowOnly',
                         'Co_Pollutant', 'Co_Frac', 'Cdwf', 'Cinit']
             self._pollutants = self._clean_comments(
-                self._make_df('pollutants', names))
+                self._make_df('pollutants', sep='\s+', header=None,
+                              names=names, index_col=[0]))
 
         return self._pollutants

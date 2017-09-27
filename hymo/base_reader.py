@@ -115,10 +115,8 @@ class BaseReader(object):
 
         return ''.join(self.orig_file[skiprows:-skipfooter])
 
-    def _make_df(self, block, names, **kwargs):
+    def _make_df(self, block, **kwargs):
         """
         Helper function to parse pd.DataFrame for result properties.
         """
-        return pd.read_csv(StringIO(self.raw_block(block)),
-                           sep='\s+', header=None,
-                           names=names, index_col=[0], **kwargs)
+        return pd.read_csv(StringIO(self.raw_block(block)), **kwargs)
