@@ -136,7 +136,7 @@ class LSPCInp(BaseReader):
         
         self._startlines = {
             'c70': ('c70', 7),
-            'c90': ('c90', 10),
+            'c90': ('c90', 11),
         }
         
     def _clean_comments(self, df, comment='c'):
@@ -161,6 +161,6 @@ class LSPCInp(BaseReader):
                      'perimp', 'area_ac', 'slsur', 'lsur',]
 
             self._c90 = self._clean_comments(
-                self._make_df('c90', names))
+                self._make_df('c90', names, skiprows=1))
 
         return self._c90
