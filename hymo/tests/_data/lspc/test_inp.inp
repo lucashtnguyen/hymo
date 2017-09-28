@@ -1,0 +1,2328 @@
+c-----------------------------------------------------------------------------------------
+c LSPC -- Loading Simulation Program, C++
+c Version 5.0 - Feb 29, 2016
+c
+c Designed and maintained by:
+c     Tetra Tech, Inc.
+c     10306 Eaton Place, Suite 340
+c     Fairfax, VA 22030
+c     (703) 385-6000
+c-----------------------------------------------------------------------------------------
+c LSPC MODEL INPUT FILE
+c This input file was created at 10:03:03am on 09/21/2017
+c-----------------------------------------------------------------------------------------
+c0   general control
+c 
+c    snowfg   if = 1 run snow module
+c    pwatfg   if = 1 run pwater
+c    sedfg    if = 1 run sediment
+c    pqalfg   if = 1 run general quality
+c    tempfg   if = 1 run temperature module
+c    oxfg     if = 1 run DO-BOD module
+c    nutfg    if = 1 run nutrients module
+c    plkfg    if = 1 run plank module
+c    phfg     if = 1 run pH-CO2 module
+c
+c	snowfg  pwatfg  sedfg  pqalfg  tempfg  oxfg  nutfg  plkfg  phfg
+	0	1	0	0	0	0	0	0	0
+c-----------------------------------------------------------------------------------------
+c10  weather file definition (name and parameters)
+c 
+c    wfileid    weather file id
+c    wfilename  weather file name
+c    wparamnum  number of parameters in the weather file
+c    wparamid   weather paramter id
+c               1-precipitation (in/ivl)
+c               2-potential evaporation (in/ivl)
+c               3-air temperature (degree F)
+c               4-wind speed (mile/ivl)
+c               5-solar radiation (ly/ivl)
+c               6-dew point (degree F)
+c               7-cloud cover (tenth)
+c
+c	wfileid   wfilename   wparamnum   wparamid...
+	1	DUMMY122_D_nz.pre	1	1
+	2	DUMMY124_D_nz.pre	1	1
+	14	DUMMY168_D_nz.pre	1	1
+	17	DUMMY1745_dly_nz.pre	1	1
+	20	DUMMY11470_dly_nz.pre	1	1
+	24	DUMMY11890_dly_nz.pre	1	1
+	25	DUMMY12405_dly_nz.pre	1	1
+	31	DUMMY13851_D_nz.pre	1	1
+	33	DUMMY13936_D_nz.pre	1	1
+	34	DUMMY13954_D_nz.pre	1	1
+	43	DUMMY347111_nz.pre	1	1
+	48	DUMMY21rev.air	1	2
+	49	DUMMY22rev.air	1	2
+	50	DUMMY23rev.air	1	2
+	51	DUMMY24rev.air	1	2
+c-----------------------------------------------------------------------------------------
+c15  weather station definition (station id and associated weather files)
+c 
+c    wstationid  weather station id
+c    wfilenum  	number of files for the weather station
+c    wfileid   	weather file id (card 10)
+c
+c   wstationid   wfilenum   wfileid...
+	9	2	43	50
+	17	2	20	49
+	18	2	20	48
+	22	2	24	49
+	24	2	1	48
+	25	2	2	50
+	26	2	25	50
+	41	2	31	50
+	42	2	31	51
+	45	2	33	49
+	46	2	33	50
+	48	2	34	51
+	60	2	14	49
+	61	2	14	50
+	62	2	17	48
+c-----------------------------------------------------------------------------------------
+c20  weather parameter multiplier
+c 
+c    wstationid  weather station id (card 15)
+c    wparmmult   multiplier for each weather parameter
+c    			1- multiplier for precipitation
+c    			2- multiplier for potential evapotranspiration
+c    			3- multiplier for air temperature
+c    			4- multiplier for wind speed
+c    			5- multiplier for solar radiation
+c    			6- multiplier for dew point
+c    			7- multiplier for cloud cover
+c
+c  wstationid  wparmmult1...  
+	9	1.000000	1.000000
+	17	1.000000	1.000000
+	18	1.000000	1.000000
+	22	1.000000	1.000000
+	24	1.000000	1.000000
+	25	1.000000	1.000000
+	26	1.000000	1.000000
+	41	1.000000	1.000000
+	42	1.000000	1.000000
+	45	1.000000	1.000000
+	46	1.000000	1.000000
+	48	1.000000	1.000000
+	60	1.000000	1.000000
+	61	1.000000	1.000000
+	62	1.000000	1.000000
+c-----------------------------------------------------------------------------------------
+c30	output file path     input (weather) file path  (each must be a continuous string)
+	P:\TEST
+c-----------------------------------------------------------------------------------------
+c40	general watershed controls
+c
+c    nsubbasin   number of subwatersheds
+c    nrchid      number of stream channels (corresponds with number of subwatersheds)
+c    nrgid       number of stream groups to assign parameters
+c    ndefid      number of land groups to assign parameters
+c    ndeluid     maximum number of land use
+c
+c	nsws   nrch    nrgroup    nlgroup    nlandp
+	168	168	6	1	34
+c-----------------------------------------------------------------------------------------
+c45  general output controls
+c
+c    Standard    Output standard model parameters
+c    Snow        Output snow related parameters
+c    Hydrology   Output hydrology related parameters
+c    Sediment    Output sediment related parameters
+c    GQUAL       Output general water quality related parameters
+c    RQUAL       Output biochemical water quality related parameters
+c    Custom      Output user specified parameters
+c    Landuse     Output landuse summary
+c                 if = 0 no output 
+c                 if = 1 average annual output
+c                 if = 2 yearly output
+c                 if = 3 monthly output
+c    Stream      Output stream summary
+c                 if = 0 no output 
+c                 if = 1 average annual output
+c                 if = 2 yearly output
+c                 if = 3 monthly output
+c    PointSource Output point source summary
+c                 if = 0 no output 
+c                 if = 1 average annual output
+c                 if = 2 yearly output
+c                 if = 3 monthly output
+c    Threshold   Output threshold analysis summary
+c                 if = 0 no output 
+c                 if = 1 average monthly output
+c    SUSTAIN     Output unit-area land timeseries for SUSTAIN external option
+c                 if = 0 no output 
+c                 if = 1 timeseries output
+c
+c	Standard  Snow  Hydrology  Sediment  GQUAL  RQUAL  Custom  Landuse  Stream  PointSource  Threshold  SUSTAIN
+	0	0	1	0	0	0	0	0	0	0	0	0
+c-----------------------------------------------------------------------------------------
+c46  user specified output parameter list
+c
+c   PRECP   AIRTMP  SNOTMP  SNOWF   RAINF   PRAIN   MELT   SNOWE  WYIELD  PACK    PACKF   PACKW   PACKI   PDEPTH  COVINDX   NEGHTS  XLNMELT     RDENPKF     SKYCLEAR    SNOCOV  DULLNESS    ALBEDO    PAKTEMP     DEWTMP  SURS    UZS     LZS     AGWS    SURO    IFWO  AGWO    PERO    TAET    PERC    INFIL   GWI     IGWI    AGWI      DEP     AVDEP   HRAD    AVVEL   SAREA   VOLUME   RO  TAU   WSSD   SCRSD   SOSED  SOBER   SSEDC  LSSED   LRSED  LBEDDEP  LDEPSCR     LROSED  SQO     WASHQS  SCRQS   SOQO    POQUAL  SOQUAL  IOQUAL    GOQUAL  POQC  CONC  CONCOUT  CONCSQAL   MATSQAL  MATIN   MATOUT   MATOSQAL  DOX   DOXMIN  DOXMAX   DOXAV   DOXX   BOD   BODX  NO3   NO3X   TAM    TAMX    NO2    NO2X    PO4    PO4X   SNH4   SNH4X   SPO4   SPO4X    PHYTO   PHYTOX   PHYCLA   BENAL   ORN     ORNX    ORP     ORPX   ORC   ORCX   PH   ALK   TIC   TICX   CO2   CO2X   TEMP
+c-----------------------------------------------------------------------------------------
+c50  model simulation time period
+c
+c    mstart   model start day.
+c    mend     model end day.
+c    deltm    time step in minutes.
+c    mostart  model output start day.
+c    moend    model output end day.
+c    optlevel  if = 1 general output (daily)
+c              if = 2 output per time interval (min)
+c
+c	mstart   mend    deltm	mostart    moend   optlevel
+	10/1/2016	9/30/2017	60	10/1/2016	9/30/2017	1
+c-----------------------------------------------------------------------------------------
+c60  group information
+c 
+c    subbasin  subbasin id
+c    defid     group parameter id
+c    nwst      number of weather stations assigned to the watershed
+c    wsti = station id
+c    wti = weighting to calculate input
+c
+c	subbasin   defid   nwst  wst1   wt1   wst2   wt2   ...
+	1011740	6	1	48	1.000000
+	1011780	6	1	26	1.000000
+	1011790	6	1	9	1.000000
+	1011800	6	1	48	1.000000
+	1011810	6	1	41	1.000000
+	1011820	6	1	41	1.000000
+	1012230	6	1	45	1.000000
+	1012240	6	1	45	1.000000
+	2011020	6	1	18	1.000000
+	3011490	6	1	25	1.000000
+	3011500	6	1	25	1.000000
+	3011530	6	1	25	1.000000
+	3011540	6	1	25	1.000000
+	3011550	6	1	25	1.000000
+	3011561	6	1	25	1.000000
+	3011571	6	1	25	1.000000
+	3011581	6	1	25	1.000000
+c-----------------------------------------------------------------------------------------
+c70  modeled land use names
+c 
+c    deluid     landuse id
+c    deluname   landuse name
+c    premult    multiplier for precipitation
+c    petmult    multiplier for potential evapotranspiration
+c 
+c	deluid  deluname  premult  petmult
+	3	Water	1.000000	1.000000
+	11	Agri_Low	1.000000	1.000000
+	15	Agri_High	1.000000	1.000000
+	23	Barren_Low	1.000000	1.000000
+	26	Barren_High	1.000000	1.000000
+	34	ForestShrub_B	1.000000	1.000000
+	35	ForestShrub_C	1.000000	1.000000
+	36	ForestShrub_D	1.000000	1.000000
+	44	Grassland_B	1.000000	1.000000
+	45	Grassland_C	1.000000	1.000000
+	46	Grassland_D	1.000000	1.000000
+	51	Devperv_B_Low_NoIrg	1.000000	1.000000
+	52	Devperv_C_Low_NoIrg	1.000000	1.000000
+	53	Devperv_D_Low_NoIrg	1.000000	1.000000
+	54	Devperv_B_High_NoIrg	1.000000	1.000000
+	55	Devperv_C_High_NoIrg	1.000000	1.000000
+	56	Devperv_D_High_NoIrg	1.000000	1.000000
+	61	Devperv_B_Low_Irrg	1.000000	1.000000
+	62	Devperv_C_Low_Irrg	1.000000	1.000000
+	63	Devperv_D_Low_Irrg	1.000000	1.000000
+	64	Devperv_B_High_Irrg	1.000000	1.000000
+	65	Devperv_C_High_Irrg	1.000000	1.000000
+	66	Devperv_D_High_Irrg	1.000000	1.000000
+	73	Mining_Low	1.000000	1.000000
+	76	Mining_High	1.000000	1.000000
+	91	ResLow_IMP	1.000000	1.000000
+	92	ResHigh_IMP	1.000000	1.000000
+	93	InstOff_IMP	1.000000	1.000000
+	94	Comm_IMP	1.000000	1.000000
+	95	Ind_IMP	1.000000	1.000000
+	96	Road_IMP	1.000000	1.000000
+	97	Freeway_IMP	1.000000	1.000000
+	98	Overspray_IMP_Low	1.000000	1.000000
+	99	Overspray_IMP_High	1.000000	1.000000
+c-----------------------------------------------------------------------------------------
+c80  land use to stream routing
+c 
+c    defid       landuse default group id
+c    deluid      land use id
+c    route_suro  fraction of surface runoff that routes to the stream (0-1) (default=1)
+c                if negative (<0) value then that fraction will be lost from the system
+c    route_ifwo  fraction of interflow outflow that routes to the stream (0-1) (default=1)
+c                if negative (<0) value then that fraction will be lost from the system
+c    route_agwo  fraction of groundwater outflow that routes to the stream (0-1) (default=1)
+c                if negative (<0) value then that fraction will be lost from the system
+c 
+c    Example: 0.3 means 30% of outflow routes to the stream and 70% bypasses to the next down stream in the reach network
+c            -0.3 means 30% of outflow is permanently lost from the system and 70% routes to the stream
+c             Enter a value of -1 to permanently lose all water from the respective layer
+c             This convention applies to all three parameters (route_suro, route_ifwo, and route_agwo)
+c 
+c  defid  deluid  route_suro  route_ifwo  route_agwo
+	6	3	1.000000	1.000000	1.000000
+	6	11	1.000000	1.000000	1.000000
+	6	15	1.000000	1.000000	1.000000
+	6	23	1.000000	1.000000	1.000000
+	6	26	1.000000	1.000000	1.000000
+	6	34	1.000000	1.000000	1.000000
+	6	35	1.000000	1.000000	1.000000
+	6	36	1.000000	1.000000	1.000000
+	6	44	1.000000	1.000000	1.000000
+	6	45	1.000000	1.000000	1.000000
+	6	46	1.000000	1.000000	1.000000
+	6	51	1.000000	1.000000	1.000000
+	6	52	1.000000	1.000000	1.000000
+	6	53	1.000000	1.000000	1.000000
+	6	54	1.000000	1.000000	1.000000
+	6	55	1.000000	1.000000	1.000000
+	6	56	1.000000	1.000000	1.000000
+	6	61	1.000000	1.000000	1.000000
+	6	62	1.000000	1.000000	1.000000
+	6	63	1.000000	1.000000	1.000000
+	6	64	1.000000	1.000000	1.000000
+	6	65	1.000000	1.000000	1.000000
+	6	66	1.000000	1.000000	1.000000
+	6	73	1.000000	1.000000	1.000000
+	6	76	1.000000	1.000000	1.000000
+	6	91	1.000000	1.000000	1.000000
+	6	92	1.000000	1.000000	1.000000
+	6	93	1.000000	1.000000	1.000000
+	6	94	1.000000	1.000000	1.000000
+	6	95	1.000000	1.000000	1.000000
+	6	96	1.000000	1.000000	1.000000
+	6	97	1.000000	1.000000	1.000000
+	6	98	1.000000	1.000000	1.000000
+	6	99	1.000000	1.000000	1.000000
+c-----------------------------------------------------------------------------------------
+c90  land use information
+c 
+c    subbasin   subbasin id
+c    deluid     land use id
+c    deluname   land use name
+c    perimp     1 imperivous land (subsurface processes disabled)
+c               2 pervious  land (subsurface processes activated)
+c    area_ac    area (acres)
+c    slsur      slope of overland flow plane (none)
+c    lsur       length of overland flow plane (feet)
+c 
+c  subbasin  deluid  deluname  perimp  area_ac  slsur  lsur
+	1011740	3	Water	2	0.000000	0.000000	300.000000
+	1011740	11	Agri_Low	2	0.000000	0.000000	300.000000
+	1011740	15	Agri_High	2	0.000000	0.000000	300.000000
+	1011740	23	Barren_Low	2	0.000000	0.000000	300.000000
+	1011740	26	Barren_High	2	0.000000	0.000000	300.000000
+	1011740	34	ForestShrub_B	2	0.000000	0.000000	300.000000
+	1011740	35	ForestShrub_C	2	0.000000	0.000000	300.000000
+	1011740	36	ForestShrub_D	2	0.000000	0.000000	300.000000
+	1011740	44	Grassland_B	2	0.000000	0.000000	300.000000
+	1011740	45	Grassland_C	2	0.000000	0.000000	300.000000
+	1011740	46	Grassland_D	2	4.713651	0.075364	300.000000
+	1011740	51	Devperv_B_Low_NoIrg	2	0.000000	0.000000	300.000000
+	1011740	52	Devperv_C_Low_NoIrg	2	0.000000	0.000000	300.000000
+	1011740	53	Devperv_D_Low_NoIrg	2	0.000000	0.000000	300.000000
+	1011740	54	Devperv_B_High_NoIrg	2	0.000000	0.000000	300.000000
+	1011740	55	Devperv_C_High_NoIrg	2	0.000000	0.000000	300.000000
+	1011740	56	Devperv_D_High_NoIrg	2	0.000000	0.000000	300.000000
+	1011740	61	Devperv_B_Low_Irrg	2	0.000000	0.000000	300.000000
+	1011740	62	Devperv_C_Low_Irrg	2	0.000000	0.000000	300.000000
+	1011740	63	Devperv_D_Low_Irrg	2	0.000000	0.000000	300.000000
+	1011740	64	Devperv_B_High_Irrg	2	0.000000	0.000000	300.000000
+	1011740	65	Devperv_C_High_Irrg	2	0.000000	0.000000	300.000000
+	1011740	66	Devperv_D_High_Irrg	2	0.000000	0.000000	300.000000
+	1011740	73	Mining_Low	2	0.000000	0.000000	300.000000
+	1011740	76	Mining_High	2	0.000000	0.000000	300.000000
+	1011740	91	ResLow_IMP	1	0.000000	0.000000	300.000000
+	1011740	92	ResHigh_IMP	1	0.000000	0.000000	300.000000
+	1011740	93	InstOff_IMP	1	0.000000	0.000000	300.000000
+	1011740	94	Comm_IMP	1	0.000000	0.000000	300.000000
+	1011740	95	Ind_IMP	1	0.000000	0.000000	300.000000
+	1011740	96	Road_IMP	1	0.000000	0.000000	300.000000
+	1011740	97	Freeway_IMP	1	0.000000	0.000000	300.000000
+	1011740	98	Overspray_IMP_Low	1	0.000000	0.000000	300.000000
+	1011740	99	Overspray_IMP_High	1	0.000000	0.000000	300.000000
+	1011780	3	Water	2	0.000000	0.000000	300.000000
+	1011780	11	Agri_Low	2	0.000000	0.000000	300.000000
+	1011780	15	Agri_High	2	0.000000	0.000000	300.000000
+	1011780	23	Barren_Low	2	0.000000	0.000000	300.000000
+	1011780	26	Barren_High	2	0.000000	0.000000	300.000000
+	1011780	34	ForestShrub_B	2	0.000000	0.000000	300.000000
+	1011780	35	ForestShrub_C	2	0.000000	0.000000	300.000000
+	1011780	36	ForestShrub_D	2	0.000000	0.000000	300.000000
+	1011780	44	Grassland_B	2	0.000000	0.000000	300.000000
+	1011780	45	Grassland_C	2	0.000000	0.000000	300.000000
+	1011780	46	Grassland_D	2	26.519203	0.082612	300.000000
+	1011780	51	Devperv_B_Low_NoIrg	2	0.000000	0.000000	300.000000
+	1011780	52	Devperv_C_Low_NoIrg	2	0.000000	0.000000	300.000000
+	1011780	53	Devperv_D_Low_NoIrg	2	0.000000	0.000000	300.000000
+	1011780	54	Devperv_B_High_NoIrg	2	0.000000	0.000000	300.000000
+	1011780	55	Devperv_C_High_NoIrg	2	0.000000	0.000000	300.000000
+	1011780	56	Devperv_D_High_NoIrg	2	0.000000	0.000000	300.000000
+	1011780	61	Devperv_B_Low_Irrg	2	0.000000	0.000000	300.000000
+	1011780	62	Devperv_C_Low_Irrg	2	0.000000	0.000000	300.000000
+	1011780	63	Devperv_D_Low_Irrg	2	0.000000	0.000000	300.000000
+	1011780	64	Devperv_B_High_Irrg	2	0.000000	0.000000	300.000000
+	1011780	65	Devperv_C_High_Irrg	2	0.000000	0.000000	300.000000
+	1011780	66	Devperv_D_High_Irrg	2	0.000000	0.000000	300.000000
+c-----------------------------------------------------------------------------------------
+c92  SNOW-FLAGS
+c 
+c defid     parameter group id
+c deluid    landuse id
+c iceflag   0 = Ice formation in the snow pack is not simulated
+c           1 = Ice formation is simulated
+c forest    0.0 - 1.0  Fraction of LAND covered by Forest (winter transpiration)
+c fzg       parameter that adjusts for the effect of ice (in the snow pack) on infiltration when iceflag is 1 (/in.)
+c fzgl      lower limit of inffac as adjusted by ice in the snow pack when iceflag is 1
+c 
+c	defid  deluid  iceflag  forest  fzg  fzgl
+c--------------------------------------------------------------------------------------------
+c93  snow-parm
+c 
+c defid    parameter group id
+c deluid   landuse id
+c lat      latitude of the pervious land segment (PLS) - ENERGY BALANCE METHOD ONLY (degree)
+c          positive for the northern hemisphere, negative for southern
+c melev    mean elevation of LAND above sea level - ENERGY BALANCE METHOD ONLY (ft)
+c shade    fraction of LAND shaded from solar radiation (i.e. by trees) - ENERGY BALANCE METHOD ONLY
+c snowcf   precipitation-to-snow multiplier (accounts for poor gage-catch efficiency during snow)
+c covind   maximum snowpack (water equivalent) at which the entire LAND is covered with snow (in)
+c 
+c	defid   deluid   lat   melev   shade   snowcf   covind
+c--------------------------------------------------------------------------------------------
+c94  snow-parm2
+c 
+c defid    parameter group id
+c deluid   landuse id
+c rdcsn    density of cold, new snow relative to water (For snow falling at temps below freezing.
+c          at higher temperatures the density of snow is adjusted)
+c tsnow    air temperature below which precipitation will be snow, under saturated conditions (deg F)
+c          under non-saturated conditions the temperature is adjusted slightly.
+c snoevp   adapts sublimation equation to field conditions - ENERGY BALANCE METHOD ONLY
+c ccfact   adapts snow condensation/convection melt equation to field conditions - ENERGY BALANCE METHOD ONLY
+c mwater   maximum water content of the snow pack, in depth of water per depth of water.
+c mgmelt   maximum rate of snowmelt by ground heat, in depth of water per day (in/day)
+c          this is the value which applies when the pack temperature is at the freezing point.
+c 
+c	defid   deluid   rdcsn     tsnow   snoevp    ccfact    mwater    mgmelt
+c--------------------------------------------------------------------------------------------
+c96  snow-init
+c 
+c   defid       parameter group id
+c   deluid      landuse id
+c   pack-snow   initial quantity of snow in the pack (water equivalent).
+c   pack-ice    initial quantity of ice in the pack (water equivalent).
+c   pack-watr   initial quantity of liquid water in the pack.
+c   rdenpf      density of the frozen contents (snow and ice) of the pack, relative to water.
+c   dull        index of the dullness of the snow pack surface, from which albedo is estimated - ENERGY BALANCE METHOD ONLY
+c   paktmp      mean temperature of the frozen contents of the snow pack.
+c   covinx      current snow pack depth (water equivalent) required to obtain complete areal coverage of LAND.
+c               if the pack is less than this amount, areal coverage is prorated (PACKF/COVINX).
+c   xlnmlt      current remaining possible increment to ice storage in the pack.
+c               relevant when Ice formation is simulated (iceflag = 1)
+c   skyclr      fraction of sky which is assumed to be clear at the present time.
+c
+c	defid   deluid   pack-snow   pack-ice   pack-watr   rdenpf   dull   paktmp   covinx   xlnmlt   skyclr
+c--------------------------------------------------------------------------------------------
+c100 pwat-parm1
+c    pervious and impervious land hydrology control
+c
+c    (value of 0 = use constant pwat-parm4; 1 = use corresponding monthly variable card)
+c
+c    vcsfg    interception storage capacity					(card 150)
+c    vuzfg    upper zone nominal storage						(card 160)
+c    vnnfg    manning's n for the overland flow plane		(card 170)
+c    vifwfg   interflow inflow parameter						(card 180)
+c    vircfg   interflow recession constant					(card 190)
+c    vlefg    lower zone evapotranspiration (e-t) parameter	(card 200)
+c
+c	vcsfg  vuzfg  vnnfg  vifwfg  vircfg  vlefg
+	0	1	0	0	0	1
+c-----------------------------------------------------------------------------------------
+c110 pwat-parm2
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    lzsn    lower zone nominal soil moisture storage (inches)
+c    infilt  infiltration capacity of the soil (in/hr)
+c    kvary   variable groundwater recession (1/inches)
+c    agwrc   base groundwater recession (none)
+c
+c	defid deluid lzsn      infilt      kvary      agwrc
+	6	3	4.000000	0.006250	4.000000	0.998500
+	6	11	6.500000	0.210000	4.000000	0.998500
+	6	15	6.200000	0.190000	4.000000	0.998500
+	6	23	6.300000	0.080000	4.000000	0.998500
+	6	26	5.000000	0.050000	4.000000	0.998500
+	6	34	6.300000	0.337500	4.000000	0.998500
+	6	35	5.000000	0.202500	4.000000	0.998500
+	6	36	5.000000	0.067500	4.000000	0.998500
+	6	44	6.300000	0.337500	4.000000	0.998500
+	6	45	5.000000	0.202500	4.000000	0.998500
+	6	46	5.000000	0.067500	4.000000	0.998500
+	6	51	4.250000	0.101250	4.000000	0.996500
+	6	52	4.375000	0.056250	4.000000	0.996500
+	6	53	4.500000	0.022500	4.000000	0.996500
+	6	54	4.250000	0.112500	4.000000	0.996500
+	6	55	4.375000	0.056250	4.000000	0.996500
+	6	56	4.500000	0.022500	4.000000	0.996500
+	6	61	4.250000	0.112500	4.000000	0.996500
+	6	62	4.375000	0.056250	4.000000	0.996500
+	6	63	4.500000	0.022500	4.000000	0.996500
+	6	64	4.250000	0.112500	4.000000	0.996500
+	6	65	4.375000	0.056250	4.000000	0.996500
+	6	66	4.500000	0.022500	4.000000	0.996500
+	6	73	2.900000	0.112500	4.000000	0.992500
+	6	76	2.750000	0.037500	4.000000	0.992500
+	6	91	0.000000	0.000000	0.000000	0.000000
+	6	92	0.000000	0.000000	0.000000	0.000000
+	6	93	0.000000	0.000000	0.000000	0.000000
+	6	94	0.000000	0.000000	0.000000	0.000000
+	6	95	0.000000	0.000000	0.000000	0.000000
+	6	96	0.000000	0.000000	0.000000	0.000000
+	6	97	0.000000	0.000000	0.000000	0.000000
+	6	98	0.000000	0.000000	0.000000	0.000000
+	6	99	0.000000	0.000000	0.000000	0.000000
+c-----------------------------------------------------------------------------------------
+c120 pwat-parm3
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    petmax  air temperature below which e-t will is reduced (deg F)
+c    petmin  air temperature below which e-t is set to zero (deg F)
+c    infexp  exponent in the infiltration equation (none)
+c    infild  ratio between the maximum and mean infiltration capacities over the PLS (none)
+c    deepfr  fraction of groundwater inflow that will enter deep groundwater (none)
+c    basetp  fraction of remaining potential e-t that can be satisfied from baseflow (none)
+c    agwetp  fraction of remaining potential e-t that can be satisfied from active groundwater (none)
+c
+c	defid deluid   petmax     petmin     infexp     infild     deepfr     basetp     agwetp
+	6	3	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	11	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	15	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	23	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	26	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	34	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	35	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	36	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	44	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	45	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	46	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	51	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	52	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	53	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	54	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	55	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	56	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	61	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	62	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	63	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	64	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	65	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	66	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	73	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	76	40.000000	35.000000	2.000000	2.000000	0.060000	0.000000	0.000000
+	6	91	40.000000	35.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	92	40.000000	35.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	93	40.000000	35.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	94	40.000000	35.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	95	40.000000	35.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	96	40.000000	35.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	97	40.000000	35.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	98	40.000000	35.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	99	40.000000	35.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+c-----------------------------------------------------------------------------------------
+c130 pwat-parm4
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    cepsc   interception storage capacity (inches)
+c    uzsn    upper zone nominal storage (inches)
+c    nsur    Manning's n for the assumed overland flow plane (none)
+c    intfw   interflow inflow parameter (none)
+c    irc     interflow recession parameter (none)
+c    lzetp   lower zone e-t parameter (none)
+c
+c	defid deluid   cepsc      uzsn     nsur       intfw       irc        lzetp
+	6	3	0.075000	0.360000	0.080000	1.000000	0.510000	0.351000
+	6	11	0.112500	0.585000	0.300000	1.000000	0.510000	0.819000
+	6	15	0.112500	0.555000	0.300000	1.000000	0.510000	0.819000
+	6	23	0.112500	0.570000	0.300000	1.000000	0.510000	0.234000
+	6	26	0.112500	0.450000	0.300000	1.000000	0.510000	0.234000
+	6	34	0.112500	0.570000	0.300000	1.000000	0.510000	0.643500
+	6	35	0.112500	0.450000	0.300000	1.000000	0.510000	0.585000
+	6	36	0.112500	0.450000	0.300000	1.000000	0.510000	0.585000
+	6	44	0.112500	0.570000	0.300000	1.000000	0.510000	0.643500
+	6	45	0.112500	0.450000	0.300000	1.000000	0.510000	0.585000
+	6	46	0.112500	0.450000	0.300000	1.000000	0.510000	0.585000
+	6	51	0.045000	0.300000	0.200000	1.000000	0.510000	0.234000
+	6	52	0.045000	0.315000	0.200000	1.000000	0.510000	0.234000
+	6	53	0.045000	0.330000	0.200000	1.000000	0.510000	0.234000
+	6	54	0.045000	0.300000	0.200000	1.000000	0.510000	0.234000
+	6	55	0.045000	0.315000	0.200000	1.000000	0.510000	0.234000
+	6	56	0.045000	0.330000	0.200000	1.000000	0.510000	0.234000
+	6	61	0.045000	0.300000	0.200000	1.000000	0.510000	0.234000
+	6	62	0.045000	0.315000	0.200000	1.000000	0.510000	0.234000
+	6	63	0.045000	0.330000	0.200000	1.000000	0.510000	0.234000
+	6	64	0.045000	0.300000	0.200000	1.000000	0.510000	0.234000
+	6	65	0.045000	0.315000	0.200000	1.000000	0.510000	0.234000
+	6	66	0.045000	0.330000	0.200000	1.000000	0.510000	0.234000
+	6	73	0.010000	0.190000	0.300000	1.000000	0.360000	0.000000
+	6	76	0.010000	0.150000	0.300000	1.000000	0.360000	0.000000
+	6	91	0.030000	0.000000	0.080000	0.000000	0.000000	0.000000
+	6	92	0.030000	0.000000	0.080000	0.000000	0.000000	0.000000
+	6	93	0.030000	0.000000	0.080000	0.000000	0.000000	0.000000
+	6	94	0.030000	0.000000	0.080000	0.000000	0.000000	0.000000
+	6	95	0.030000	0.000000	0.080000	0.000000	0.000000	0.000000
+	6	96	0.030000	0.000000	0.080000	0.000000	0.000000	0.000000
+	6	97	0.030000	0.000000	0.080000	0.000000	0.000000	0.000000
+	6	98	0.030000	0.000000	0.080000	0.000000	0.000000	0.000000
+	6	99	0.030000	0.000000	0.080000	0.000000	0.000000	0.000000
+c----------------------------------------------------------------------------------------
+c140 pwat-state1
+c    initial conditions for the simulation
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    ceps    initial interception storage.
+c    surs    initial surface (overland flow) storage.
+c    uzs     initial upper zone storage.
+c    ifws    initial interflow storage.
+c    lzs     initial lower zone storage.
+c    agws    initial active groundwater storage.
+c    gwvs    initial index to groundwater slope.
+c
+c	defid deluid ceps      surs       uzs      ifws       lzs       agws      gwvs
+	6	3	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	11	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	15	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	23	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	26	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	34	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	35	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	36	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	44	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	45	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	46	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	51	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	52	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	53	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	54	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	55	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	56	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	61	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	62	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	63	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	64	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	65	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	66	0.000000	0.000000	2.000000	0.000000	9.000000	2.000000	0.500000
+	6	73	0.000000	0.000000	0.400000	0.000000	9.000000	2.000000	0.500000
+	6	76	0.000000	0.000000	0.400000	0.000000	9.000000	2.000000	0.500000
+	6	91	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	92	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	93	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	94	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	95	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	96	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	97	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	98	0.000000	0.000000	0.400000	0.000000	9.000000	2.000000	0.500000
+	6	99	0.000000	0.000000	0.400000	0.000000	9.000000	2.000000	0.500000
+c------------------------------------------------------------------------------------
+c150 mon-interception storage (cepscm)
+c    only required if vcsfg=1 in pwat-parm1 (see card 100)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec interception storage capacity at start of each month (inches)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c------------------------------------------------------------------------------------
+c160 mon-upper zone nominal storage (uzsnm)
+c    only required if vuzfg=1 in pwat-parm1 (see card 100)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec upper zone nominal storage at start of each month (inches)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+	6	3	0.360000	0.360000	0.360000	0.360000	0.360000	0.360000	0.360000	0.360000	0.360000	0.360000	0.360000	0.360000
+	6	11	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000
+	6	15	0.555000	0.555000	0.555000	0.555000	0.555000	0.555000	0.555000	0.555000	0.555000	0.555000	0.555000	0.555000
+	6	23	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000
+	6	26	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000
+	6	34	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000
+	6	35	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000
+	6	36	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000
+	6	44	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000	0.570000
+	6	45	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000
+	6	46	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000	0.450000
+	6	51	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000
+	6	52	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000
+	6	53	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000
+	6	54	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000
+	6	55	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000
+	6	56	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000
+	6	61	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000
+	6	62	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000
+	6	63	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000
+	6	64	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000
+	6	65	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000	0.315000
+	6	66	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000	0.330000
+	6	73	0.190000	0.190000	0.190000	0.190000	0.190000	0.190000	0.190000	0.190000	0.190000	0.190000	0.190000	0.190000
+	6	76	0.150000	0.150000	0.150000	0.150000	0.150000	0.150000	0.150000	0.150000	0.150000	0.150000	0.150000	0.150000
+	6	91	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	92	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	93	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	94	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	95	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	96	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	97	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	98	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	99	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+c--------------------------------------------------------------------------------------
+c170 mon-Manning's roughness coefficient (nsurm)
+c    only required if vnnfg=1 in pwat-parm1 (see card 100)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec Manning's roughness coefficient at start of each month (none)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------
+c180 mon-interflow inflow parameter (intfwm)
+c    only required if vifwfg=1 in pwat-parm1 (see card 100)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec interflow inflow parameter at start of each month (none)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------
+c190 mon-interflow recession constant (ircm)
+c    only required if vircfg=1 in pwat-parm1 (see card 100)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec interflow recession constant at start of each month (none)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c------------------------------------------------------------------------------------
+c200 mon-lower zone evapotranspiration parameter (lzetpm)
+c    only required if vlefg=1 in pwat-parm1 (see card 100)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec lower zone evapotranspiration parameter at start of each month (none)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+	6	3	0.351000	0.351000	0.351000	0.351000	0.351000	0.351000	0.351000	0.351000	0.351000	0.351000	0.351000	0.351000
+	6	11	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000
+	6	15	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000	0.819000
+	6	23	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	26	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	34	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500
+	6	35	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000
+	6	36	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000
+	6	44	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500	0.643500
+	6	45	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000
+	6	46	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000	0.585000
+	6	51	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	52	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	53	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	54	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	55	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	56	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	61	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	62	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	63	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	64	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	65	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	66	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000	0.234000
+	6	73	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	76	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	91	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	92	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	93	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	94	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	95	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	96	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	97	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	98	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+	6	99	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+c------------------------------------------------------------------------------------
+c201   Irrigation Application Option Flags
+cIrrigation flag decide whether to run irrigation
+c
+c    irrigfg   if = 1 run irrigation option
+c    petfg     if = 1 use constant PET rather than time series from the air file
+c    monVaryIrrig   if = 1 use monthly varying ET coefficient
+c
+c	irrigfg	 petfg  monVaryIrrig
+	1	0	0
+c-----------------------------------------------------------------------------------------
+c202 Irrigation PET Value
+c   defid        Group ID number.
+c   petval       Constant PET value to calculate actual ET (in/hr)
+c
+c	defid	 petval
+c--------------------------------------------------------------------------------------------
+c203 Irrigation Application Options
+c   defid        Group ID number.
+c   deluid       Landuse ID number
+c   startmonth   startmonth of irrigation requirement
+c   endmonth     endmonth of irrigation requirement
+c   fraction1    fraction of irrigation requirement applied over the canopy.
+c   fraction2    fraction of irrigation water applied directly to the soil surface.
+c   fraction3    fraction of irrigation water applied to the upper soil zone via buried systems
+c   fraction4    fraction of irrigation water likewise applied to the lower soil zone.
+c   fraction5    fraction of irrigation water entering directly into the local groundwater, such as seepage irrigation.
+c   etcoeff      Coefficient to calculate actual ET, based on PET.
+c   etdays       Number of threshold days to calculate irrigation demand (pet*etcoeff - precip)
+c                (if etdays = 0 then irrigation demand = pet * etcoeff)
+c
+c	defid	deluid	startmonth	endmonth	fraction1	fraction2	fraction3	fraction4	fraction5	etcoeff	etdays
+	6	3	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	11	1	12	0.000000	1.000000	0.000000	0.000000	0.000000	0.500000	1
+	6	15	1	12	0.000000	1.000000	0.000000	0.000000	0.000000	0.500000	1
+	6	23	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	26	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	34	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	35	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	36	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	44	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	45	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	46	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	51	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	52	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	53	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	54	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	55	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	56	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	61	1	12	0.850000	0.150000	0.000000	0.000000	0.000000	0.430000	1
+	6	62	1	12	0.850000	0.150000	0.000000	0.000000	0.000000	0.430000	1
+	6	63	1	12	0.850000	0.150000	0.000000	0.000000	0.000000	0.430000	1
+	6	64	1	12	0.850000	0.150000	0.000000	0.000000	0.000000	0.430000	1
+	6	65	1	12	0.850000	0.150000	0.000000	0.000000	0.000000	0.430000	1
+	6	66	1	12	0.850000	0.150000	0.000000	0.000000	0.000000	0.430000	1
+	6	73	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0
+	6	76	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0
+	6	91	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	92	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	93	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	94	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	95	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	96	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	97	1	12	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1
+	6	98	1	12	1.000000	0.000000	0.000000	0.000000	0.000000	0.430000	1
+	6	99	1	12	1.000000	0.000000	0.000000	0.000000	0.000000	0.430000	1
+c--------------------------------------------------------------------------------------------
+c204 Monthly-variable ET coefficients
+c   defid        Group ID number.
+c   deluid       Landuse ID number
+c   monetcs      Monthly-variable coefficient to calculate actual ET for Jan..Dec
+c
+c	defid	deluid	monETCs1	monETCs2	monETCs3	monETCs4	monETCs5	monETCs6	monETCs7	monETCs8	monETCs9	monETCs10	monETCs11	monETCs12
+c--------------------------------------------------------------------------------------------
+c205 Irrigation Withdrawal Options
+c	Irrigation withdrawal information for each watershed
+c    subbasin    subbasin id
+c    rchid       reach id from where water is withdrawn (if reach does not exist then
+c                etdemand is assumed to be satisfied from an external source)
+c    irrigdep    depth of irrigation withdrawal pipe (ft)
+c
+c	subbasin	rchid
+	1011740	0	0.000000
+	1011780	0	0.000000
+	1011790	0	0.000000
+	1011800	0	0.000000
+	1011810	0	0.000000
+	1011820	0	0.000000
+	1012230	0	0.000000
+	1012240	0	0.000000
+	2011020	0	0.000000
+	3011490	0	0.000000
+	3011500	0	0.000000
+	3011530	0	0.000000
+	3011540	0	0.000000
+	3011550	0	0.000000
+	3011561	0	0.000000
+	3011571	0	0.000000
+	3011581	0	0.000000
+	3011590	0	0.000000
+	3011601	0	0.000000
+	3011611	0	0.000000
+	3011621	0	0.000000
+	3011631	0	0.000000
+	3011641	0	0.000000
+	3011651	0	0.000000
+	3011661	0	0.000000
+	3011671	0	0.000000
+	3011681	0	0.000000
+c--------------------------------------------------------------------------------------------
+c250 general quality constituent control
+c
+c    defid    parameter group id
+c    dwqid    general quality id
+c    qname    name of qual (must be a continuous string)
+c    qunit    units for quality constituent output (mg/l), (ug/l), or (#/100ml)
+c    qsdfg    if = 0 no sediment associated qual 
+c		     if = 1 sediment associated in pervious/impervious land (qsdfg should be > 0 in card 281)
+c		     if = 2 sediment associated in pervious/impervious land
+c		            and sediment associated qual is added to the dissolved part
+c    gqsdfg   if = 0 general quality constituent
+c             if = 1 general quality constituent simulated as a sediment (only one qual can be simulated as a sediment in each group)
+c    qsofg    if = 1 then then accumulation and removal occur daily
+c             if = 2 then then accumulation and removal occur every interval
+c    potfcfg  if = 1 then apply background concentration potency factor (card 260) to only surface output
+c             if = 2 then apply background concentration potency factor (card 260) to total land output
+c
+c	defid dwqid   qname  qunit  qsdfg  gqsdfg  qsofg  potfcfg
+c-----------------------------------------------------------------------------------------------------------
+C255 subsurface quality control
+c
+c    (value of 0 = use constant qual-input; 1 = use corresponding monthly variable card)
+c
+c    vqofg       if = 1 the accumulation rate and limiting storage of QUALOF varies monthly   (cards 270, 271)
+c    qsowfg      if = 1 the constituent is a QUALSURO (surface flow associated).
+c    vsqcfg      if = 1 the concentration of this constituent in surface outflow varies monthly   (card 272)= 1 read table 272
+c    qifwfg      if = 1 the constituent is a QUALIF (interflow associated).
+c    viqcfg      if = 1 the concentration of this constituent in interflow outflow varies monthly   (card 273)= 1 read table 273
+c    qagwfg      if = 1 the constituent is a QUALGW (groundwater associated).
+c    vaqcfg      if = 1 the concentration of this constituent in groundwater outflow varies monthly (card 274)
+c    adfglnd     if = 1 atmosperic deposition on land
+c    maddfglnd   if = 1 atmosperic dry deposition varies monthly on land (card 275)
+c    mawdfglnd   if = 1 atmosperic wet deposition varies monthly on land (card 276)
+c
+c	vqofg  qsowfg  vsqcfg  qifwfg  viqcfg  qagwfg  vaqcfg  adfglnd  maddfglnd  mawdfglnd
+c-----------------------------------------------------------------------------------------------------------
+C260  qual-input
+c    storage on surface and nonseasonal parameters
+c
+c    defid   parameter group id
+c    dwqid   general quality id
+c    deluid  landuse id
+c    sqo     initial storage of QUALOF on surface (lb or #)
+c    potfw   washoff potency factor if qsdfg > 0, card 250 (lb or #)/ton-sediment
+c    potfs   scour potency pactor if qsdfg > 0, card 250 (lb or #)/ton-sediment
+c    potfc   background concentration potency pactor if qsdfg > 0, card 250 (lb or #)/ton-sediment
+c    acqop   accumulation rate of QUALOF on surface (lb or #)/acre/day
+c    sqolim  maximum storage of QUALOF on surface (lb or #)/acre
+c    wsqop   rate of surface runoff that removes 90% of stored QUALOF per hour (in/hr)
+c    soqc    concentration of constituent in surface outflow (mg/l), (ug/l), or (#/100ml)
+c    ioqc    concentration of constituent in interflow outflow (mg/l), (ug/l), or (#/100ml)
+c    aoqc    concentration of constituent in groundwater outflow (mg/l), (ug/l), or (#/100ml)
+c    addc    atmospheric dry deposition flux (lb/acre/day or #/acre/day)
+c    awdc    atmospheric wet deposition concentration (mg/l), (ug/l), or (#/100ml)
+c
+c	the units of the following parameters are as follow:
+c	if in card 250, the unit is mg/l or ug/l, then M is lbs
+c	if in card 250, the unit is #/100ml, then M is #, in this case the unit for
+c	soqc, ioqc and aoqc should be #/100ml instead of mg/l
+c
+c	defid  dwqid  deluid  sqo     potfw     potfs   potfc   acqop   sqolim   wsqop	   soqc   ioqc   aoqc   addc  awdc
+c--------------------------------------------------------------------------------------------
+c270 mon-accumulation rate (monaccum)
+c    only required if vqofg =1 (see card 255)
+c
+c    defid   parameter group id
+c    dwqid   general quality id
+c    deluid  landuse id
+c    jan-dec accumulation rate at start of each month (lb/acre/day)
+c	if in card 250, the unit is #/100ml, the above unit should be #/acre/day
+c
+c	defid dwqid   deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c---------------------------------------------------------------------------------------
+c271 mon-storage limit of quality constituent (monsqolim)
+c    only required if vqofg = 1 (see card 255)
+c
+c    defid   parameter group id
+c    dwqid   general quality id
+c    deluid  landuse id
+c    jan-dec maximum storage at start of each month (lb/acre)
+c	if in card 250, the unit is #/100ml, the above unit should be #/acre
+c
+c	defid dwqid   deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c---------------------------------------------------------------------------------------
+c272 mon-surfaceflow concentration (monsuroconc)
+c    only required if vsqcfg = 1 (see card 255)
+c
+c    defid   parameter group id
+c    dwqid   general quality id
+c    deluid  landuse id
+c    jan-dec concentration of constituent in surface flow at start of each month (mg/l), (ug/l), or (#/100ml)
+c	if in card 250, the unit is #/100ml, the above unit should be #/100ml
+c
+c	defid dwqid   deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c---------------------------------------------------------------------------------------
+c273 mon-interflow concentration (moninterconc)
+c    only required if viqcfg = 1 (see card 255)
+c
+c    defid   parameter group id
+c    dwqid   general quality id
+c    deluid  landuse id
+c    jan-dec concentration of constituent in interflow at start of each month (mg/l), (ug/l), or (#/100ml)
+c	if in card 250, the unit is #/100ml, the above unit should be #/100ml
+c
+c	defid dwqid   deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c---------------------------------------------------------------------------------------
+c274 mon-groundwater concentration (mongrndconc)
+c    only required if vaqcfg = 1 (see card 255)
+c
+c    defid   parameter group id
+c    dwqid   general quality id
+c    deluid  landuse id
+c    jan-dec concentration of constituent in groundwater at start of each month (mg/l), (ug/l), or (#/100ml)
+c	if in card 250, the unit is #/100ml, the above unit should be #/100ml
+c
+c	defid dwqid   deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------------
+c275 mon-atmospheric dry deposition flux
+c    only required if maddfglnd = 1 (see card 255)
+c
+c    defid   parameter group id
+c    dwqid   general quality id
+c    deluid  landuse id
+c    jan-dec flux of constituent in dry deposition at start of each month (lb/acre/day or #/acre/day)
+c
+c	defid dwqid   deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------------
+c276 mon-atmospheric wet deposition concentration
+c    only required if mawdfglnd = 1 (see card 255)
+c
+c    defid   parameter group id
+c    dwqid   general quality id
+c    deluid  landuse id
+c    jan-dec concentration of constituent in atmospheric wet deposition at start of each month (mg/l), (ug/l), or (#/100ml)
+c
+c	defid dwqid   deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------------
+C280 stream water quality control
+c
+c    adfgrch     if = 1 atmosperic deposition on reach (0 for no atmospheric deposition)
+c    maddfgrch   if = 1 atmosperic dry deposition varies monthly on reach (card 282)
+c    mawdfgrch   if = 1 atmosperic wet deposition varies monthly on reach (card 283)
+c
+c	adfgrch  maddfgrch  mawdfgrch
+c-----------------------------------------------------------------------------------------------------------
+c281 general quality constituent control
+c
+c    rgid     stream parameter group id
+c    dwqid    general quality id
+c    qsdfg    if = 0 no sediment associated qual 
+c		     if = 1 sediment associated in stream, adsorption/desorption of qual is simulated
+c    iniCond  initial instream concentration at start of simulation by group (mg/l), (ug/l), or (#/100ml)
+c    decay    general first-order instream loss rate of qual by reach group (1/day)
+c    tcdecay  temperature correction coefficient for first-order decay of qual (min=1, max=2)
+c    addc     atmospheric dry deposition flux (lb/acre/day or #/acre/day)
+c    awdc     atmospheric wet deposition concentration (mg/l), (ug/l), or (#/100ml)
+c    potber   scour potency pactor for stream bank erosion if qsdfg > 0, (lb or #)/ton-sediment
+c
+c	rgid  dwqid   qsdfg   iniCond  decay  tcdecay   addc   awdc   potber
+c-----------------------------------------------------------------------------------------------------------
+c282 mon-atmospheric dry deposition flux
+c    only required if maddfgrch = 1 (see card 280)
+c
+c    rgid    reach group id
+c    dwqid   general quality id
+c    jan-dec flux of constituent in dry deposition at start of each month (lb/acre/day or #/acre/day)
+c
+c	rgid dwqid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------------
+c283 mon-atmospheric wet deposition concentration
+c    only required if mawdfgrch = 1 (see card 280)
+c
+c    rgid    reach group id
+c    dwqid   general quality id
+c    jan-dec concentration of constituent in atmospheric wet deposition at start of each month (mg/l), (ug/l), or (#/100ml)
+c
+c	rgid dwqid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------------
+c285 parameters for decay of contaminant adsorbed to sediment
+c    only required if qsdfg > 0 (see card 281)
+c
+c    rgid      reach group id
+c    dwqid     general quality id
+c    addcpm1   decay rate for qual adsorbed to suspended sediment (/day)
+c    addcpm2   temperature correction coefficient for decay of qual on suspended sediment (range from 1.0 to 2.0)
+c    addcpm3   decay rate for qual adsorbed to bed sediment (/day)
+c    addcpm4   temperature correction coefficient for decay of qual on bed sediment (range from 1.0 to 2.0)
+c
+c   rgid  dwqid   addcpm1   addcpm2   addcpm3   addcpm4
+c--------------------------------------------------------------------------------------------
+c286 adsorption coefficients of qual
+c    only required if qsdfg > 0 (see card 281)
+c
+c    rgid      reach group id
+c    dwqid     general quality id
+c    adpm1     distribution coefficients for qual with suspended sand (l/mg)
+c    adpm2     distribution coefficients for qual with suspended silt (l/mg)
+c    adpm3     distribution coefficients for qual with suspended clay (l/mg)
+c    adpm4     distribution coefficients for qual with bed sand (l/mg)
+c    adpm5     distribution coefficients for qual with bed silt (l/mg)
+c    adpm6     distribution coefficients for qual with bed clay (l/mg)
+c
+c   rgid  dwqid   adpm1   adpm2   adpm3   adpm4   adpm5   adpm6
+c--------------------------------------------------------------------------------------------
+c287 adsorption/desorption rate parameters
+c    only required if qsdfg > 0 (see card 281)
+c
+c    rgid      reach group id
+c    dwqid     general quality id
+c    adpm1     transfer rates between adsorbed and desorbed states of qual with suspended sand (/day)
+c    adpm2     transfer rates between adsorbed and desorbed states of qual with suspended silt (/day)
+c    adpm3     transfer rates between adsorbed and desorbed states of qual with suspended clay (/day)
+c    adpm4     transfer rates between adsorbed and desorbed states of qual with bed sand (/day)
+c    adpm5     transfer rates between adsorbed and desorbed states of qual with bed silt (/day)
+c    adpm6     transfer rates between adsorbed and desorbed states of qual with bed clay (/day)
+c
+c   rgid  dwqid   adpm1   adpm2   adpm3   adpm4   adpm5   adpm6
+c--------------------------------------------------------------------------------------------
+c288 adsorption/desorption temperature correction parameters
+c    only required if qsdfg > 0 (see card 281)
+c
+c    rgid      reach group id
+c    dwqid     general quality id
+c    adpm1     temperature correction coefficients for adsorption/desorption on suspended sand (range from 1.0 to 2.0)
+c    adpm2     temperature correction coefficients for adsorption/desorption on suspended silt (range from 1.0 to 2.0)
+c    adpm3     temperature correction coefficients for adsorption/desorption on suspended clay (range from 1.0 to 2.0)
+c    adpm4     temperature correction coefficients for adsorption/desorption on bed sand (range from 1.0 to 2.0)
+c    adpm5     temperature correction coefficients for adsorption/desorption on bed silt (range from 1.0 to 2.0)
+c    adpm6     temperature correction coefficients for adsorption/desorption on bed clay (range from 1.0 to 2.0)
+c
+c   rgid  dwqid   adpm1   adpm2   adpm3   adpm4   adpm5   adpm6
+c--------------------------------------------------------------------------------------------
+c289 initial concentrations on sediment
+c    only required if qsdfg > 0 (see card 281)
+c
+c    rgid      reach group id
+c    dwqid     general quality id
+c    sqal1     initial concentrations of qual on suspended sand (concu/mg)
+c    sqal2     initial concentrations of qual on suspended silt (concu/mg)
+c    sqal3     initial concentrations of qual on suspended clay (concu/mg)
+c    sqal4     initial concentrations of qual on bed sand (concu/mg)
+c    sqal5     initial concentrations of qual on bed silt (concu/mg)
+c    sqal6     initial concentrations of qual on bed clay (concu/mg)
+c
+c   rgid  dwqid   sqal1   sqal2   sqal3   sqal4   sqal5   sqal6
+c--------------------------------------------------------------------------------------------
+c400 general channel information
+c
+c    admod   advection method (1 for dynamic mixing same as in HSPF and 2 for static mixing)
+c    kc      crop factor associated with PEVT (used to back-calculate EVAP; EVAP = PEVT/kc)
+c    sedber  stream bank erosion sediment (1 for on and 0 for off) (if sedfg=1)
+c    vconfg  a value of 1 for vconfg means that F(vol) (volume-dependent) outflow demand components are multiplied by a factor which is allowed to vary through the year.
+c            These monthly adjustment factors are input in Table-type MON-CONVF in this section (card 401)
+c
+c	admod    kc   sedber   vconfg
+	1	7.500000000000e-001	0	0
+c--------------------------------------------------------------------------------------------
+c401 monthly F(vol) adjustment factors
+c    only required if vconfg = 1 (see card 400)
+c
+c    rgid     stream parameter group id
+c    jan-dec  F(vol) adjustment factors at the start of each month
+c
+c  rgid	jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------------
+c405 channel routing network
+c
+c    rchid   reach id (same as subbasin id)
+c    control output control switch for the corresponding reach
+c            0 = will not write general output
+c            1 = will write general output
+c    NumOutlets number of downstream outlets
+c    DSn     downstream outlets  DS1   Ds2  ....  DSn
+c
+c    rchid   control   NumOutlets   DS1   DS2  .......   DSn
+	1011740	1	1	3011741
+	1011780	1	1	3011781
+	1011790	1	1	3011791
+	1011800	1	1	3011801
+	1011810	1	1	3011811
+	1011820	1	1	3011821
+	1012230	1	1	4012231
+	1012240	1	1	4012241
+	2011020	1	1	4011021
+	3011490	1	1	4011491
+	3011500	1	1	4011501
+	3011530	1	1	4011531
+	3011540	1	1	4011541
+	3011550	1	1	4011551
+	3011561	1	1	4011551
+	3011571	1	1	3011561
+	3011581	1	1	3011571
+	3011590	1	1	4011591
+	3011601	1	1	3011581
+	3011611	1	1	3011581
+	3011621	1	1	3011611
+	3011631	1	1	3011611
+	3011641	1	1	3011561
+	3011651	1	1	3011561
+	3011661	1	1	3011651
+	3011671	1	1	3011661
+	3011681	1	1	3011661
+	3011691	1	1	3011661
+	3011701	1	1	3011691
+	3011711	1	1	3011691
+	3011721	1	1	3011711
+	3011731	1	1	3011711
+	3011741	1	1	3011731
+	3011751	1	1	3011651
+	3011761	1	1	3011751
+	3011771	1	1	3011761
+	3011781	1	1	3011761
+	3011791	1	1	3011781
+	3011801	1	1	3011791
+	3011811	1	1	3011781
+	3011821	1	1	3011761
+	3011831	1	1	3011751
+	3011841	1	1	3011651
+	3011851	1	1	3011561
+	3011861	1	1	3011561
+	3011871	1	1	3011861
+	3011881	1	1	3011871
+	3011891	1	1	3011881
+	3011901	1	1	3011891
+	3011911	1	1	3011901
+	3011930	1	1	4011931
+	3012361	1	1	3011831
+	3012371	1	1	3011851
+	3012381	1	1	3011911
+	3012391	1	1	3011881
+	3012401	1	1	3011871
+	4011011	1	1	-1
+c--------------------------------------------------------------------------------------------
+c410 reach geometry information
+c
+c    rchid   reach/lake id (same as subbasin id)
+c    rgid    reach/lake group id
+c    trgid   threshold reach/lake group id
+c    lkfg    reach/lake flag (0 for reach otherwise lake)
+c            lake flag = 1 (rectangular weir for internal option)
+c            lake flag = 2 (triangular weir for internal option)
+c            lake flag = 11 (BMP with rectangular weir for internal option)
+c            lake flag = 12 (BMP with triangular weir for internal option)
+c    idepth  reach/lake initial water depth (feet)
+c    length  reach/lake length (miles)
+c    depth   reach/lake bank full depth (feet)
+c    width   reach/lake bankfull width (feet)
+c    slope   reach longitudinal slope/lake infiltration rate (in/hr)
+c    mann    reach Manning's roughness coefficient/lake weir width (ft)
+c    r1      reach ratio of bottom width to bank full width (bottom width = r1 * width)/lake orifice height (ft)
+c    r2      reach side slope of flood plane/lake orifice diameter (ft)
+c    w1      reach flood plane width factor (total width of flood plane = w1*Width)/lake median particle size diameter, db50 (ft)
+c    crat    ratio of maximum velocity to mean velocity in the RCHRES cross-section under typical flow conditions (greater than or equal to 1)
+c    ks	    the weighting factor for hydraulic routing (calibration)
+c
+c	rchid	rgid  trgid   lkfg	idepth	length    depth  width    slope     mann    r1    r2    w1    crrat  ks
+	1011740	6	0	0	0.149933	0.000000	1.500310	14.501792	0.030300	0.012000	0.200000	0.500000	1.500000	1.700000	0.000000
+	1011780	6	0	0	0.230312	0.000000	2.301809	26.508536	0.022900	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	1011790	6	0	0	0.182084	0.000000	1.820188	19.042419	0.103000	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	1011800	6	0	0	0.156822	0.000000	1.566582	15.414183	0.044800	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	1011810	6	0	0	0.178147	0.000000	1.781802	18.476809	0.089100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	1011820	6	0	0	0.179132	0.000000	1.792629	18.638881	0.069000	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	1012230	6	0	0	0.124998	0.000000	1.249985	11.210822	0.018500	0.012000	0.200000	0.500000	1.500000	1.700000	0.000000
+	1012240	6	0	0	0.210955	0.000000	2.109882	23.450502	0.014300	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	2011020	6	0	0	0.136153	0.000000	1.362844	12.663560	0.067300	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011490	6	0	0	0.216861	0.000000	2.169265	24.383562	0.019700	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011500	6	0	0	0.202097	0.000000	2.020317	22.059443	0.015200	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011530	6	0	0	0.405835	0.000000	4.059662	58.982879	0.000100	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011540	6	0	0	0.404195	0.000000	4.042274	58.625271	0.006800	0.012000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011550	6	0	0	0.400258	0.000000	4.004216	57.849034	0.000100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011561	6	0	0	0.398289	1.231632	3.983219	57.420234	0.004100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011571	6	0	0	0.224407	0.472171	2.245051	25.590568	0.034300	0.013000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011581	6	0	0	0.219814	0.000000	2.197152	24.827454	0.000100	0.013052	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011590	6	0	0	0.112203	0.000000	1.122690	9.636694	0.000100	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011601	6	0	0	0.136153	0.807208	1.362844	12.665200	0.020100	0.023226	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011611	6	0	0	0.175195	1.101743	1.751291	18.034558	0.005100	0.013045	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011621	6	0	0	0.127951	0.000000	1.277872	11.566460	0.000100	0.016827	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011631	6	0	0	0.149604	0.000000	1.497029	14.454549	0.000100	0.013120	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011641	6	0	0	0.134841	1.012049	1.349065	12.484756	0.014600	0.015911	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011651	6	0	0	0.350389	0.000000	3.502254	47.899680	0.000100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011661	6	0	0	0.270666	1.834196	2.705676	33.291262	0.008000	0.013000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011671	6	0	0	0.131560	0.000000	1.315601	12.051691	0.000100	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011681	6	0	0	0.155510	1.205308	1.555099	15.251783	0.026500	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011691	6	0	0	0.241139	0.817901	2.411388	28.307070	0.008800	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011701	6	0	0	0.144027	1.022656	1.440271	13.691435	0.024800	0.023870	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011711	6	0	0	0.221454	1.102350	2.213228	25.084013	0.017100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011721	6	0	0	0.162728	1.146960	1.628589	16.279330	0.070600	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011731	6	0	0	0.180772	1.617702	1.809033	18.877067	0.090400	0.024206	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011741	6	0	0	0.149933	0.979658	1.500310	14.501792	0.030300	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011751	6	0	0	0.294944	1.658581	2.948783	37.588126	0.008000	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011761	6	0	0	0.278868	0.969725	2.787696	34.724315	0.007100	0.019657	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011771	6	0	0	0.149276	2.280198	1.492108	14.390901	0.067500	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011781	6	0	0	0.230312	1.227794	2.301809	26.508536	0.022900	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011791	6	0	0	0.182084	1.632519	1.820188	19.042419	0.103000	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011801	6	0	0	0.156822	0.647458	1.566582	15.414183	0.044800	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011811	6	0	0	0.178147	1.258466	1.781802	18.476809	0.089100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011821	6	0	0	0.179132	1.388366	1.792629	18.638881	0.069000	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011831	6	0	0	0.119749	0.000000	1.198476	10.565160	0.000100	0.028144	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011841	6	0	0	0.124014	0.000000	1.240470	11.091072	0.000100	0.013000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011851	6	0	0	0.115484	1.097423	1.153857	10.014642	0.052700	0.013000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011861	6	0	0	0.245076	0.692296	2.449445	28.939281	0.011900	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011871	6	0	0	0.241467	0.919583	2.414013	28.351361	0.007100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011881	6	0	0	0.231296	0.000000	2.311980	26.676185	0.000100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011891	6	0	0	0.221782	0.856005	2.218477	25.165376	0.005800	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011901	6	0	0	0.210627	0.000000	2.106930	23.400962	0.000100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011911	6	0	0	0.188646	1.142664	1.885148	20.005990	0.015300	0.023276	0.200000	0.500000	1.500000	1.700000	0.000000
+	3011930	6	0	0	0.121718	0.000000	1.216193	10.784974	0.044800	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	3012361	1236	0	1	0.000000	0.000000	18.874098	137.447374	0.000001	0.013000	0.200000	0.500000	1.500000	1.700000	0.500000
+	3012371	1237	0	1	0.000000	0.103654	15.649042	172.835598	0.000001	0.017873	0.200000	0.500000	1.500000	1.700000	0.500000
+	3012381	1238	0	1	0.000000	0.000000	10.802785	109.189374	0.000001	0.025000	0.200000	0.500000	1.500000	1.700000	0.500000
+	3012391	1239	0	1	0.000000	0.000000	9.059188	117.786383	0.000001	0.025000	0.200000	0.500000	1.500000	1.700000	0.500000
+	3012401	1240	0	1	0.000000	0.000000	22.354239	266.590692	0.000001	0.025000	0.200000	0.500000	1.500000	1.700000	0.500000
+	4011011	6	0	0	0.545269	2.165909	5.453018	89.401472	0.001800	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011021	6	0	0	0.136153	0.630850	1.362844	12.663560	0.067300	0.021177	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011031	6	0	0	0.319550	0.682271	3.197140	42.121863	0.005600	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011041	6	0	0	0.102689	0.000000	1.027218	8.503177	0.000100	0.015894	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011051	6	0	0	0.142387	0.945395	1.424523	13.478839	0.015100	0.013065	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011061	6	0	0	0.122702	0.000000	1.228003	10.933594	0.000100	0.017000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011071	6	0	0	0.305771	1.564688	3.059018	39.581212	0.007400	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011081	6	0	0	0.116140	0.792266	1.159763	10.088788	0.025900	0.013047	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011091	6	0	0	0.122702	0.711755	1.226363	10.912597	0.016800	0.016671	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011101	6	0	0	0.269682	1.414862	2.696490	33.133455	0.005500	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011111	6	0	0	0.261152	0.000000	2.612173	31.681701	0.000100	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011121	6	0	0	0.221782	1.215079	2.217821	25.158159	0.009100	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011131	6	0	0	0.108266	0.000000	1.082008	9.148511	0.000100	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011141	6	0	0	0.206690	0.978396	2.066576	22.771377	0.012200	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011151	6	0	0	0.198816	0.718973	1.989477	21.584711	0.017800	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011161	6	0	0	0.130576	2.067369	1.306086	11.927020	0.029300	0.029260	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011171	6	0	0	0.110563	0.000000	1.105958	9.432956	0.000100	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011181	6	0	0	0.167321	0.813069	1.671896	16.891199	0.026700	0.024735	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011191	6	0	0	0.103017	0.000000	1.029843	8.531392	0.000100	0.013047	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011201	6	0	0	0.138778	1.069204	1.388106	12.996561	0.047200	0.015518	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011211	6	0	0	0.113516	0.000000	1.135157	9.789579	0.000100	0.028766	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011221	6	0	0	0.175523	1.496182	1.756540	18.109688	0.014400	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011231	6	0	0	0.153213	0.706608	1.533774	14.958808	0.034200	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011241	6	0	0	0.110891	0.976632	1.107598	9.453625	0.028100	0.022067	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011251	6	0	0	0.131232	0.680451	1.310680	11.987059	0.033000	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011261	6	0	0	0.157478	1.001880	1.575768	15.540165	0.015600	0.031453	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011271	6	0	0	0.133857	0.655347	1.336926	12.326294	0.031500	0.025978	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011281	6	0	0	0.151573	1.295537	1.516714	14.724230	0.021300	0.013034	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011291	6	0	0	0.121390	0.000000	1.213240	10.748557	0.000100	0.013030	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011301	6	0	0	0.514758	0.880650	5.148231	82.438630	0.003300	0.030147	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011311	6	0	0	0.101705	0.000000	1.016064	8.372930	0.000100	0.017696	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011321	6	0	0	0.473748	1.251652	4.737475	73.323583	0.004000	0.028626	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011331	6	0	0	0.460624	1.437433	4.606243	70.476505	0.001900	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011341	6	0	0	0.459640	0.000000	4.595745	70.250458	0.000100	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011351	6	0	0	0.457672	1.832451	4.577044	69.848888	0.009000	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011361	6	0	0	0.455703	0.000000	4.555391	69.383343	0.000100	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011371	6	0	0	0.111219	0.000000	1.113832	9.527771	0.000100	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011381	6	0	0	0.452422	0.626049	4.522911	68.685516	0.006700	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011391	6	0	0	0.450454	0.818685	4.505523	68.309865	0.005600	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011401	6	0	0	0.173554	1.083224	1.737184	17.827539	0.018700	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011411	6	0	0	0.138778	1.435442	1.387778	12.993608	0.029100	0.019766	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011421	6	0	0	0.111875	0.933262	1.120393	9.607823	0.031500	0.021913	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011431	6	0	0	0.443892	1.100522	4.440235	66.924711	0.006000	0.029633	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011441	6	0	0	0.134185	0.685153	1.342831	12.401752	0.062900	0.023861	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011451	6	0	0	0.434378	0.571062	4.343123	64.870274	0.021600	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011461	6	0	0	0.433722	0.000000	4.336233	64.722638	0.000100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011471	6	0	0	0.142059	0.700575	1.421571	13.441766	0.060700	0.015278	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011481	6	0	0	0.422239	0.735970	4.221733	62.326670	0.011200	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011491	6	0	0	0.216861	0.980969	2.169265	24.383562	0.019700	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011501	6	0	0	0.202097	2.264243	2.020317	22.059443	0.015200	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011511	6	0	0	0.156166	0.000000	1.560677	15.331506	0.000100	0.016803	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011521	6	0	0	0.407147	0.993914	4.072785	59.251904	0.006200	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011531	6	0	0	0.405835	0.000000	4.059662	58.982879	0.000100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011541	6	0	0	0.404195	1.041041	4.042274	58.625271	0.006800	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011551	6	0	0	0.400258	0.000000	4.004216	57.849034	0.000100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011560	6	0	0	0.398289	0.000000	3.983219	57.420234	0.004100	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011580	6	0	0	0.219814	0.000000	2.197152	24.827454	0.000100	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011591	6	0	0	0.112203	0.000000	1.122690	9.636694	0.000100	0.017566	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011600	6	0	0	0.136153	0.000000	1.362844	12.665200	0.020100	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011620	6	0	0	0.127951	0.000000	1.277872	11.566460	0.000100	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011630	6	0	0	0.149604	0.000000	1.497029	14.454549	0.000100	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011820	6	0	0	0.179132	0.000000	1.792629	18.638881	0.069000	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011860	6	0	0	0.245076	0.000000	2.449445	28.939281	0.011900	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011870	6	0	0	0.241467	0.000000	2.414013	28.351361	0.007100	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011880	6	0	0	0.231296	0.000000	2.311980	26.676185	0.000100	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011890	6	0	0	0.221782	0.000000	2.218477	25.165376	0.005800	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011900	6	0	0	0.210627	0.000000	2.106930	23.400962	0.000100	0.025000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011910	6	0	0	0.188646	0.000000	1.885148	20.005990	0.015300	0.022000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011921	6	0	0	0.140746	0.905941	1.407791	13.255416	0.045500	0.020640	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011931	6	0	0	0.121718	0.675584	1.216193	10.784974	0.044800	0.013093	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011941	6	0	0	0.182412	1.392001	1.824781	19.107051	0.040200	0.031732	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011951	6	0	0	0.163056	0.000000	1.628917	16.283595	0.000100	0.018222	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011961	6	0	0	0.140418	0.951765	1.403854	13.206532	0.023700	0.013057	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011971	6	0	0	0.181428	1.941169	1.815267	18.970898	0.020600	0.019229	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011981	6	0	0	0.118437	0.000000	1.184041	10.388325	0.000100	0.016066	0.200000	0.500000	1.500000	1.700000	0.000000
+	4011991	6	0	0	0.100392	0.000000	1.002941	8.220701	0.000100	0.022222	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012001	6	0	0	0.231953	1.307929	2.320838	26.820540	0.012100	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012011	6	0	0	0.222766	0.855861	2.228976	25.334010	0.015000	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012021	6	0	0	0.209643	0.750500	2.097744	23.260544	0.015700	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012031	6	0	0	0.191927	0.743802	1.920908	20.541417	0.019000	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012041	6	0	0	0.172242	1.724129	1.723404	17.630691	0.011900	0.018466	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012051	6	0	0	0.135497	0.000000	1.353986	12.546107	0.000100	0.014242	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012061	6	0	0	0.108923	0.000000	1.087913	9.217736	0.000100	0.028063	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012071	6	0	0	0.115484	0.743517	1.154842	10.026453	0.037900	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012081	6	0	0	0.339563	0.861913	3.395300	45.848524	0.006100	0.017543	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012091	6	0	0	0.328408	1.011858	3.282768	43.721581	0.010900	0.022041	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012101	6	0	0	0.122374	0.720072	1.222754	10.869290	0.015800	0.016807	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012111	6	0	0	0.320534	1.136355	3.205342	42.276717	0.005600	0.022020	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012121	6	0	0	0.305442	0.000000	3.052784	39.468024	0.000100	0.027541	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012131	6	0	0	0.191599	1.293139	1.916971	20.485643	0.017300	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012141	6	0	0	0.168961	1.107811	1.689612	17.147101	0.021400	0.025018	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012151	6	0	0	0.133857	1.329290	1.339551	12.361726	0.009200	0.013060	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012161	6	0	0	0.284117	1.670499	2.839532	35.639658	0.012000	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012171	6	0	0	0.278540	0.000000	2.786383	34.702006	0.000100	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012181	6	0	0	0.263448	2.024144	2.636123	32.091473	0.012700	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012191	6	0	0	0.186678	0.827186	1.867759	19.745495	0.023100	0.017237	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012201	6	0	0	0.152229	1.465134	1.523275	14.815765	0.048700	0.020818	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012211	6	0	0	0.137466	0.842727	1.375311	12.827600	0.000500	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012221	6	0	0	0.139106	1.630416	1.391715	13.043148	0.033000	0.028936	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012231	6	0	0	0.124998	1.059287	1.249985	11.210822	0.018500	0.026867	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012241	6	0	0	0.210955	1.783257	2.109882	23.450502	0.014300	0.029606	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012251	6	0	0	0.196848	0.756270	1.967496	21.246789	0.020500	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012261	6	0	0	0.150917	0.679448	1.509824	14.629087	0.026000	0.013036	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012271	6	0	0	0.123686	0.699515	1.235549	11.029065	0.038200	0.014527	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012281	6	0	0	0.154854	0.751439	1.549850	15.180262	0.017300	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012291	6	0	0	0.105314	0.905640	1.053137	8.805011	0.030100	0.035000	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012301	6	0	0	0.110891	0.872111	1.110223	9.484465	0.048600	0.021102	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012311	6	0	0	0.146652	0.845735	1.466846	14.046745	0.015000	0.020004	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012321	6	0	0	0.164368	1.872097	1.643681	16.491597	0.025200	0.026673	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012331	6	0	0	0.129920	1.225741	1.300181	11.849265	0.040800	0.032427	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012341	6	0	0	0.149604	1.245612	1.494404	14.422069	0.035300	0.028418	0.200000	0.500000	1.500000	1.700000	0.000000
+	4012351	6	0	0	0.128935	0.892123	1.290339	11.726892	0.050000	0.023068	0.200000	0.500000	1.500000	1.700000	0.000000
+c--------------------------------------------------------------------------------------------
+c413 Reach Cross-section Information
+c
+c    rchid   x1	y1	x2	y2...
+c    rchid   reach id (same as subbasin id)
+c    x       distance from the left reach bank (ft)
+c            it should not be greater than bank full width in card 410 (ft)
+c    y       elevation from the reach bed (ft)
+c            it should not be greater than bank full depth in card 410 (ft)
+c
+c--------------------------------------------------------------------------------------------
+c415 reach discharge-volume relationship
+c
+c    rchid   reach id
+c    depth   water depth (feet)
+c    area    water surface area (acres)
+c    vol     water volume (ac-ft)
+c    disch(1, 2, 3, ....noutflows)  outflows (cfs)
+c
+c	rchid  depth   area    vol    disch1    disch2   .......   dischN
+	3012361	0.000000	0.210950	0.000000	0.000000
+	3012361	1.000000	0.366100	0.278300	0.000000
+	3012361	2.500000	0.557350	0.935675	0.000000
+	3012361	3.000000	0.626900	1.247900	2.158753
+	3012361	4.000000	0.774700	2.012000	2.492713
+	3012361	5.000000	1.061178	3.180326	2.786938
+	3012361	6.000000	1.105100	4.098800	3.052938
+	3012361	7.000000	1.287700	5.421500	3.297550
+	3012361	8.000000	1.481900	6.930400	3.525229
+	3012361	9.000000	1.687700	8.625500	45.208058
+	3012361	10.000000	1.781448	10.286903	121.233336
+	3012361	11.000000	2.134100	12.574300	219.612880
+	3012361	12.000000	2.374700	14.828000	261.081948
+	3012361	13.000000	2.626900	17.267900	267.945938
+	3012361	15.000000	3.213952	22.775425	5000.000000
+	3012371	0.000000	0.000000	0.000000	0.000000
+	3012371	1.000000	0.924400	0.584100	1.246357
+	3012371	2.000000	0.970300	1.233400	1.762615
+	3012371	3.000000	1.016200	1.947900	2.158753
+	3012371	4.000000	1.062100	2.727600	2.492713
+	3012371	5.000000	1.125251	2.813131	2.786938
+	3012371	6.000000	1.153900	4.482600	3.052938
+	3012371	7.000000	1.199800	5.457900	3.297550
+	3012371	8.000000	1.245700	6.498400	3.525229
+	3012371	9.000000	1.291600	7.604100	4.202707
+	3012371	10.000000	1.337500	8.775000	48.559047
+	3012371	11.000000	1.383400	10.011100	125.851535
+	3012371	12.000000	1.429300	11.312400	225.206052
+	3012371	13.000000	1.475200	12.678900	243.431439
+	3012371	14.000000	1.521100	14.110600	250.773665
+	3012371	15.000000	1.532596	16.102388	257.906735
+	3012371	18.500000	1.727650	21.360100	281.451282
+	3012371	25.000000	2.043385	33.982323	5000.000000
+	3012381	0.000000	0.287878	0.000000	0.000000
+	3012381	1.000000	0.310800	0.402500	1.246357
+	3012381	2.000000	0.333700	0.805000	1.762615
+	3012381	3.000000	0.356600	1.207500	2.158753
+	3012381	4.000000	0.379500	1.610000	2.492713
+	3012381	5.000000	0.402400	2.012500	2.786938
+	3012381	6.000000	0.425300	2.415000	3.052938
+	3012381	7.000000	0.448200	2.817500	3.297550
+	3012381	8.000000	0.471100	3.220000	3.525229
+	3012381	10.000000	0.517102	4.024908	5000.000000
+	3012391	0.000000	0.421900	0.000000	0.000000
+	3012391	1.000000	0.436700	0.420000	1.246357
+	3012391	2.000000	0.463100	0.866000	1.762615
+	3012391	3.000000	0.489500	1.338000	14.920849
+	3012391	4.000000	0.515900	1.836000	17.830843
+	3012391	5.000000	0.540908	2.407025	20.326761
+	3012391	10.000000	0.674300	5.370000	29.817592
+	3012391	15.000000	0.778901	9.006084	36.944355
+	3012391	20.000000	0.938300	13.340000	42.902855
+	3012391	25.000000	1.085558	18.328398	5000.000000
+	3012401	0.000000	0.915288	0.000000	0.000000
+	3012401	1.000000	0.990800	1.151300	1.246357
+	3012401	2.000000	1.034300	2.334000	1.762615
+	3012401	3.000000	1.077800	3.548100	33.433565
+	3012401	4.000000	1.172174	5.218664	41.697764
+	3012401	9.000000	1.338800	11.492100	69.554319
+	3012401	14.000000	1.531563	18.737374	89.080606
+	3012401	20.500000	1.839050	29.877725	109.369935
+	3012401	24.000000	1.997242	36.381428	5000.000000
+c--------------------------------------------------------------------------------------------
+c420 general point source information
+c
+c    nPtSource   number of individual point sources
+c    nPtQuals    number of point source quals
+c
+c  nPtSource  nPtQuals
+	0	0
+c--------------------------------------------------------------------------------------------
+c425 point source 
+c    Qualindex  point source qual index 
+c    Qualname   point source qual name
+c    Qualid	   point source qual id
+c    sqalfr	   point source sediment associated qual fraction (0-1)
+c
+c  Qualindex  Qualname  qualid
+c--------------------------------------------------------------------------------------------
+c430 point source withdrawal
+c    subbasin  point source reach id
+c    permit    point source permit
+c    pipe      point source pipe
+c    wd_target point source withdrawal target reach id
+c
+c  subbasin  permit  pipe   wd_target
+c--------------------------------------------------------------------------------------------
+c435 linkage controls (optional)
+c
+c    rchid         reach id (same as subbasin id)
+c    outlet        outlet control switch for the corresponding reach
+c                  0 = will read input timeseries file
+c                      (rchid/outlet can be duplicated for multiple input files)
+c                  n = will write output timeseries file for outlet n.
+c    filepath      the timeseries file path (continuous string without space)
+c
+c	rchid    outlet    filepath
+c--------------------------------------------------------------------------------------------
+c440 sediment parameters controls
+c
+c    crvfg   if crvfg = 1, erosion-related cover may vary throughout the year.
+c            values are supplied in Table-type MON-COVER (card 453)
+c    vsivfg  if vsivfg = 1, the rate of net vertical sediment input may vary throughout the year.
+c            if vsivfg = 2, the vertical sediment input is added to the detached sediment storage only on days when no rainfall occurred during the previous day.
+c            values are supplied in Table-type MON-NVSI (card 454)
+c    sandfg  if sandfg = 0, the sand is not simulated.
+c            if sandfg = 1, the sand transport capacity is calculated using the Toffaleti method.
+c            if sandfg = 2, the sand transport capacity is calculated using the Colby method.
+c            if sandfg = 3, the sand transport capacity is calculated using the power function of velocity.
+c    sweepfg if sweepfg = 0, the street sweeping is not simulated.
+c            if sweepfg = 1, the street sweeping is applied to sediemnt only.
+c            if sweepfg = 2, the street sweeping is applied to sediment and general water quality constituents.
+c
+c	crvfg    vsivfg    sandfg    sweepfg
+	0	0	3	0
+c--------------------------------------------------------------------------------------------
+c445 street sweeping for sediment (read if sedfg = 1)
+c
+c    defid         parameter group id
+c    deluid        landuse id (impervious only)
+c    deluname      landuse name
+c    start_month   start month of street sweeping requirement
+c    end_month     end month of street sweeping requirement
+c    frequency     days between street sweeping within the landuse (0 for no sweeping)
+c    percent_area  fraction of land surface which is available for street sweeping (0 for no sweeping)
+c    effic_sand    fraction of sand in solids storage that is available for removal by sweeping (0-1)
+c    effic_silt    fraction of silt in solids storage that is available for removal by sweeping (0-1)
+c    effic_clay    fraction of clay in solids storage that is available for removal by sweeping (0-1)
+c
+c	defid   deluid   deluname   start_month   end_month   frequency   percent_area   effic_sand   effic_silt   effic_clay
+c--------------------------------------------------------------------------------------------
+c446 street sweeping for GQual (read if sedfg = 1 and pqalfg = 1)
+c
+c    defid         parameter group id
+c    deluid        landuse id (impervious only)
+c    deluname      landuse name
+c    effic_GQual   fraction of general water quality constituent in surface storage that is available for removal by sweeping (0-1)
+c
+c	defid   deluid   deluname   effic_GQual1   effic_GQual2 ... effic_GQualn
+c--------------------------------------------------------------------------------------------
+c450 sediment parameter group 1 (read if sedfg =1)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    smpf    supporting management practice factor
+c    krer    coefficient in the soil detachment equation
+c    jrer    exponent in the soil detachment equation
+c    affix   fraction by which detached sediment storage decreases each day as a result of
+c            soil compaction. (/day)
+c    cover   fraction of land surface which is shielded from rainfall erosion
+c    nvsi    rate at which sediment enters detached storage from the atmosphere (lb/ac/day)
+c            negative value may be used to simulate removal by human activity or wind
+c    kser    coefficient in the detached sediment washoff equation
+c    jser    exponent in the detached sediment washoff equation
+c    kger    coefficient in the matrix soil scour equation, which simulates gully erosion
+c    jger    exponent in the matrix soil scour equation, which simulates gully erosion
+c    accsdp  rate at which solids accumulate on the land surface (used in impervious land)
+c    remsdp  fraction of solids storage which is removed each day when there is no runoff,
+c            for example, because of street sweeping (used in impervious land)
+c
+c	defid deluid  smpf   krer   jrer  affix  cover    nvsi  kser   jser  kger  jger   accsdp remsdp
+c--------------------------------------------------------------------------------------------
+c451 sediment parameter group 2 (read if sedfg =1)
+c
+c    defid     parameter group id
+c    deluid    landuse id
+c    sed-suro  background concentration associated with surface flow (mg/l)
+c    sed-ifwo  background concentration associated with interflow outflow (mg/l)
+c    sed-agwo  background concentration associated with groundwater outflow (mg/l)
+c    sed_i     fraction of sediment class_i (sand, silt, and clay)
+c
+c    (sand + silt + clay = 1)
+c    Background sediment load is added to total sediment from LAND prior to applying fractions
+c
+c	defid   deluid    sed_suro   sed_ifwo   sed_agwo   sed_1   sed_2   sed_3 ........sed_n
+c--------------------------------------------------------------------------------------------
+c452 GQUAL-sediment to stream mapping (read if sediment as gqual)
+c
+c    defid   parameter group id
+c    dwqid   general quality id
+c    lutype  landuse type flow id (1 = impervious surfaceflow, 
+c            2 = pervious surfaceflow, 3 = pervious interflow, 4 = pervious groundflow)
+c    sed_i   fraction of sediment class_i (sand, silt, and clay)
+c
+c	defid dwqid    lutype   sed_1   sed_2   sed_3 ........sed_n
+c--------------------------------------------------------------------------------------------
+c453 monthly erosion-related cover values
+c    only required if crvfg = 1 (see card 440)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec erosion-related cover values at start of each month
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c------------------------------------------------------------------------------------
+c454 monthly net vertical sediment input
+c    only required if vsivfg = 1 (see card 440)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec net vertical sediment input at start of each month (lb/acre/day)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c------------------------------------------------------------------------------------
+c455 sediment general parameters group 3 (read if sedfg = 1)
+c    general sediment related parameters for instream transport
+c
+c    rgid     stream parameter group id
+c    bedwid   bed width (ft) - this is constant for the entire simulation period
+c    beddep   initial bed depth (ft)
+c    por      porosity
+c    burial   burial rate of aggregated sediment layer (in/day)
+c             if burial = 0 then burial rate in card 456 is used
+c
+c
+c	rgid  bedwid  beddep  por  burial
+c--------------------------------------------------------------------------------------------
+c456 sediment parameters group 4 (read if sedfg = 1)
+c    cohesive suspended sediment variables for instream transport
+c
+c    rgid           stream parameter group id
+c    sed_id         sediment class id
+c    sedflg         sediment flag indicating sediment class (0 for sand, 1 for silt, and 2 for clay)
+c    sedo           initial sediment conc in fluid phase (mg/liter)
+c    sedfrac        initial sediment fractions (by weight) in the bed material
+c    db50/d         median diameter of the non-cohesive sediment (sand) (in) (sandfg = 1 or 2)
+c                   / effective diameter of the cohesive particles (silt and clay) (in)
+c    w              corresponding fall velocity of the particle in still water (in/s)
+c    rho            density of the particles (gm/cm^3)
+c    ksand/taucd    coefficient in the sandload power function formula (sandfg = 3)
+c                   / critical bed shear stress for deposition of the cohesive particle - generally taucd <= taucs (lb/ft^2)
+c                   if tau > taucd then no deposition
+c                   if tau < taucd then deposition rate approaches settling velocity, w
+c    expsnd/taucs   exponent in the sandload power function formula (sandfg = 3)
+c                   / critical bed shear stress for scour of the cohesive particle (lb/ft^2)
+c                   if tau < taucs then no scour
+c                   if tau > taucs then scour steadily increases
+c    m              erodibility coefficient of the cohesive particle (lb/ft^2/day)
+c    burial         burial rate of the sediment particle (in/day)
+c                   it is used if burial rate in card 455 is zero
+c
+c
+c	rgid  sed_id  sedflg	sedo  sedfrac  db50/d   w  rho  ksand/taucd  expsnd/taucs  m   burial
+c--------------------------------------------------------------------------------------------
+c457 Streambank erosion sediment parameters (read if sedfg = 1 and sedber = 1)
+c
+c    rchid   reach id
+c    kber    coefficient for scour of the bank matrix soil (calibration)
+c    jber    exponent for scour of the bank matrix soil (calibration)
+c    qber    bank erosion flow threshold causing channel bank soil erosion (cfs)
+c            if = negative then threshold flow is at the bank full depth (cfs)
+c    sed_i   fraction of sediment class_i (sand, silt, and clay)
+c
+c	rchid    kber    jber    qber   sed_1   sed_2   sed_3 ....sed_n
+c--------------------------------------------------------------------------------------------
+c460 soil temperature control   (read if tempfg = 1)
+c
+c    msltfg  if = 1 monthly vary aslt and bslt parameters in surface flow temperature calculation
+c    miftfg  if = 1 monthly vary aift and bift parameters in interflow temperature calculation
+c    mgwtfg  if = 1 monthly vary agwt and bgwt parameters in ground water temperature calculation
+c
+c	msltfg     miftfg      mgwtfg
+c--------------------------------------------------------------------------------------------
+c461 Soil Temperature   (read if tempfg =1)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    tsopfg  if = 0 compute subsurface temperatures using a mean departure from air temperature plus a smoothing factor
+c            if = 1 compute subsurface temperature using regression
+c            if = 2 the lower/gw layer temperature is a function of upper layer temperature instead of air temperature
+c    aslt    surface layer temperature when the air temperature 0 degrees C
+c    bslt    slope of the surface layer temperature regression equation
+c    aift    mean difference between interflow temperature and air temperature (C)
+c    bift    smoothing factor in the interflow temperature calculation
+c    agwt    mean difference between groundwater temperature and air temperature (C)
+c    bgwt    smoothing factor in the groundwater temperature calculation
+c    islt    initial surface flow temperature (C)
+c    iift    initial interflow temperature (C)
+c    igwt    initial groundwater temperature (C)
+c
+c            y = a + b * x
+c	defid deluid   tsopfg    aslt     bslt     aift     bift     agwt   bgwt  islt   iift   igwt
+c--------------------------------------------------------------------------------------------
+c462 mon-aslt 
+c    only required if tempfg = 1 and msltfg = 1 (see card 460)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec surface layer temperature when the air temperature 0 degrees C at start of each month (C)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c------------------------------------------------------------------------------------
+c463 mon-bslt 
+c    only required if tempfg = 1 and msltfg = 1 (see card 460)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec slope of the surface layer temperature regression equation at start of each month
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c------------------------------------------------------------------------------------
+c464 mon-aift 
+c    only required if tempfg = 1 and miftfg = 1 (see card 460)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec mean difference between interflow temperature and air temperature at start of each month (C)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c------------------------------------------------------------------------------------
+c465 mon-bift 
+c    only required if tempfg = 1 and miftfg = 1 (see card 460)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec smoothing factor in the interflow temperature calculation at start of each month
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c------------------------------------------------------------------------------------
+c466 mon-agwt 
+c    only required if tempfg = 1 and mgwtfg = 1 (see card 460)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec mean difference between groundwater temperature and air temperature at start of each month (C)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c------------------------------------------------------------------------------------
+c467 mon-bgwt 
+c    only required if tempfg = 1 and mgwtfg = 1 (see card 460)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec smoothing factor in the groundwater temperature calculation at start of each month
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c------------------------------------------------------------------------------------
+c470 Temperature Parameters for Land Groups  (read if tempfg =1)
+c
+c    subbasin    subbasin id
+c    melev	    the mean watershed elevation (ft)
+c    eldat       difference in elevation between watershed and the air temperature gage (ft)
+c    rmelev      the mean RCHRES elevation (ft)
+c    reldat      difference in elevation between the RCHRES and the air temperature gage (ft)
+c                (positive if RCHRES is higher than the gage).
+c
+c	subbasin   melev     eldat   rmelev     reldat
+c--------------------------------------------------------------------------------------------
+c474 24-hourly dry lapse rates (read if tempfg = 1)
+c
+c    12AM-11PM  lapse_rate - dry period lapse rate varying between 0.0035 to 0.005 (degree F/ft)
+c
+c  	12AM   1AM   2AM   3AM   4AM   5AM   6AM   7AM   8AM   9AM   10AM   11AM	12PM   1PM   2PM   3PM   4PM   5PM   6PM   7PM   8PM   9PM   10PM   11PM
+c--------------------------------------------------------------------------------------------
+c475 Temperature Parameters for Stream Groups  (read if tempfg =1)
+c
+c    rgid    stream parameters group id
+c    cfsaex  correction factor for solar radiation; fraction of RCHRES surface exposed to radiation
+c    katrad  longwave radiation coefficient
+c    kcond   conduction-convection heat transport coefficient
+c    kevap   evaporation coefficient
+c
+c	rgid   cfsaex    katrad     kcond     kevap
+c--------------------------------------------------------------------------------------------
+c480 Bed Heat Conduction Parameters for Stream Groups  (read if tempfg=1)
+c
+c    rgid    stream parameters group id
+c    preflg  flag for heat transfer rates for water surface (0 = off)
+c    bedflg  bed conduction flag
+c            0 - bed conduction is not simulated
+c            1 - single interface (water-mud) heat transfer method
+c            2 - two-interface (water-mud and mud-ground) heat transfer method
+c            3 - Jobson method (not supported)
+c    tgflg   source of the ground temperature for the bed conduction (used when bedflg is 1 or 2)
+c            1 - time series (not supported)
+c            2 - single value
+c            3 - monthly values (card 485)
+c    muddep  depth of the mud layer in the two-interface model (bedflg = 2) (m)
+c    tgrnd   constant (tgflg = 2) ground temperature (bedflg = 1 or 2) (degree C)
+c    kmud    heat conduction coefficient between water and the mud/ground (bedflg = 1 or 2) (kcal/m2/degC/hr)
+c    kgrnd   heat conduction coefficient between ground and mud in the two-interface model (bedflg = 2) (kcal/m2/degC/hr)
+c
+c	rgid   preflg   bedflg   tgflg   muddep   tgrnd   kmud   kgrnd
+c--------------------------------------------------------------------------------------------
+c485 monthly ground temperatures for bed heat conduction algorithms
+c    only required if tgflg = 3 (see card 480)
+c
+c    rgid     stream parameter group id
+c    jan-dec  tgrndm - monthly ground temperatures for use in the bed heat conduction models (degree C)
+c
+c  rgid	jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------------
+c500 land to stream mapping (read if oxfg =1)
+c
+c    rgid    stream parameters group id
+c    dwqid   general quality id
+c    lutype  landuse type flow id (1 = impervious surfaceflow, 
+c            2 = pervious surfaceflow, 3 = pervious interflow, 4 = pervious groundflow)
+c    bod     bod fraction in pqual
+c    nox     nitrate fraction in pqual
+c    tam     total ammonia fraction in  pqual
+c    snh4    particulate NH4-N fraction in pqual
+c    po4     ortho-phosphorus fraction in pqual
+c    spo4    particulate PO4-P fraction in pqual
+c    orn     organic-nitrogen fraction in pqual
+c    orp     organic-phosphorus fraction in pqual
+c    orc     organic-carbon fraction in pqual
+c
+c	rgid   dwqid    lutype   bod   nox   tam   snh4   po4   spo4   orn   orp   orc
+c--------------------------------------------------------------------------------------------
+c501 atmosphere to stream mapping
+c
+c    only required if adfgrch = 1 (see card 280)
+c
+c    rgid    stream parameter group ID
+c    dwqid   general quality ID
+c    bod     bod fraction in PQUAL
+c    nox     nitrate fraction in PQUAL
+c    tam     total ammonia fraction in PQUAL
+c    po4     orthophosphate fraction in PQUAL
+c    orn     organic-nitrogen fraction in PQUAL
+c    orp     organic-phosphorus fraction in PQUAL
+c    orc     organic-carbon fraction in PQUAL
+c
+c	rgid  dwqid  bod  nox  tam  po4  orn  orp  orc
+c--------------------------------------------------------------------------------------------
+c502 gases control   (read if oxfg =1)
+c
+c    midofg  if = 1 monthly very DO concentration in interflow
+c    mico2fg if = 1 monthly very CO2 concentration in interflow
+c    madofg  if = 1 monthly very DO concentration in ground water
+c    maco2fg if = 1 monthly very CO2 concentration in ground water
+c
+c	midofg     mico2fg      madofg      maco2fg
+c--------------------------------------------------------------------------------------------
+c503   DO-CO2 Control constant values (read if oxfg =1)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    sdoxp   concentration of dissolved oxygen in surface flow (mg/l)
+c    sco2p   concentration of dissolved CO2 in surface flow (mg/l)
+c    idoxp   concentration of dissolved oxygen in interflow outflow (mg/l)
+c    ico2p   concentration of dissolved CO2 in interflow outflow (mg/l)
+c    adoxp   concentration of dissolved oxygen in active groundwater outflow (mg/l)
+c    aco2p   concentration of dissolved CO2 in active groundwater outflow (mg/l)
+c
+c	defid deluid   sdoxp    sco2p     idoxp    ico2p     adoxp    aco2p
+c--------------------------------------------------------------------------------------------
+c504 mon-DO (interflow)  mg C/l
+c    only required if oxfg = 1 and midofg = 1 (see card 502)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec interflow dissolved oxygen concentration at start of each month (mg/l)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c------------------------------------------------------------------------------------
+c505 mon-DO (groundwater)
+c    only required if oxfg = 1 and madofg = 1 (see card 502)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec groundwater dissolved oxygen concentration at start of each month (mg/l)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c------------------------------------------------------------------------------------
+c506 mon-CO2 (interflow)  mg C/l
+c    only required if oxfg = 1 and mico2fg = 1 (see card 502)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec interflow carbon dioxide concentration at start of each month (mg/l)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------------
+c507 mon-CO2 (groundwater)
+c    only required if oxfg = 1 and maco2fg = 1 (see card 502)
+c
+c    defid   parameter group id
+c    deluid  landuse id
+c    jan-dec groundwater carbon dioxide concentration at start of each month (mg/l)
+c
+c	defid deluid   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------------
+c510 DO/BOD control   
+c
+c    benrfg   benthic release flag (for benthic related parameters)
+c    reamfg reaeration flag (indicates the method used to calculate the reaeration coefficient for free-flowing streams)
+c    if = 1 then Tsivoglou method is used
+c    if = 2 then Owens, Churchill, or O'Connor-Dobbins method is used depending on velocity and depth of water
+c    if = 3 then Coefficient is calculated as a power function of velocity and/or depth
+c
+c	benrfg     reamfg
+c--------------------------------------------------------------------------------------------
+c511 ox-parm1
+c
+c    rgid    stream parameter group id
+c    kbod20  bod decay rate at 20oC (1/hr)
+c    tcbod   temperature adjustment coefficient for bod decay
+c    kodset  bod settling rate (m/hr)
+c    supsat  maximum allowable dissolved oxygen supersaturation (expressed as a multiple of the dissolved oxygen saturation concentration)
+c    tcginv  temperature correction coefficient for surface gas invasion
+c    reak    empirical constant in the equation
+c            if reamfg = 1 then it is an escape coefficient (1/ft)
+c            if reamfg = 3 then it is used to calculate the reaeration coefficient (1/hr)
+c    expred  exponent to depth in the reaeration coefficient equation (for reamfg = 3)
+c    exprev  exponent to velocity in the reaeration coefficient equation (for reamfg = 3)
+c    cforea  correction factor in the lake reaeration equation; it accounts for good or poor circulation characteristics
+c
+c	rgid   kbod20   tcbod   kodset   supsat   tcginv   reak   expred   exprev   cforea
+c--------------------------------------------------------------------------------------------
+c512 ox-parm2
+c
+c    rgid       stream parameter group id
+c    benod      benthal oxygen demand at 20 degrees C (with unlimited DO concentration) (mg/m2/hr)
+c    tcben      temperature correction coefficient for benthal oxygen demand
+c    expod      exponential factor in the dissolved oxygen term of the benthal oxygen demand equation
+c    brbod      benthal release rate of BOD under aerobic conditions.(mg/m2/hr)
+c    brbod_inc  increment to benthal release of BOD under anaerobic conditions. (mg/m2/hr)
+c    expre1     the exponent in the DO term of the benthal BOD release equation
+c
+c	rgid   benod   tcben   expod   brbod   brbod_inc   exprel
+c------------------------------------------------------------------------------------
+c513 oxrx-initial conditions
+c
+c    rgid   stream parameter group id
+c    dox    DO initial condition. (mg/l)
+c    bod    BOD initial condition in water column. (mg/l)
+c    satdo  Initial DO saturation concentration. (mg/l)
+c
+c	rgid   dox   bod   satdo
+c------------------------------------------------------------------------------------
+c514 ox-scour parms
+c
+c    rgid   stream parameter group id
+c    scrvel threshold velocity above which the effect of scouring on benthal release rates is considered. (m/s)
+c    scrmul multiplier by which benthal releases are increased during scouring.
+c
+c	rgid   scrvel   scrmul
+c------------------------------------------------------------------------------------
+c520 nutrients control   
+c
+c    tamfg    total ammonia flag
+c    no2fg    nitrite flag
+c    po4fg    ortho-phosphorus flag
+c    amvfg    ammonia volatilization flag
+c    denfg    denitrification flag
+c    adnhfg   NH4 adsorption flag
+c    adpofg   PO4 adsorption flag
+c    mphfg    monthly pH flag (not supported in this version)
+c
+c	tamfg   no2fg   po4fg   amvfg   denfg   adnhfg   adpofg   mphfg
+c--------------------------------------------------------------------------------------------
+c521 nut-parm1
+c
+c    rgid    stream parameter group id
+c    cvbo    conversion from milligrams biomass to milligrams oxygen (mg/mg)
+c    cvbpc   conversion from biomass expressed as phosphorus to carbon (mols/mol)
+c    cvbpn   conversion from biomass expressed as phosphorus to nitrogen (mols/mol)
+c    bpcntc  percentage of biomass which is carbon (by weight)
+c    ktam20  nitrification rate of ammonia at 20 degrees C (1/hr)
+c    kno220  nitrification rate of nitrite at 20 degrees C (1/hr)
+c    tcnit   temperature correction coefficient for nitrification
+c    kno320  nitrate denitrification rate at 20 degrees C (1/hr)
+c    tcden   temperature correction coefficient for denitrification
+c    denoxt  dissolved oxygen concentration threshold for denitrification (mg/l)
+c
+c	rgid   cvbo   cvbpc   cvbpn  bpcntc   ktam20  kno220  tcnit  kno320  tcden  denoxt
+c--------------------------------------------------------------------------------------------
+c522 nut-parm2
+c
+c    rgid         stream parameter group id
+c    brtam_1      benthal release rate of ammonia under aerobic condition (mg/m2/hr)
+c    brtam_2      benthal release rates of ammonia under anaerobic conditions (mg/m2/hr)
+c    brpo4_1      benthal release rate of ortho-phosphorus under aerobic condition (mg/m2/hr)
+c    brpo4_2      benthal release rate of ortho-phosphorus under anaerobic condition (mg/m2/hr)
+c    bnh4(1-3)    constant bed concentrations of ammonia-N adsorbed to sand, silt, and clay (mg/kg)
+c    bpo4(1-3)    constant bed concentrations of ortho-phosphorus-P adsorbed to sand, silt, and clay (mg/kg)
+c
+c	rgid   brtam_1   brtam_2   brpo4_1   brpo4_2   bnh4_1   bnh4_2   bnh4_3    bpo4_1   bpo4_2   bpo4_3
+c------------------------------------------------------------------------------------
+c523 nut-parm3
+c
+c    rgid         stream parameter group id
+c    anaer        concentration of dissolved oxygen below which anaerobic conditions are assumed to exist (mg/l)
+c    adnhpm(1-3)  adsorption coefficients (Kd) for ammonia-N adsorbed to sand, silt, and clay (cm3/g)
+c    adpopm(1-3)  adsorption coefficients for ortho-phosphorus-P adsorbed to sand, silt, and clay (cm3/g)
+c    expnvg       exponent in the gas layer mass transfer coefficient equation for NH3 volatilization
+c    expnvl       exponent in the liquid layer mass transfer coefficient equation for NH3 volatilization
+c
+c	rgid  anaer    adnhpm_1   adnhpm_2   adnhpm_3   adpopm_1   adpopm_2   adpopm_3   expnvg   expnvl
+c------------------------------------------------------------------------------------
+c524 nut-initial conditions
+c
+c    rgid       stream parameter group id
+c    no3        initial concentration of nitrate (mg/l)
+c    tam        initial concentration of total ammonia (mg/l)
+c    no2        initial concentration of nitrite (as N) (mg/l)
+c    po4        initial concentration of ortho-phosphorus (as P) (mg/l)
+c    snh4(1-3)  initial suspended concentrations of ammonia-N adsorbed to sand, silt, and clay (mg/kg)
+c    spo4(1-3)  initial suspended concentrations of ortho-phosphorus-P adsorbed to sand, silt, and clay (mg/kg)
+c
+c	rgid   no3   tam   no2   po4   snh4_1   snh4_2   snh4_3   spo4_1   spo4_2   spo4_3
+c------------------------------------------------------------------------------------
+c530 plank flags   
+c
+c    phyfg    phytoplankton flag
+c    zoofg    zooplankton flag
+c    balfg    benthic algae flag
+c    sdltfg   influence of sediment washload on light extinction flag
+c    amrfg    ammonia retardation of nitrogen-limited growth flag
+c    decfg    linkage between carbon dioxide and phytoplankton growth flag (if on, the linkage is decoupled)
+c    nsfg     ammonia is included as part of available nitrogen supply in nitrogen limited growth calculations
+c    orefg    indicates the oref parameter in card 534 as a flowrate (if = 0) otherwise velocity
+c
+c	phyfg   zoofg   balfg   sdltfg   amrfg   decfg   nsfg   orefg
+c--------------------------------------------------------------------------------------------
+c531 plank-parm1
+c
+c    rgid    stream parameter group id
+c    ratclp  ratio of chlorophyll A content of biomass to phosphorus content
+c    nonref  non-refractory fraction of algae and zooplankton biomass
+c    litsed  multiplication factor to total sediment concentration to determine sediment contribution to light extinction (l/mg/ft)
+c    alnpr   fraction of nitrogen requirements for phytoplankton growth that is satisfied by nitrate
+c    extb    base extinction coefficient for light (1/m)
+c    malgr   maximum unit algal growth rate (1/hr)
+c
+c	rgid    ratclp   nonref   litsed   alnpr   extb    malgr
+c--------------------------------------------------------------------------------------------
+c532 plank-parm2
+c
+c    rgid    stream parameter group id
+c    cmmlt   Michaelis-Menten constant for light limited growth (lay/min)
+c    cmmn    nitrate Michaelis-Menten constant for nitrogen limited growth (mg/l)
+c    cmmnp   nitrate Michaelis-Menten constant for phosphorus limited growth (mg/l)
+c    cmmp    phosphate Michaelis-Menten constant for phosphorus limited growth (mg/l)
+c    talgrh  temperature above which algal growth ceases (C)
+c    talgrl  temperature below which algal growth ceases (C)
+c    talgrm  temperature below which algal growth is retarded (C)
+c
+c	rgid    cmmlt    cmmn    cmmnp    cmmp    talgrh   talgrl   talgrm
+c------------------------------------------------------------------------------------
+c533 plank-parm3
+c
+c    rgid   stream parameter group id
+c    alr20  algal unit respiration rate at 20 degrees C (1/hr)
+c    aldh   high algal unit death rate (1/hr)
+c    aldl   low algal unit death rate (1/hr)
+c    oxald  increment to phytoplankton unit death rate due to anaerobic conditions (1/hr)
+c    naldh  inorganic nitrogen concentration below which high algal death rate occurs (as nitrogen) (mg/l)
+c    paldh  inorganic phosphorus concentration below which high algal death rate occurs (as phosphorus) (mg/l)
+c
+c	rgid     alr20      aldh      aldl     oxald     naldh     paldh
+c------------------------------------------------------------------------------------
+c534 plank-parm4
+c
+c    rgid    stream parameter group id
+c    phycon  constant inflow concentration of plankton from land to reach (mg/l)
+c    seed    minimum concentration of plankton not subject to advection (i.e., at high flow) (mg/l)
+c    mxstay  concentration of plankton not subject to advection at very low flow (mg/l)
+c    oref    velocity/outflow at which the concentration of plankton not subject to advection is midway between SEED and MXSTAY, see card 530 (m/s or m3/s)
+c    claldh  chlorophyll a concentration above which high algal death rate occurs (ug/l)
+c    physet  phytoplankton settling rate (m/hr)
+c    refset  settling rate for dead refractory organics (m/hr)
+c    cfsaex  This factor is used to adjust the input solar radiation to make it applicable to the RCHRES;
+c            for example, to account for shading of the surface by trees or buildings
+c    mbal    maximum benthic algae density (as biomass) (mg/m2)
+c    cfbalr  ratio of benthic algal to phytoplankton respiration rate
+c    cfbalg  ratio of benthic algal to phytoplankton growth rate
+c
+c	rgid   phycon   seed   mxstay   oref   claldh   physet   refset  cfsaex  mbal   cfbalr   cfbalg
+c------------------------------------------------------------------------------------
+c535 plank-initial conditions
+c
+c    rgid   stream parameter group id
+c    phyto  initial phytoplankton concentration, as biomass (mg/l)
+c    benal  initial benthic algae density, as biomass (mg/m2)
+c    orn    initial dead refractory organic nitrogen concentration (mg/l)
+c    orp    initial dead refractory organic phosphorus concentration (mg/l)
+c    orc    initial dead refractory organic carbon concentration (mg/l)
+c
+c	rgid    phyto    benal   orn    orp    orc
+c------------------------------------------------------------------------------------
+c540 pH controls   
+c
+c    phffg1   value of 0 indicates that the removal factor for total inorganic carbon is constant, given as phfrc1
+c			 a value of 1 indicates the monthly removal factors
+c    phffg2   value of 0 indicates that the removal factor for dissolved carbon dioxide is constant, given as phfrc2
+c             a value of 1 indicates the monthly removal factors
+c    phfrc1   removal fraction for total inorganic carbon
+c    phfrc2   removal fraction for dissolved carbon dioxide
+c
+c	phffg1   phffg2   phfrc1   phfrc2
+c--------------------------------------------------------------------------------------------
+c541 pH-parm
+c
+c    rgid    stream parameter group id
+c    phcnt	maximum number of iterations used to solve for the pH
+c    alkcon	number of the conservative substance which is used to simulate alkalinity
+c            Alkalinity must be simulated in order to obtain valid results
+c    cfcinv	ratio of the carbon dioxide invasion rate to the oxygen reaeration rate
+c    brco2_1	benthal release rate of CO2 (as carbon) for aerobic conditions (mg/m2/hr)
+c    brco2_2 benthal release rate of CO2 (as carbon) for anaerobic conditions (mg/m2/hr)
+c
+c	rgid    phcnt   alkcon   cfcinv   brco2_1   brco2_2
+c--------------------------------------------------------------------------------------------
+c542 pH-initial conditions
+c
+c    rgid	stream parameter group id
+c    tic		initial total inorganic carbon (mg/l)
+c    co2		initial carbon dioxide (as carbon) (mg/l)
+c    ph		initial pH
+c
+c	rgid    tic    co2   ph
+c------------------------------------------------------------------------------------
+c543 mon-tic (monthly removal fraction for total inorganic carbon)
+c    only required if phfg = 1 and phffg1 = 1 (see card 502 and card 540)
+c
+c    rgid    stream parameter group id
+c    jan-dec total inorganic carbon removal fraction at the start of each month
+c
+c  rgid	jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------------
+c544 mon-co2 (monthly removal fraction for dissolved carbon dioxide)
+c    only required if phfg = 1 and phffg2 = 1 (see card 502 and card 540)
+c
+c    rgid    stream parameter group id
+c    jan-dec dissolved carbon dioxide removal fraction at the start of each month
+c
+c  rgid	jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c--------------------------------------------------------------------------------------------
+c600 TMDL control flags
+c
+c    ncpt        if > 0 then use point sources control card 660
+c    ncland      if > 0 then use landuse control card 670
+c                if = 1 then apply reduction to only surface output
+c                if = 2 then apply reduction to total land output
+c    ncrch       if > 0 then use reach control card 685 and 690
+c    ntrgp       number of threshold groups in Card 410 and 610
+c    ntnum       number of defined thresholds for analysis
+c                if > 0 then use threshold control cards 605 and 610
+c
+c   ncpt  ncland  ncrch  ntrgp  ntnum
+	0	2	0	0	0
+c--------------------------------------------------------------------------------------------
+c605 TMDL threshold mapping (used if ntnum > 0 in card 600)
+c
+c    tnum       threshold ordinal number
+c    tqsd       threshold qual (1 for dissolved only and 2 for total)
+c    tcount     number of water quality constituent to aggregate
+c    tqid       list of tqid to aggregate - number of tqid in list = tcount (GQUAL/RQUAL IDs)
+c
+c    tnum   tqsd    tcount   tqid1   tqid2   .......   tqidn
+c--------------------------------------------------------------------------------------------
+c610 TMDL threshold definitions (used if ntnum > 0 in card 600)
+c
+c    trgid      threshold reach group ID (corresponds to trgid on Card 410)
+c    tnum       threshold number (corresponds to tnum on Card 605)
+c    ttype      threshold type (possible values: 0, 1, 2, 3 or -1, -2, -3)
+c                0 = no standard to be applied for the trgid
+c                1 = instantaneous values > threshold
+c                2 = arithmetic mean > threshold
+c                3 = geometric mean > threshold
+c               -1 = instantaneous values < threshold
+c               -2 = arithmetic mean < threshold
+c               -3 = geometric mean < threshold
+c    tdays      number of days over model output is aggregated and/or is compared
+c               if tdays = 0 then threshold becomes percent of time
+c    jan-dec    twelve monthly values for threshold (for constant, use same value 12 times)
+c               (units are same as in card 250)
+c
+c    examples: ttype  tdays  description/interpretation
+c                  1      1  at least one instantaneous value within a 1-day running period > threshold
+c                 -1      1  at least one instantaneous value within a 1-day running period < threshold
+c                  1      0  percent of time that instantaneous value > threshold
+c                  2      4  4-day running arithmetic mean > threshold
+c                  3     30  30-day running geometric mean > threshold (for previous 30-days)
+c
+c  trgid  tnum   ttype  tdays   jan   feb   mar   apr   may   jun   jul   aug   sep   oct   nov   dec
+c---------------------------------------------------------------------------------------
+c660 TMDL point source control (used if ncpt > 0 on card 600)
+c
+c    rchid         reach id
+c    permit        point source index (level1)
+c    pipe          point source index qualifier (level2)
+c    reduction     reduction of pollutant from point source (in fraction)
+c
+c   rchid   permit   pipe   reduction_flow...reduction_qual1...reduction_qual2...reduction_qualn
+c--------------------------------------------------------------------------------------------
+c670 TMDL land-based control (used if ncland > 0 on card 600)
+c 
+c    subbasin   subwatershed id
+c    deluid     land use id 
+c    luname     land use name
+c    reduction  reduction of pollutant from corresponding landuse and subwatershed
+c 
+c	subbasin  deluid pluname  reduction
+	1011740	3	Water	0.000000
+	1011740	11	Agri_Low	0.000000
+	1011740	15	Agri_High	0.000000
+	1011740	23	Barren_Low	0.000000
+	1011740	26	Barren_High	0.000000
+	1011740	34	ForestShrub_B	0.000000
+	1011740	35	ForestShrub_C	0.000000
+	1011740	36	ForestShrub_D	0.000000
+	1011740	44	Grassland_B	0.000000
+	1011740	45	Grassland_C	0.000000
+	1011740	46	Grassland_D	0.000000
+	1011740	51	Devperv_B_Low_NoIrg	0.000000
+	1011740	52	Devperv_C_Low_NoIrg	0.000000
+	1011740	53	Devperv_D_Low_NoIrg	0.000000
+	1011740	54	Devperv_B_High_NoIrg	0.000000
+	1011740	55	Devperv_C_High_NoIrg	0.000000
+	1011740	56	Devperv_D_High_NoIrg	0.000000
+	1011740	61	Devperv_B_Low_Irrg	0.000000
+	1011740	62	Devperv_C_Low_Irrg	0.000000
+	1011740	63	Devperv_D_Low_Irrg	0.000000
+	1011740	64	Devperv_B_High_Irrg	0.000000
+	1011740	65	Devperv_C_High_Irrg	0.000000
+	1011740	66	Devperv_D_High_Irrg	0.000000
+	1011740	73	Mining_Low	0.000000
+	1011740	76	Mining_High	0.000000
+	1011740	91	ResLow_IMP	0.000000
+	1011740	92	ResHigh_IMP	0.000000
+	1011740	93	InstOff_IMP	0.000000
+	1011740	94	Comm_IMP	0.000000
+	1011740	95	Ind_IMP	0.000000
+	1011740	96	Road_IMP	0.000000
+	1011740	97	Freeway_IMP	0.000000
+	1011740	98	Overspray_IMP_Low	0.000000
+	1011740	99	Overspray_IMP_High	0.000000
+	1011780	3	Water	0.000000
+	1011780	11	Agri_Low	0.000000
+	1011780	15	Agri_High	0.000000
+	1011780	23	Barren_Low	0.000000
+	1011780	26	Barren_High	0.000000
+	1011780	34	ForestShrub_B	0.000000
+	1011780	35	ForestShrub_C	0.000000
+	1011780	36	ForestShrub_D	0.000000
+	1011780	44	Grassland_B	0.000000
+	1011780	45	Grassland_C	0.000000
+	1011780	46	Grassland_D	0.000000
+	1011780	51	Devperv_B_Low_NoIrg	0.000000
+	1011780	52	Devperv_C_Low_NoIrg	0.000000
+	1011780	53	Devperv_D_Low_NoIrg	0.000000
+	1011780	54	Devperv_B_High_NoIrg	0.000000
+	1011780	55	Devperv_C_High_NoIrg	0.000000
+	1011780	56	Devperv_D_High_NoIrg	0.000000
+	1011780	61	Devperv_B_Low_Irrg	0.000000
+	1011780	62	Devperv_C_Low_Irrg	0.000000
+	1011780	63	Devperv_D_Low_Irrg	0.000000
+	1011780	64	Devperv_B_High_Irrg	0.000000
+	1011780	65	Devperv_C_High_Irrg	0.000000
+	1011780	66	Devperv_D_High_Irrg	0.000000
+	1011780	73	Mining_Low	0.000000
+	1011780	76	Mining_High	0.000000
+	1011780	91	ResLow_IMP	0.000000
+	1011780	92	ResHigh_IMP	0.000000
+	1011780	93	InstOff_IMP	0.000000
+	1011780	94	Comm_IMP	0.000000
+	1011780	95	Ind_IMP	0.000000
+	1011780	96	Road_IMP	0.000000
+	1011780	97	Freeway_IMP	0.000000
+	1011780	98	Overspray_IMP_Low	0.000000
+	1011780	99	Overspray_IMP_High	0.000000
+	1011790	3	Water	0.000000
+	1011790	11	Agri_Low	0.000000
+	1011790	15	Agri_High	0.000000
+	1011790	23	Barren_Low	0.000000
+	1011790	26	Barren_High	0.000000
+	1011790	34	ForestShrub_B	0.000000
+	1011790	35	ForestShrub_C	0.000000
+	1011790	36	ForestShrub_D	0.000000
+	1011790	44	Grassland_B	0.000000
+	1011790	45	Grassland_C	0.000000
+	1011790	46	Grassland_D	0.000000
+	1011790	51	Devperv_B_Low_NoIrg	0.000000
+	1011790	52	Devperv_C_Low_NoIrg	0.000000
+	1011790	53	Devperv_D_Low_NoIrg	0.000000
+	1011790	54	Devperv_B_High_NoIrg	0.000000
+	1011790	55	Devperv_C_High_NoIrg	0.000000
+	1011790	56	Devperv_D_High_NoIrg	0.000000
+	1011790	61	Devperv_B_Low_Irrg	0.000000
+	1011790	62	Devperv_C_Low_Irrg	0.000000
+	1011790	63	Devperv_D_Low_Irrg	0.000000
+	1011790	64	Devperv_B_High_Irrg	0.000000
+	1011790	65	Devperv_C_High_Irrg	0.000000
+	1011790	66	Devperv_D_High_Irrg	0.000000
+	1011790	73	Mining_Low	0.000000
+	1011790	76	Mining_High	0.000000
+	1011790	91	ResLow_IMP	0.000000
+	1011790	92	ResHigh_IMP	0.000000
+	1011790	93	InstOff_IMP	0.000000
+	1011790	94	Comm_IMP	0.000000
+c--------------------------------------------------------------------------------------------
+c680 TMDL reach control (used if ncrch > 0 on card 600)
+c
+c    rchid         controlled reach id
+c    outlet        controlled reach outlet id
+c    switch_mon    monthly switch to control conc limit or reduction of pollutant from the corresponding reach (0-off, 1-on)
+c
+c   rchid   outlet   switch_1   switch_2......switch_12
+c--------------------------------------------------------------------------------------------
+c685 TMDL reach control (used if ncrch > 0 on card 600)
+c
+c    rchid         controlled reach id
+c    outlet        controlled reach outlet id
+c    limit-flow    flow limit from the corresponding reach (cfs)
+c    limit_pol     concentration limit of pollutant from the corresponding reach (mg/l or ug/l or #/100ml)
+c
+c   rchid   outlet   limit_flow   limit_qual1...limit_qual2...limit_qualn
+c--------------------------------------------------------------------------------------------
+c690 TMDL reach control (used if ncrch > 0 on card 600)
+c
+c    rchid         controlled reach id
+c    outlet        controlled reach outlet id
+c    reduction     reduction of pollutant from the corresponding reach (fraction)
+c                  reduction in outflow will also reduce the pollutant mass from the outflow and 
+c                  any defined reduction to pollutant will be the additional
+c
+c   rchid   outlet   reduction_flow...reduction_qual1...reduction_qual2...reduction_qualn
+c--------------------------------------------------------------------------------------------
