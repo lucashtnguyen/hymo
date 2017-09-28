@@ -14,7 +14,7 @@ class SWMMReportFile(BaseReader):
         BaseReader.__init__(self, path)
 
         # check units
-        self.unit = self.orig_file[self._find_line('Flow Units')].split('.')[-1].strip()
+        self.unit = self.orig_file[self.find_line_num('Flow Units')].split('.')[-1].strip()
 
         if self.unit.upper() != 'CFS':
             raise ValueError
@@ -224,7 +224,11 @@ class SWMMReportFile(BaseReader):
             # there will be more than one pollutant
             # we will need to think about a proper
             # name parser.
-            names = ['Link', 'Pollutant_lbs']
+            start_line_str = 'Link Pollutant Load Summary'
+            blank_space = 3
+            n_lines = 2
+
+            names = self.infer_columns(start_line_str, blank_space, n_lines)
 
             self._link_pollutant_load_results = self._make_df(
                 'link_pollutant_load', sep='\s+', header=None, names=names, index_col=[0])

@@ -26,7 +26,7 @@ class BaseReader(object):
             self._orig_file = self.read_file(self.path)
         return self._orig_file
 
-    def _find_line(self, line):
+    def find_line_num(self, line):
         """
         Given a text string returns the line number that the string
         appears in.
@@ -50,7 +50,7 @@ class BaseReader(object):
         the block.
 
         Requires:
-        - line: str, tetx to look up.
+        - line: str, text to look up.
 
         Returns:
         - n: int, the line number where line exists.
@@ -104,7 +104,7 @@ class BaseReader(object):
         """
         blockstart, comment_lines = self._startlines[block]
 
-        return self._find_line(blockstart) + comment_lines #b/c variable comment lines
+        return self.find_line_num(blockstart) + comment_lines #b/c variable comment lines
 
     def raw_block(self, block):
         """
@@ -120,3 +120,63 @@ class BaseReader(object):
         Helper function to parse pd.DataFrame for result properties.
         """
         return pd.read_csv(StringIO(self.raw_block(block)), **kwargs)
+
+    def infer_columns(self, start_line_str, blank_space, n_lines):
+        def replace(x):
+            """Helper function to convert string to checksum array"""
+            if x == ' ':
+                return '0,'
+            else:
+                return '1,'
+
+        def list_replace(y):
+            """Helper for replace in lists"""
+            return ''.join([replace(_) for _ in y])
+
+        def sanitizer1(s):
+            """Helper to remove special chars to conform to PEP"""
+            for replace in list('!@#$%^&*()-+={}[]:;<>/?') + list(' '):
+                s = s.replace(replace, '_') 
+            return s
+        
+        def sanitizer2(s):
+            """Recursive func to remove double '_' from sanitizer()"""
+            if '__' in s:
+                return santize2(s.replace('__', '_'))
+            else:
+                return s
+            
+        def sanitizer(s):
+            """Helper to standardize column names"""
+            return sanitizer2(sanitizer1(s))
+
+        # parse the start/end of the actual column names
+        start = self.find_line_num(start_line_str) + blank_space + 1
+        end = start + n_lines
+        column_string_list = self.orig_file[start:end]
+
+        # turn the the string into a checksum array and find occurances
+        # where only spaces
+        checksum = '\n'.join([list_replace(_) for _ in column_string_list])
+        base_array = pd.read_csv(StringIO(checksum), header=None)
+        bool_array = base_array.any()
+        bool_shifted = base_array.any().shift(1)
+
+        diff = bool_array.sub(bool_shifted)
+        
+        # need to start the list at n=0
+        column_widths = [0]
+        column_widths += diff[diff < 0].index.tolist()
+        
+        # might need to go to the end sometimes? if so uncomment:
+            # column_widths += [t3.index.max()]
+
+        # do you even list comprehension, bro?
+        final_cols = [
+            sanitizer(' '.join(c).strip()) for c in
+                zip(*[[csl[a1+1:a2+1].strip() for a1, a2 in
+                    zip(column_widths, column_widths[1:])] for csl in
+                        column_string_list])
+        ]
+        
+        return final_cols

@@ -55,6 +55,7 @@ class Test_ReportFile(base_ReportFileMixin):
     def setup(self):
         # TODO
         # subcatchment results
+        # pollutants
 
         self.known_path = data_path(os.path.join('swmm', 'test_rpt.rpt'))
         self.node_surcharge_file = data_path(os.path.join('swmm', 'test_node_surcharge_data.csv'))
