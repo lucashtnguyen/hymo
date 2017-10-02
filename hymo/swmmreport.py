@@ -157,13 +157,21 @@ class SWMMReportFile(BaseReader):
         if self._outfall_loading_results is None:
             # special conditions at end of block
             # summary stats -> parse all and drop sep '---' 
-            names = [
-                'Outfall_Node', 'Flow_Freq_Pcnt',
-                'Avg_Flow_CFS', 'Max_Flow_CFS',
-                'Total_Volume_mgal'
-            ]
-            df = self._make_df('outfall_loading'
-            , sep='\s+', header=None, names=names, index_col=[0])
+
+            start_line_str = 'Outfall Loading Summary'
+            blank_space = 3
+            n_lines = 3
+
+            names = self.infer_columns(start_line_str, blank_space, n_lines)
+
+            # "Outfall Node" needs to be joined
+            n = '_'.join(names[:2])
+            _ = names.pop(0)
+            names[0] = n
+
+            df = self._make_df('outfall_loading', sep='\s+',
+                header=None, names=names, index_col=[0])
+            
             # drop sep
             drop_from_index = [_ for _ in df.index if '-' in _]
             df = df.drop(drop_from_index)
