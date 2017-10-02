@@ -1,4 +1,4 @@
-Outfall_Node,Flow_Freq_Pcnt,Avg_Flow_CFS,Max_Flow_CFS,Total_Volume_mgal
+Outfall_Node,Flow_Freq_Pcnt,Avg_Flow_CFS,Max_Flow_CFS,Total_Volume_10_6_gal
 4A0036,100.0,207.94,306.05,16.304000000000002
 4A0418,100.0,50.0,93.54,4.093999999999999
 4B1558,100.0,244.48,372.0,19.438
