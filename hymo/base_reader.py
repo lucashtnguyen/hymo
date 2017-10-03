@@ -115,11 +115,27 @@ class BaseReader(object):
 
         return ''.join(self.orig_file[skiprows:-skipfooter])
 
-    def _make_df(self, block, **kwargs):
+    def clean_block(self, block, comment):
+        """
+        Returns the string representation of the block.
+        """
+        skiprows = self.find_block(block)
+        skipfooter = self._find_end(skiprows, self.endline)
+
+        lines = [_ for _ in self.orig_file[skiprows:-skipfooter] if _[0] != comment]
+
+        return ''.join(lines)
+
+    def _make_df(self, block, comment=None, **kwargs):
         """
         Helper function to parse pd.DataFrame for result properties.
         """
-        return pd.read_csv(StringIO(self.raw_block(block)), **kwargs)
+        if comment is not None:
+            string_block = self.clean_block(block, comment)
+        else:
+            string_block = self.raw_block(block)
+
+        return pd.read_csv(StringIO(string_block), **kwargs)
 
     def infer_columns(self, start_line_str, blank_space, n_lines):
         def replace(x):
