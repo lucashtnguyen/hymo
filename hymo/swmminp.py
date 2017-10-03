@@ -151,8 +151,8 @@ class SWMMInpFile(BaseReader):
         if self._options is None:
             names = ['Option', 'Value']
 
-            self._options = self._clean_comments(
-                self._make_df('options', sep='\s+', header=None,
+            self._options = (
+                self._make_df('options', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._options
@@ -165,8 +165,8 @@ class SWMMInpFile(BaseReader):
         if self._evaporation is None:
             names = ['Data_Source', 'Parameters']
 
-            self._evaporation = self._clean_comments(
-                self._make_df('evaporation', sep='\s+', header=None,
+            self._evaporation = (
+                self._make_df('evaporation', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._evaporation
@@ -178,8 +178,8 @@ class SWMMInpFile(BaseReader):
         if self._temperature is None:
             names = ['Data_Element', 'Values']
 
-            self._temperature = self._clean_comments(
-                self._make_df('temperature', sep='\s+', header=None,
+            self._temperature = (
+                self._make_df('temperature', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._temperature
@@ -193,8 +193,8 @@ class SWMMInpFile(BaseReader):
                 'Source', 'Path'
             ]
 
-            self._raingages = self._clean_comments(
-                self._make_df('raingages', sep='\s+', header=None,
+            self._raingages = (
+                self._make_df('raingages', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._raingages
@@ -211,8 +211,8 @@ class SWMMInpFile(BaseReader):
                 'SnowPack'
             ]
 
-            self._subcatchments = self._clean_comments(
-                self._make_df('subcatchments', sep='\s+', header=None,
+            self._subcatchments = (
+                self._make_df('subcatchments', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._subcatchments
@@ -227,8 +227,8 @@ class SWMMInpFile(BaseReader):
                 'RouteTo', 'PctRouted'
             ]
 
-            self._subareas = self._clean_comments(
-                self._make_df('subareas', sep='\s+', header=None,
+            self._subareas = (
+                self._make_df('subareas', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._subareas
@@ -238,8 +238,8 @@ class SWMMInpFile(BaseReader):
         if self._infiltration is None:
             names = ['Subcatchment', 'Suction', 'HydCon', 'IMDmax']
 
-            self._infiltration = self._clean_comments(
-                self._make_df('infiltration', sep='\s+', header=None,
+            self._infiltration = (
+                self._make_df('infiltration', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._infiltration
@@ -251,8 +251,8 @@ class SWMMInpFile(BaseReader):
 
         if self._lid_controls is None:
             names = []
-            self._lid_controls = self._clean_comments(
-                self._make_df('lid_controls', sep='\s+', header=None,
+            self._lid_controls = (
+                self._make_df('lid_controls', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._lid_controls
@@ -264,8 +264,8 @@ class SWMMInpFile(BaseReader):
 
         if self._lid_usage is None:
             names = []
-            self._lid_usage = self._clean_comments(
-                self._make_df('lid_usage', sep='\s+', header=None,
+            self._lid_usage = (
+                self._make_df('lid_usage', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._lid_usage
@@ -277,8 +277,8 @@ class SWMMInpFile(BaseReader):
 
         if self._aquifers is None:
             names = []
-            self._aquifers = self._clean_comments(
-                self._make_df('aquifers', sep='\s+', header=None,
+            self._aquifers = (
+                self._make_df('aquifers', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._aquifers
@@ -290,8 +290,8 @@ class SWMMInpFile(BaseReader):
 
         if self._groundwater is None:
             names = []
-            self._groundwater = self._clean_comments(
-                self._make_df('groundwater', sep='\s+', header=None,
+            self._groundwater = (
+                self._make_df('groundwater', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._groundwater
@@ -305,8 +305,8 @@ class SWMMInpFile(BaseReader):
                 'Max_Depth', 'Init_Depth',
                 'Surcharge_Depth', 'Ponded_Area'
                 ]
-            self._junctions = self._clean_comments(
-                self._make_df('junctions', sep='\s+', header=None,
+            self._junctions = (
+                self._make_df('junctions', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._junctions
@@ -320,8 +320,8 @@ class SWMMInpFile(BaseReader):
                 'Outfall_Type', 'Stage_Table_Time_Series',
                 'Tide_Gate', 'Route_To'
             ]
-            self._outfalls = self._clean_comments(
-                self._make_df('outfalls', sep='\s+', header=None,
+            self._outfalls = (
+                self._make_df('outfalls', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0], skiprows=1))
 
         return self._outfalls
@@ -333,8 +333,8 @@ class SWMMInpFile(BaseReader):
 
         if self._storage is None:
             names = []
-            self._storage = self._clean_comments(
-                self._make_df('storage', sep='\s+', header=None,
+            self._storage = (
+                self._make_df('storage', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._storage
@@ -350,9 +350,8 @@ class SWMMInpFile(BaseReader):
                 'Outlet_Offset', 'Init_Flow',
                 'Max_Flow',
             ]
-            self._conduits = self._clean_comments(
-                self._make_df('conduits', sep='\s+', header=None,
-                              names=names, index_col=[0]))
+            self._conduits = self._make_df('conduits',
+                comment=';', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._conduits
 
@@ -365,8 +364,8 @@ class SWMMInpFile(BaseReader):
             names = [
                 'Name', 'From_Node', 'To_Node', 'Type', 'Offset', 
                 'Qcoeff', 'Gated', 'CloseTime' ]
-            self._orifices = self._clean_comments(
-                self._make_df('orifices', sep='\s+', header=None,
+            self._orifices = (
+                self._make_df('orifices', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._orifices
@@ -381,8 +380,8 @@ class SWMMInpFile(BaseReader):
                 'Outlet_Type', 'Qcoeff_QTable',
                 'Qexpon', 'Flap_Gate',
             ]
-            self._outlets = self._clean_comments(
-                self._make_df('outlets', sep='\s+', header=None,
+            self._outlets = (
+                self._make_df('outlets', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._outlets
@@ -396,8 +395,8 @@ class SWMMInpFile(BaseReader):
                 'CrestHt', 'Qcoeff', 'Gated', 'EndCon',
                 'EndCoeff', 'Surcharge', 'RoadWidth', 'RoadSurf'
             ]
-            self._weirs = self._clean_comments(
-                self._make_df('weirs', sep='\s+', header=None,
+            self._weirs = (
+                self._make_df('weirs', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._weirs
@@ -411,8 +410,8 @@ class SWMMInpFile(BaseReader):
                 'Geom2', 'Geom3', 'Geom4',
                 'Barrels'
             ]
-            self._xsections = self._clean_comments(
-                self._make_df('xsections', sep='\s+', header=None,
+            self._xsections = (
+                self._make_df('xsections', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._xsections
@@ -423,8 +422,8 @@ class SWMMInpFile(BaseReader):
         # this will require a special function
         if self._transects is None:
             names = []
-            self._transects = self._clean_comments(
-                self._make_df('transects', sep='\s+', header=None,
+            self._transects = (
+                self._make_df('transects', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._transects
@@ -436,8 +435,8 @@ class SWMMInpFile(BaseReader):
                 'Link', 'Inlet', 'Outlet',
                 'Average', 'Flap_Gate', 'SeepageRate'
             ]
-            self._losses = self._clean_comments(
-                self._make_df('losses', sep='\s+', header=None,
+            self._losses = (
+                self._make_df('losses', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._losses
@@ -446,8 +445,8 @@ class SWMMInpFile(BaseReader):
     def curves(self):
         if self._curves is None:
             names = ['Name', 'Type', 'X_Value', 'Y_Value']
-            self._curves = self._clean_comments(
-                self._make_df('curves', sep='\s+', header=None,
+            self._curves = (
+                self._make_df('curves', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._curves
@@ -457,8 +456,8 @@ class SWMMInpFile(BaseReader):
     def timeseries(self):
         if self._timeseries is None:
             names = ['Name', 'Date', 'Time', 'Value']
-            self._timeseries = self._clean_comments(
-                self._make_df('timeseries', sep='\s+', header=None,
+            self._timeseries = (
+                self._make_df('timeseries', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._timeseries
@@ -468,8 +467,8 @@ class SWMMInpFile(BaseReader):
     def report(self):
         if self._report is None:
             names = ['Param', 'Value']
-            self._report = self._clean_comments(
-                self._make_df('report', sep='\s+', header=None,
+            self._report = (
+                self._make_df('report', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._report
@@ -481,8 +480,8 @@ class SWMMInpFile(BaseReader):
 
         if self._tags is None:
             names = ['Object', 'Name', 'Type']
-            self._tags = self._clean_comments(
-                self._make_df('tags', sep='\s+', header=None,
+            self._tags = (
+                self._make_df('tags', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._tags
@@ -494,8 +493,8 @@ class SWMMInpFile(BaseReader):
         # requires special function
         if self._map is None:
             names = []
-            self._map = self._clean_comments(
-                self._make_df('map', sep='\s+', header=None,
+            self._map = (
+                self._make_df('map', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._map
@@ -505,8 +504,8 @@ class SWMMInpFile(BaseReader):
     def coordinates(self):
         if self._coordinates is None:
             names = ['Node', 'X_Coord', 'Y_Coord']
-            self._coordinates = self._clean_comments(
-                self._make_df('coordinates', sep='\s+', header=None,
+            self._coordinates = (
+                self._make_df('coordinates', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._coordinates
@@ -516,8 +515,8 @@ class SWMMInpFile(BaseReader):
     def vertices(self):
         if self._vertices is None:
             names = ['Link', 'X_Coord', 'Y_Coord']
-            self._vertices = self._clean_comments(
-                self._make_df('vertices', sep='\s+', header=None,
+            self._vertices = (
+                self._make_df('vertices', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._vertices
@@ -527,8 +526,8 @@ class SWMMInpFile(BaseReader):
     def polygons(self):
         if self._polygons is None:
             names = ['Subcatchment', 'X_Coord', 'Y_Coord']
-            self._polygons = self._clean_comments(
-                self._make_df('polygons', sep='\s+', header=None,
+            self._polygons = (
+                self._make_df('polygons', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._polygons
@@ -538,8 +537,8 @@ class SWMMInpFile(BaseReader):
     def symbols(self):
         if self._symbols is None:
             names = ['Gage', 'X_Coord', 'Y_Coord']
-            self._symbols = self._clean_comments(
-                self._make_df('symbols', sep='\s+', header=None,
+            self._symbols = (
+                self._make_df('symbols', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._symbols
@@ -550,8 +549,8 @@ class SWMMInpFile(BaseReader):
             names = ['Name', 'Units', 'Crain', 'Cgw',
                         'Crdii', 'Kdecay', 'SnowOnly',
                         'Co_Pollutant', 'Co_Frac', 'Cdwf', 'Cinit']
-            self._pollutants = self._clean_comments(
-                self._make_df('pollutants', sep='\s+', header=None,
+            self._pollutants = (
+                self._make_df('pollutants', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0]))
 
         return self._pollutants
