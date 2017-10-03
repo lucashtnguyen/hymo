@@ -359,10 +359,12 @@ class SWMMInpFile(BaseReader):
 
     @property
     def orifices(self):
-        raise(NotImplementedError)
+        # raise(NotImplementedError)
 
         if self._orifices is None:
-            names = []
+            names = [
+                'Name', 'From_Node', 'To_Node', 'Type', 'Offset', 
+                'Qcoeff', 'Gated', 'CloseTime' ]
             self._orifices = self._clean_comments(
                 self._make_df('orifices', sep='\s+', header=None,
                               names=names, index_col=[0]))
