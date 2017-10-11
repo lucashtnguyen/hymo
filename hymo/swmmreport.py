@@ -14,10 +14,9 @@ class SWMMReportFile(BaseReader):
         BaseReader.__init__(self, path)
 
         # check units
-        self.unit = self.orig_file[self.find_line_num('Flow Units')].split('.')[-1].strip()
+        self.unit = self.orig_file[self.find_line_num('Flow Units')].split('.')[-1].strip().upper()
 
-        if self.unit.upper() != 'CFS':
-            raise ValueError
+        self._headers = _ReportHeaders(self.unit)
 
         self._subcatchment_runoff_results = None
         self._node_depth_results = None
@@ -52,19 +51,13 @@ class SWMMReportFile(BaseReader):
         The parsed node depth results as a pandas DataFrame
         """
         if self._subcatchment_runoff_results is None:
-            names = [
-            'Subcatchment', 'Total_Precip_in',
-            'Total_Runon_in', 'Total_Evap_in',
-            'Total_Infil_in', 'Total_Runoff_in',
-            'Total_Runoff_mgal', 'Peak_Runoff_CFS',
-            'Runoff_Coeff'
-            ]
+            names = self._headers.subcatchment_runoff_results
 
             self._subcatchment_runoff_results = self._make_df(
                 'subcatchment_runoff', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._subcatchment_runoff_results
-    
+
     @property
     def node_depth_results(self):
         """
@@ -72,12 +65,7 @@ class SWMMReportFile(BaseReader):
         """
         if self._node_depth_results is None:
             #TODO check names and make consistent with new properties
-            names = [
-                'Node', 'Type',
-                'Average_Depth_Feet', 'Maximum_Depth_Feet',
-                'Maximum_HGL_Feet', 'Time_of_Max_Occurrence_days',
-                'Time_of_Max_Occurrence_hours', 'Reported_Max_Depth_Feet'
-            ]
+            names = self._headers.node_depth_results
 
             self._node_depth_results = self._make_df(
                 'node_depth', sep='\s+', header=None, names=names, index_col=[0])
@@ -90,14 +78,8 @@ class SWMMReportFile(BaseReader):
         The parsed node inflow results as a pandas DataFrame
         """
         if self._node_inflow_results is None:
-            names = [
-                'Node', 'Type',
-                'Maximum_Lateral_Inflow_CFS', 'Maximum_Total_Inflow_CFS',
-                'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
-                'Lateral_Inflow_Volume_mgals', 'Total_Inflow_Volume_mgals',
-                'Flow_Balance_Error_Percent', 'flag'
-            ]
-            
+            names = self._headers.node_inflow_results
+
             self._node_inflow_results = self._make_df(
                 'node_inflow', sep='\s+', header=None, names=names, index_col=[0])
 
@@ -110,11 +92,7 @@ class SWMMReportFile(BaseReader):
         """
         if self._node_surcharge_results is None:
             #TODO check names and make consistent with new properties
-            names = [
-                'Node', 'Type',
-                'Hours_Surcharged', 'Max_Height_Above_Crown_Feet',
-                'Min_Depth_Below_Rim_Feet'
-            ]
+            names = self._headers.node_surcharge_results
 
             self._node_surcharge_results = self._make_df(
                 'node_surcharge', sep='\s+', header=None, names=names, index_col=[0])
@@ -124,13 +102,8 @@ class SWMMReportFile(BaseReader):
     @property
     def node_flooding_results(self):
         if self._node_flooding_results is None:
-            names = [
-                'Node',
-                'Hours_Flooded', 'Maximum_Rate_CFS',
-                'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
-                'Total_Flood_Volume_mgal', 'Maximum_Ponded_Depth_Feet'
-            ]
-            
+            names = self._headers.node_flooding_results
+
             self._node_flooding_results = self._make_df(
                 'node_flooding', sep='\s+', header=None, names=names, index_col=[0])
 
@@ -139,13 +112,7 @@ class SWMMReportFile(BaseReader):
     @property
     def storage_volume_results(self):
         if self._storage_volume_results is None:
-            names = [
-                'Storage_Unit', 'Average_Volume_1000_ft3',
-                'Avg_Pcnt_Full', 'Evap_Pcnt_Loss',
-                'Exfil_Pcnt_Loss', 'Maximum_Volume_1000_ft3',
-                'Max_Pcnt_Full', 'Time_of_Max_Occurrence_days',
-                'Time_of_Max_Occurrence_hours', 'Maximum_Outflow_CFS'    
-            ]
+            names = self._headers.storage_volume_results
 
             self._storage_volume_results = self._make_df(
                 'storage_volume', sep='\s+', header=None, names=names, index_col=[0])
@@ -156,7 +123,7 @@ class SWMMReportFile(BaseReader):
     def outfall_loading_results(self):
         if self._outfall_loading_results is None:
             # special conditions at end of block
-            # summary stats -> parse all and drop sep '---' 
+            # summary stats -> parse all and drop sep '---'
 
             start_line_str = 'Outfall Loading Summary'
             blank_space = 3
@@ -171,7 +138,7 @@ class SWMMReportFile(BaseReader):
 
             df = self._make_df('outfall_loading', sep='\s+',
                 header=None, names=names, index_col=[0])
-            
+
             # drop sep
             drop_from_index = [_ for _ in df.index if '-' in _]
             df = df.drop(drop_from_index)
@@ -183,12 +150,8 @@ class SWMMReportFile(BaseReader):
     @property
     def link_flow_results(self):
         if self._link_flow_results is None:
-            names = [
-                'Link', 'Type',
-                'Maximum_Flow_CFS', 'Time_of_Max_Occurrence_days',
-                'Time_of_Max_Occurrence_hours', 'Maximum_Veloc_ftsec',
-                'Max_Full_Flow', 'Max_Full_Depth'
-            ]
+            names = self._headers.link_flow_results
+
             self._link_flow_results = self._make_df(
                 'link_flow', sep='\s+', header=None, names=names, index_col=[0])
 
@@ -197,14 +160,8 @@ class SWMMReportFile(BaseReader):
     @property
     def flow_classification_results(self):
         if self._flow_classification_results is None:
-            names = [
-                'Conduit', 'Adjusted_Actual_Length',
-                'Fraction_of_Time_Dry', 'Fraction_of_Time_Up_Dry',
-                'Fraction_of_Time_Down_Dry', 'Fraction_of_Time_Sub_Crit',
-                'Fraction_of_Time_Sup_Crit', 'Fraction_of_Time_Up_Crit',
-                'Fraction_of_Time_Down_Crit', 'Fraction_of_Time_Norm_Ltd',
-                'Fraction_of_Time_Inlet_Ctrl',
-            ]
+            names = self._headers.flow_classification_results
+
             self._flow_classification_results = self._make_df(
                 'flow_classification', sep='\s+', header=None, names=names, index_col=[0])
 
@@ -214,13 +171,10 @@ class SWMMReportFile(BaseReader):
     def conduit_surcharge_results(self):
         if self._conduit_surcharge_results is None:
             # There are some EOF lines that we need to exclude.
-            # For now the _find_end function detects the end of 
+            # For now the _find_end function detects the end of
             # block because of the 2xSpace+return.
-            names = [
-                'Conduit', 'Hours_Full_Both_Ends',
-                'Hours_Full_Upstream', 'Hours_Full_Dnstream',
-                'Hours_Above_Full_Normal_Flow', 'Hours_Capacity_Limited',
-            ]
+            names = self._headers.conduit_surcharge_results
+
             self._conduit_surcharge_results = self._make_df(
                 'conduit_surcharge', sep='\s+', header=None, names=names, index_col=[0])
 
@@ -242,3 +196,178 @@ class SWMMReportFile(BaseReader):
                 'link_pollutant_load', sep='\s+', header=None, names=names, index_col=[0])
 
         return self._link_pollutant_load_results
+
+
+class _ReportHeaders(object):
+    """
+    _ReportHeaders: What is my purpose?
+    Dev: You make headers
+    _ReportHeaders: Oh my god
+    """
+    def __init__(self, ftype):
+        self.ftype = ftype.upper().strip()
+
+        if self.ftype not in ['CFS', 'LPS']:
+            e = 'Only "CFS" and "LPS" supported.'
+            raise ValueError(e)
+
+
+    @property
+    def subcatchment_runoff_results(self):
+        if self.ftype == 'CFS':
+            names = [
+                'Subcatchment', 'Total_Precip_in',
+                'Total_Runon_in', 'Total_Evap_in',
+                'Total_Infil_in', 'Total_Runoff_in',
+                'Total_Runoff_mgal', 'Peak_Runoff_CFS',
+                'Runoff_Coeff']
+
+        elif self.ftype == 'LPS':
+            names = [
+                'Subcatchment', 'Total_Precip_mm',
+                'Total_Runon_mm', 'Total_Evap_mm',
+                'Total_Infil_mm', 'Total_Runoff_mm',
+                'Total_Runoff_mltr', 'Peak_Runoff_LPS',
+                'Runoff_Coeff']
+
+        return names
+
+    @property
+    def node_depth_results(self):
+        if self.ftype == 'CFS':
+            names = [
+                'Node', 'Type',
+                'Average_Depth_Feet', 'Maximum_Depth_Feet',
+                'Maximum_HGL_Feet', 'Time_of_Max_Occurrence_days',
+                'Time_of_Max_Occurrence_hours', 'Reported_Max_Depth_Feet'
+            ]
+        elif self.ftype == 'LPS':
+            names = [
+                'Node', 'Type',
+                'Average_Depth_Meters', 'Maximum_Depth_Meters',
+                'Maximum_HGL_Meters', 'Time_of_Max_Occurrence_days',
+                'Time_of_Max_Occurrence_hours', 'Reported_Max_Depth_Meters'
+            ]
+
+        return names
+
+    @property
+    def node_inflow_results(self):
+        if self.ftype == 'CFS':
+            names = [
+                'Node', 'Type',
+                'Maximum_Lateral_Inflow_CFS', 'Maximum_Total_Inflow_CFS',
+                'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
+                'Lateral_Inflow_Volume_mgals', 'Total_Inflow_Volume_mgals',
+                'Flow_Balance_Error_Percent', 'flag'
+            ]
+        elif self.ftype == 'LPS':
+            names = [
+                'Node', 'Type',
+                'Maximum_Lateral_Inflow_LPS', 'Maximum_Total_Inflow_LPS',
+                'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
+                'Lateral_Inflow_Volume_mltr', 'Total_Inflow_Volume_mltr',
+                'Flow_Balance_Error_Percent', 'flag'
+            ]
+
+        return names
+
+    @property
+    def node_surcharge_results(self):
+        if self.ftype == 'CFS':
+            names = [
+                'Node', 'Type',
+                'Hours_Surcharged', 'Max_Height_Above_Crown_Feet',
+                'Min_Depth_Below_Rim_Feet'
+            ]
+        elif self.ftype == 'LPS':
+            names = [
+                'Node', 'Type',
+                'Hours_Surcharged', 'Max_Height_Above_Crown_Meters',
+                'Min_Depth_Below_Rim_Meters'
+            ]
+
+        return names
+
+    @property
+    def node_flooding_results(self):
+        if self.ftype == 'CFS':
+            names = [
+                'Node',
+                'Hours_Flooded', 'Maximum_Rate_CFS',
+                'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
+                'Total_Flood_Volume_mgal', 'Maximum_Ponded_Depth_Feet'
+            ]
+        elif self.ftype == 'LPS':
+            names = [
+                'Node',
+                'Hours_Flooded', 'Maximum_Rate_LPS',
+                'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
+                'Total_Flood_Volume_mltr', 'Maximum_Ponded_Depth_Meters'
+            ]
+
+        return names
+
+    @property
+    def storage_volume_results(self):
+        if self.ftype == 'CFS':
+            names = [
+                'Storage_Unit', 'Average_Volume_1000_ft3',
+                'Avg_Pcnt_Full', 'Evap_Pcnt_Loss',
+                'Exfil_Pcnt_Loss', 'Maximum_Volume_1000_ft3',
+                'Max_Pcnt_Full', 'Time_of_Max_Occurrence_days',
+                'Time_of_Max_Occurrence_hours', 'Maximum_Outflow_CFS'
+            ]
+        elif self.ftype == 'LPS':
+            names = [
+                'Storage_Unit', 'Average_Volume_1000_m3',
+                'Avg_Pcnt_Full', 'Evap_Pcnt_Loss',
+                'Exfil_Pcnt_Loss', 'Maximum_Volume_1000_m3',
+                'Max_Pcnt_Full', 'Time_of_Max_Occurrence_days',
+                'Time_of_Max_Occurrence_hours', 'Maximum_Outflow_LPS'
+            ]
+
+        return names
+
+
+    @property
+    def link_flow_results(self):
+        if self.ftype == 'CFS':
+            names = [
+                'Link', 'Type',
+                'Maximum_Flow_CFS', 'Time_of_Max_Occurrence_days',
+                'Time_of_Max_Occurrence_hours', 'Maximum_Veloc_ftsec',
+                'Max_Full_Flow', 'Max_Full_Depth'
+            ]
+        elif self.ftype == 'LPS':
+            names = [
+                'Link', 'Type',
+                'Maximum_Flow_LPS', 'Time_of_Max_Occurrence_days',
+                'Time_of_Max_Occurrence_hours', 'Maximum_Veloc_msec',
+                'Max_Full_Flow', 'Max_Full_Depth'
+            ]
+
+        return names
+
+    @property
+    def flow_classification_results(self):
+        names = [
+            'Conduit', 'Adjusted_Actual_Length',
+            'Fraction_of_Time_Dry', 'Fraction_of_Time_Up_Dry',
+            'Fraction_of_Time_Down_Dry', 'Fraction_of_Time_Sub_Crit',
+            'Fraction_of_Time_Sup_Crit', 'Fraction_of_Time_Up_Crit',
+            'Fraction_of_Time_Down_Crit', 'Fraction_of_Time_Norm_Ltd',
+            'Fraction_of_Time_Inlet_Ctrl',
+        ]
+
+        return names
+
+    @property
+    def conduit_surcharge_results(self):
+        names = [
+            'Conduit', 'Hours_Full_Both_Ends',
+            'Hours_Full_Upstream', 'Hours_Full_Dnstream',
+            'Hours_Above_Full_Normal_Flow', 'Hours_Capacity_Limited',
+        ]
+
+        return names
