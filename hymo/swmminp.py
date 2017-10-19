@@ -83,7 +83,7 @@ class SWMMInpFile(BaseReader):
             'losses': ('[LOSSES]', 2),
             'timeseries': ('[TIMESERIES]', 2),
             'report': ('[REPORT]', 2),
-            'tags': ('[TAGS]', 2),
+            'tags': ('[TAGS]', 1),
             'map': ('[MAP]', 2),
             'coordinates': ('[COORDINATES]', 2),
             'vertices': ('[VERTICES]', 2),
@@ -476,7 +476,6 @@ class SWMMInpFile(BaseReader):
 
     @property
     def tags(self):
-        raise(NotImplementedError)
 
         if self._tags is None:
             names = ['Object', 'Name', 'Type']
