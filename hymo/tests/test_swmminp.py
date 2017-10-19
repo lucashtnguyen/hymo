@@ -94,9 +94,8 @@ class base_SWMMInpFileMixin(object):
         assert hasattr(self.inp, 'report')
         assert isinstance(self.inp.report, pd.DataFrame)
 
-        with pytest.raises(NotImplementedError):
-            assert hasattr(self.inp, 'tags')
-            assert isinstance(self.inp.tags, pd.DataFrame)
+        assert hasattr(self.inp, 'tags')
+        assert isinstance(self.inp.tags, pd.DataFrame)
 
         with pytest.raises(NotImplementedError):
             assert hasattr(self.inp, 'map')

@@ -84,8 +84,14 @@ class BaseReader(object):
         - lines: list, a list of lines from `open(filename).readlines()`
         """
 
-        with open(filename, 'r') as openfile:
-            lines = openfile.readlines()
+        if isinstance(filename, str):
+            with open(filename, 'r') as openfile:
+                lines = openfile.readlines()
+        else:
+            try: # is StingIO?
+                lines = filename.readlines()
+            except:
+                raise
         return lines
 
     def find_block(self, block):
