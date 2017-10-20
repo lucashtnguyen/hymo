@@ -26,7 +26,7 @@ class BaseReader(object):
             self._orig_file = self.read_file(self.path)
         return self._orig_file
 
-    def find_line_num(self, line):
+    def find_line_num(self, line, lookup=None):
         """
         Given a text string returns the line number that the string
         appears in.
@@ -37,13 +37,16 @@ class BaseReader(object):
         Returns:
         - n: int, the line number where line exists.
         """
-        currentfile = self.orig_file.copy()
+        if lookup is None:
+            currentfile = self.orig_file.copy()
+        else:
+            currentfile = lookup.copy()
         for n, l in enumerate(currentfile):
             if l.find(line) > -1:
                 break
         return n
 
-    def _find_end(self, linenum, line):
+    def _find_end(self, linenum, line, lookup=None):
         """
         Given the start of the block returns the number of rows
         needed to for skipfooter in pandas.read_table to only read
@@ -55,10 +58,13 @@ class BaseReader(object):
         Returns:
         - n: int, the line number where line exists.
         """
-        currentfile = self.orig_file.copy()
+        if lookup is None:
+            currentfile = self.orig_file.copy()
+        else:
+            currentfile = lookup.copy()
         # At the end of every block SWMM adds a space, space, return
         # If this changes in new versions then the `line` var will require
-        # an update 
+        # an update
         breaks = []
         for n, l in enumerate(currentfile):
             if l.find(line) > -1:
@@ -94,7 +100,7 @@ class BaseReader(object):
                 raise
         return lines
 
-    def find_block(self, block):
+    def find_block(self, block, lookup=None):
         """
         Finds the start of a SWMM parameter block such as the
         'Node Surcharge Summary' block.
@@ -110,7 +116,7 @@ class BaseReader(object):
         """
         blockstart, comment_lines = self._startlines[block]
 
-        return self.find_line_num(blockstart) + comment_lines #b/c variable comment lines
+        return self.find_line_num(blockstart, lookup) + comment_lines #b/c variable comment lines
 
     def raw_block(self, block):
         """
@@ -158,16 +164,16 @@ class BaseReader(object):
         def sanitizer1(s):
             """Helper to remove special chars to conform to PEP"""
             for replace in list('!@#$%^&*()-+={}[]:;<>/?') + list(' '):
-                s = s.replace(replace, '_') 
+                s = s.replace(replace, '_')
             return s
-        
+
         def sanitizer2(s):
             """Recursive func to remove double '_' from sanitizer()"""
             if '__' in s:
                 return santize2(s.replace('__', '_'))
             else:
                 return s
-            
+
         def sanitizer(s):
             """Helper to standardize column names"""
             return sanitizer2(sanitizer1(s))
@@ -185,11 +191,11 @@ class BaseReader(object):
         bool_shifted = base_array.any().shift(1)
 
         diff = bool_array.sub(bool_shifted)
-        
+
         # need to start the list at n=0
         column_widths = [0]
         column_widths += diff[diff < 0].index.tolist()
-        
+
         # might need to go to the end sometimes? if so uncomment:
             # column_widths += [t3.index.max()]
 
@@ -200,5 +206,5 @@ class BaseReader(object):
                     zip(column_widths, column_widths[1:])] for csl in
                         column_string_list])
         ]
-        
+
         return final_cols
