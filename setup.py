@@ -27,7 +27,8 @@ CLASSIFIERS = [
 ]
 INSTALL_REQUIRES = ['pandas', 'pytest']
 PACKAGE_DATA = {
-    'hymo.tests._data': [ '*.csv', '*.rpt', '*.inp', '*.out'],
+    'hymo.tests._data.lspc': [ '*.csv', '*.rpt', '*.inp', '*.out'],
+    'hymo.tests._data.swmm': [ '*.csv', '*.rpt', '*.inp', '*.out'],
 }
 
 setup(
