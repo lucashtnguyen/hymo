@@ -1,12 +1,13 @@
 # hymo
 hymo: A Hydro Model reader.
-`hymo` merges `swmmreport` and `lspcreport` to `hymo`.
+https://hymo.readthedocs.io/
 
-The `BaseReader` class of swmmreport is an extensible framework to
-several different model input and output files. Previously, `swmmreport` was
-a dependency of `lspcreport`. Moving forward new models can easily be added
-to this framework without needing `swmmreport.BaseReader()` as a dependency.
 
+The `BaseReader` class of hymo is an extensible framework to
+several different card based model input and output files.
+
+
+`hymo` merges `swmmreport` and `lspcreport`.
 `swmmreport` was previously at (https://github.com/lucashtnguyen/swmmreport)
 `lspcreport` was previously at (https://github.com/lucashtnguyen/lspcreport)
 
