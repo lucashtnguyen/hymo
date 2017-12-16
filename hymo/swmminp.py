@@ -110,6 +110,26 @@ class SWMMInpFile(BaseReader):
 
         self._check_headers()
 
+    def find_line_num(self, line, lookup=None):
+        """
+        Given a text string returns the line number that the string
+        appears in.
+
+        Requires:
+        - line: str, text to look up.
+
+        Returns:
+        - n: int, the line number where line exists.
+        """
+        if lookup is None:
+            currentfile = self.orig_file.copy()
+        else:
+            currentfile = lookup.copy()
+        for n, l in enumerate(currentfile):
+            if l.lower().find(line.lower()) > -1:
+                break
+        return n
+    
     def BlockDoesNotExistWarning(self):
         raise(NotImplementedError)
         # TODO
