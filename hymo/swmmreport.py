@@ -51,10 +51,11 @@ class SWMMReportFile(BaseReader):
         The parsed node depth results as a pandas DataFrame
         """
         if self._subcatchment_runoff_results is None:
-            names = self._headers.subcatchment_runoff_results
+            names, dtype = self._headers.subcatchment_runoff_results
 
             self._subcatchment_runoff_results = self._make_df(
-                'subcatchment_runoff', sep='\s+', header=None, names=names, index_col=[0])
+                'subcatchment_runoff', sep='\s+', header=None, names=names, 
+                index_col=[0], dtype=dtype)
 
         return self._subcatchment_runoff_results
 
@@ -65,10 +66,11 @@ class SWMMReportFile(BaseReader):
         """
         if self._node_depth_results is None:
             #TODO check names and make consistent with new properties
-            names = self._headers.node_depth_results
+            names, dtype = self._headers.node_depth_results
 
             self._node_depth_results = self._make_df(
-                'node_depth', sep='\s+', header=None, names=names, index_col=[0])
+                'node_depth', sep='\s+', header=None, names=names, 
+                index_col=[0], dtype=dtype)
 
         return self._node_depth_results
 
@@ -78,10 +80,11 @@ class SWMMReportFile(BaseReader):
         The parsed node inflow results as a pandas DataFrame
         """
         if self._node_inflow_results is None:
-            names = self._headers.node_inflow_results
+            names, dtype = self._headers.node_inflow_results
 
             self._node_inflow_results = self._make_df(
-                'node_inflow', sep='\s+', header=None, names=names, index_col=[0])
+                'node_inflow', sep='\s+', header=None, names=names, 
+                index_col=[0], dtype=dtype)
 
         return self._node_inflow_results
 
@@ -92,30 +95,33 @@ class SWMMReportFile(BaseReader):
         """
         if self._node_surcharge_results is None:
             #TODO check names and make consistent with new properties
-            names = self._headers.node_surcharge_results
+            names, dtype = self._headers.node_surcharge_results
 
             self._node_surcharge_results = self._make_df(
-                'node_surcharge', sep='\s+', header=None, names=names, index_col=[0])
+                'node_surcharge', sep='\s+', header=None, names=names, 
+                index_col=[0], dtype=dtype)
 
         return self._node_surcharge_results
 
     @property
     def node_flooding_results(self):
         if self._node_flooding_results is None:
-            names = self._headers.node_flooding_results
+            names, dtype = self._headers.node_flooding_results
 
             self._node_flooding_results = self._make_df(
-                'node_flooding', sep='\s+', header=None, names=names, index_col=[0])
+                'node_flooding', sep='\s+', header=None, names=names, 
+                index_col=[0], dtype=dtype)
 
         return self._node_flooding_results
 
     @property
     def storage_volume_results(self):
         if self._storage_volume_results is None:
-            names = self._headers.storage_volume_results
+            names, dtype = self._headers.storage_volume_results
 
             self._storage_volume_results = self._make_df(
-                'storage_volume', sep='\s+', header=None, names=names, index_col=[0])
+                'storage_volume', sep='\s+', header=None, names=names, 
+                index_col=[0], dtype=dtype)
 
         return self._storage_volume_results
 
@@ -135,9 +141,10 @@ class SWMMReportFile(BaseReader):
             n = '_'.join(names[:2])
             _ = names.pop(0)
             names[0] = n
+            dtype = {'Outfall_Node': str}
 
             df = self._make_df('outfall_loading', sep='\s+',
-                header=None, names=names, index_col=[0])
+                header=None, names=names, index_col=[0], dtype=dtype)
 
             # drop sep
             drop_from_index = [_ for _ in df.index if '-' in _]
@@ -150,20 +157,22 @@ class SWMMReportFile(BaseReader):
     @property
     def link_flow_results(self):
         if self._link_flow_results is None:
-            names = self._headers.link_flow_results
+            names, dtype = self._headers.link_flow_results
 
             self._link_flow_results = self._make_df(
-                'link_flow', sep='\s+', header=None, names=names, index_col=[0])
+                'link_flow', sep='\s+', header=None, names=names, 
+                index_col=[0], dtype=dtype)
 
         return self._link_flow_results
 
     @property
     def flow_classification_results(self):
         if self._flow_classification_results is None:
-            names = self._headers.flow_classification_results
+            names, dtype = self._headers.flow_classification_results
 
             self._flow_classification_results = self._make_df(
-                'flow_classification', sep='\s+', header=None, names=names, index_col=[0])
+                'flow_classification', sep='\s+', header=None, names=names, 
+                index_col=[0], dtype=dtype)
 
         return self._flow_classification_results
 
@@ -173,10 +182,11 @@ class SWMMReportFile(BaseReader):
             # There are some EOF lines that we need to exclude.
             # For now the _find_end function detects the end of
             # block because of the 2xSpace+return.
-            names = self._headers.conduit_surcharge_results
+            names, dtype = self._headers.conduit_surcharge_results
 
             self._conduit_surcharge_results = self._make_df(
-                'conduit_surcharge', sep='\s+', header=None, names=names, index_col=[0])
+                'conduit_surcharge', sep='\s+', header=None, names=names, 
+                index_col=[0], dtype=dtype)
 
         return self._conduit_surcharge_results
 
@@ -189,11 +199,13 @@ class SWMMReportFile(BaseReader):
             start_line_str = 'Link Pollutant Load Summary'
             blank_space = 3
             n_lines = 2
+            dtype = {'Link': str}
 
             names = self.infer_columns(start_line_str, blank_space, n_lines)
 
             self._link_pollutant_load_results = self._make_df(
-                'link_pollutant_load', sep='\s+', header=None, names=names, index_col=[0])
+                'link_pollutant_load', sep='\s+', header=None, names=names, 
+                index_col=[0], dtype=dtype)
 
         return self._link_pollutant_load_results
 
@@ -229,8 +241,8 @@ class _ReportHeaders(object):
                 'Total_Infil_mm', 'Total_Runoff_mm',
                 'Total_Runoff_mltr', 'Peak_Runoff_LPS',
                 'Runoff_Coeff']
-
-        return names
+        dtype = {'Subcatchment': str}
+        return names, dtype
 
     @property
     def node_depth_results(self):
@@ -248,8 +260,8 @@ class _ReportHeaders(object):
                 'Maximum_HGL_Meters', 'Time_of_Max_Occurrence_days',
                 'Time_of_Max_Occurrence_hours', 'Reported_Max_Depth_Meters'
             ]
-
-        return names
+        dtype = {'Node': str}
+        return names, dtype
 
     @property
     def node_inflow_results(self):
@@ -269,8 +281,8 @@ class _ReportHeaders(object):
                 'Lateral_Inflow_Volume_mltr', 'Total_Inflow_Volume_mltr',
                 'Flow_Balance_Error_Percent', 'flag'
             ]
-
-        return names
+        dtype = {'Node': str}
+        return names, dtype
 
     @property
     def node_surcharge_results(self):
@@ -287,7 +299,8 @@ class _ReportHeaders(object):
                 'Min_Depth_Below_Rim_Meters'
             ]
 
-        return names
+        dtype = {'Node': str}
+        return names, dtype
 
     @property
     def node_flooding_results(self):
@@ -306,7 +319,8 @@ class _ReportHeaders(object):
                 'Total_Flood_Volume_mltr', 'Maximum_Ponded_Depth_Meters'
             ]
 
-        return names
+        dtype = {'Node': str}
+        return names, dtype
 
     @property
     def storage_volume_results(self):
@@ -327,7 +341,8 @@ class _ReportHeaders(object):
                 'Time_of_Max_Occurrence_hours', 'Maximum_Outflow_LPS'
             ]
 
-        return names
+        dtype = {'Storage_Unit': str}
+        return names, dtype
 
 
     @property
@@ -347,7 +362,8 @@ class _ReportHeaders(object):
                 'Max_Full_Flow', 'Max_Full_Depth'
             ]
 
-        return names
+        dtype = {'Link': str}
+        return names, dtype
 
     @property
     def flow_classification_results(self):
@@ -360,7 +376,8 @@ class _ReportHeaders(object):
             'Fraction_of_Time_Inlet_Ctrl',
         ]
 
-        return names
+        dtype = {'Conduit': str}
+        return names, dtype
 
     @property
     def conduit_surcharge_results(self):
@@ -370,4 +387,5 @@ class _ReportHeaders(object):
             'Hours_Above_Full_Normal_Flow', 'Hours_Capacity_Limited',
         ]
 
-        return names
+        dtype = {'Conduit': str}
+        return names, dtype
