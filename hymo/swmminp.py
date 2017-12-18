@@ -373,7 +373,7 @@ class SWMMInpFile(BaseReader):
 
             self._outfalls = (
                 self._make_df('outfalls', comment=';', sep='\s+', header=None,
-                              names=names, index_col=[0], skiprows=1, dtype=dtype))
+                              names=names, index_col=[0], dtype=dtype))
 
         return self._outfalls
 
