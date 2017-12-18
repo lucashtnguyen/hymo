@@ -1,5 +1,6 @@
 import warnings
 import pandas as pd
+import numpy as np
 
 from .base_reader import BaseReader
 
@@ -238,6 +239,7 @@ class SWMMInpFile(BaseReader):
             dtype = {
                 'Name': str,
                 'Rain_Gage': str,
+                'Outlet': str,
             }
 
             self._subcatchments = (
@@ -597,7 +599,11 @@ class SWMMInpFile(BaseReader):
     def coordinates(self):
         if self._coordinates is None:
             names = ['Node', 'X_Coord', 'Y_Coord']
-            dtype = {'Node': str}
+            dtype = {
+                'Node': str,
+                'X_Coord': np.float64, 
+                'Y_Coord': np.float64,
+            }
             self._coordinates = (
                 self._make_df('coordinates', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0], dtype=dtype))
@@ -609,7 +615,11 @@ class SWMMInpFile(BaseReader):
     def vertices(self):
         if self._vertices is None:
             names = ['Link', 'X_Coord', 'Y_Coord']
-            dtype = {'Link': str}
+            dtype = {
+                'Link': str,
+                'X_Coord': np.float64, 
+                'Y_Coord': np.float64,
+            }
             self._vertices = (
                 self._make_df('vertices', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0], dtype=dtype))
@@ -621,7 +631,13 @@ class SWMMInpFile(BaseReader):
     def polygons(self):
         if self._polygons is None:
             names = ['Subcatchment', 'X_Coord', 'Y_Coord']
-            dtype = {'Subcatchment': str}
+            
+            dtype = {
+                'Subcatchment': str,
+                'X_Coord': np.float64, 
+                'Y_Coord': np.float64,
+            }
+
             self._polygons = (
                 self._make_df('polygons', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0], dtype=dtype))
