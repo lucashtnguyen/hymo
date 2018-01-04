@@ -65,6 +65,9 @@ class base_SWMMInpFileMixin(object):
         assert hasattr(self.inp, 'storage')
         assert isinstance(self.inp.storage, pd.DataFrame)
 
+        assert hasattr(self.inp, 'dividers')
+        assert isinstance(self.inp.dividers, pd.DataFrame)
+
         assert hasattr(self.inp, 'conduits')
         assert isinstance(self.inp.conduits, pd.DataFrame)
 
@@ -73,6 +76,9 @@ class base_SWMMInpFileMixin(object):
 
         assert hasattr(self.inp, 'weirs')
         assert isinstance(self.inp.weirs, pd.DataFrame)
+
+        assert hasattr(self.inp, 'pumps')
+        assert isinstance(self.inp.pumps, pd.DataFrame)
 
         assert hasattr(self.inp, 'xsections')
         assert isinstance(self.inp.xsections, pd.DataFrame)
