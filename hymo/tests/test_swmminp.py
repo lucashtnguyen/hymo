@@ -62,9 +62,8 @@ class base_SWMMInpFileMixin(object):
         assert hasattr(self.inp, 'outfalls')
         assert isinstance(self.inp.outfalls, pd.DataFrame)
 
-        with pytest.raises(NotImplementedError):
-            assert hasattr(self.inp, 'storage')
-            assert isinstance(self.inp.storage, pd.DataFrame)
+        assert hasattr(self.inp, 'storage')
+        assert isinstance(self.inp.storage, pd.DataFrame)
 
         assert hasattr(self.inp, 'conduits')
         assert isinstance(self.inp.conduits, pd.DataFrame)
