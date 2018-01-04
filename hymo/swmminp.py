@@ -4,10 +4,12 @@ import numpy as np
 
 from .base_reader import BaseReader
 
+
 class SWMMInpFile(BaseReader):
     """
     A class to read a SWMM model report file.
     """
+
     def __init__(self, path):
         """
         Requires:
@@ -30,10 +32,12 @@ class SWMMInpFile(BaseReader):
         self._junctions = None
         self._outfalls = None
         self._storage = None
+        self._dividers = None
         self._conduits = None
         self._orifices = None
         self._outlets = None
         self._weirs = None
+        self._pumps = None
         self._xsections = None
         self._pollutants = None
         self._curves = None
@@ -62,7 +66,7 @@ class SWMMInpFile(BaseReader):
             'title': ('[TITLE]', 2),
             'options': ('[OPTIONS]', 2),
             'evaporation': ('[EVAPORATION]', 2),
-            'temperature': ('[TEMPERATURE]', 2), # requires special parsing
+            'temperature': ('[TEMPERATURE]', 2),  # requires special parsing
             'raingages': ('[RAINGAGES]', 2),
             'subcatchments': ('[SUBCATCHMENTS]', 2),
             'subareas': ('[SUBAREAS]', 2),
@@ -74,10 +78,12 @@ class SWMMInpFile(BaseReader):
             'junctions': ('[JUNCTIONS]', 2),
             'outfalls': ('[OUTFALLS]', 2),
             'storage': ('[STORAGE]', 2),
+            'dividers': ('[DIVIDERS]', 2),
             'conduits': ('[CONDUITS]', 2),
             'orifices': ('[ORIFICES]', 2),
             'outlets': ('[OUTLETS]', 2),
             'weirs': ('[WEIRS]', 2),
+            'pumps': ('[PUMPS]', 2),
             'xsections': ('[XSECTIONS]', 2),
             'curves': ('[CURVES]', 2),
             'transects': ('[TRANSECTS]', 2),
@@ -98,14 +104,14 @@ class SWMMInpFile(BaseReader):
             # patterns
             # washoff
             # treatment
-            # pumps
+            # pumps # added minimum required info for flow network
             # hydrographs
             # rdii
             # buildup
             # dwf
             # inflows
             # coverage
-            # dividers
+            # dividers # added minimum required info for flow network
             # landuses
         }
 
@@ -130,7 +136,7 @@ class SWMMInpFile(BaseReader):
             if l.lower().find(line.lower()) > -1:
                 break
         return n
-    
+
     def BlockDoesNotExistWarning(self):
         raise(NotImplementedError)
         # TODO
@@ -145,17 +151,18 @@ class SWMMInpFile(BaseReader):
 
         known_cards = set(self._startlines.keys())
 
-        cards_in_inp = set([_.split(']')[0][1:].lower() for _ in self.orig_file if _[0] == '['])
+        cards_in_inp = set([_.split(']')[0][1:].lower()
+                            for _ in self.orig_file if _[0] == '['])
         self.cards_in_inp = cards_in_inp
 
         # check if this inp has any cards not mapped
         not_mapped = cards_in_inp.difference(known_cards)
         for card in not_mapped:
-            warnings.warn("Card {} currently not supported.".format(card), Warning)        
+            warnings.warn(
+                "Card {} currently not supported.".format(card), Warning)
 
         # check which cards are not in the inp
         self._not_in_inp = known_cards.difference(cards_in_inp)
-
 
     def _clean_comments(self, df, comment=';'):
         drop_list = [_ for _ in df.index if _[0] == comment]
@@ -166,7 +173,7 @@ class SWMMInpFile(BaseReader):
     def title(self):
         raise(NotImplementedError)
         # will require special parsing as it is just text
-    
+
     @property
     def options(self):
         if self._options is None:
@@ -223,7 +230,6 @@ class SWMMInpFile(BaseReader):
                               names=names, index_col=[0], dtype=dtype))
 
         return self._raingages
-
 
     @property
     def subcatchments(self):
@@ -284,7 +290,6 @@ class SWMMInpFile(BaseReader):
 
         return self._infiltration
 
-
     @property
     def lid_controls(self):
         raise(NotImplementedError)
@@ -296,7 +301,6 @@ class SWMMInpFile(BaseReader):
                               names=names, index_col=[0]))
 
         return self._lid_controls
-
 
     @property
     def lid_usage(self):
@@ -310,7 +314,6 @@ class SWMMInpFile(BaseReader):
 
         return self._lid_usage
 
-
     @property
     def aquifers(self):
         raise(NotImplementedError)
@@ -322,7 +325,6 @@ class SWMMInpFile(BaseReader):
                               names=names, index_col=[0]))
 
         return self._aquifers
-
 
     @property
     def groundwater(self):
@@ -336,7 +338,6 @@ class SWMMInpFile(BaseReader):
 
         return self._groundwater
 
-
     @property
     def junctions(self):
         if self._junctions is None:
@@ -344,7 +345,7 @@ class SWMMInpFile(BaseReader):
                 'Name', 'Invert_Elev',
                 'Max_Depth', 'Init_Depth',
                 'Surcharge_Depth', 'Ponded_Area'
-                ]
+            ]
 
             dtype = {
                 'Name': str,
@@ -355,7 +356,6 @@ class SWMMInpFile(BaseReader):
                               names=names, index_col=[0], dtype=dtype))
 
         return self._junctions
-
 
     @property
     def outfalls(self):
@@ -368,7 +368,7 @@ class SWMMInpFile(BaseReader):
 
             dtype = {
                 'Name': str,
-                'Outfall_Type': str, 
+                'Outfall_Type': str,
             }
 
             self._outfalls = (
@@ -377,19 +377,52 @@ class SWMMInpFile(BaseReader):
 
         return self._outfalls
 
-
     @property
     def storage(self):
-        raise(NotImplementedError)
+        # raise(NotImplementedError)
 
         if self._storage is None:
-            names = []
+            names = [
+                'Name', 'Invert_Elev', 'Max_Depth',
+                'Init_Depth', 'Storage_Curve',
+            ]
+
+            dtype = {
+                'Name': str,
+                'Invert_Elev': str,
+                'Max_Depth': str,
+                'Init_Depth': str,
+                'Storage_Curve': str,
+            }
+
             self._storage = (
                 self._make_df('storage', comment=';', sep='\s+', header=None,
-                              names=names, index_col=[0]))
+                              names=names, usecols=range(5),
+                              index_col=[0], dtype=dtype))
 
         return self._storage
 
+    @property
+    def dividers(self):
+        # raise(NotImplementedError)
+
+        if self._dividers is None:
+            names = [
+                'Name', 'Elevation', 'Diverted_Link', 'Type',
+            ]
+
+            dtype = {
+                'Name': str,
+                'Elevation': str,
+                'Diverted_Link': str,
+                'Type': str,
+            }
+            self._dividers = (
+                self._make_df('dividers', comment=';', sep='\s+', header=None,
+                              names=names, usecols=range(4),
+                              index_col=[0], dtype=dtype))
+
+        return self._dividers
 
     @property
     def conduits(self):
@@ -404,16 +437,15 @@ class SWMMInpFile(BaseReader):
 
             dtype = {
                 'Name': str,
-                'Inlet_Node': str, 
+                'Inlet_Node': str,
                 'Outlet_Node': str
             }
 
             self._conduits = (
-                self._make_df('conduits', comment=';', sep='\s+', header=None, 
+                self._make_df('conduits', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0], dtype=dtype))
 
         return self._conduits
-
 
     @property
     def orifices(self):
@@ -421,12 +453,12 @@ class SWMMInpFile(BaseReader):
 
         if self._orifices is None:
             names = [
-                'Name', 'From_Node', 'To_Node', 'Type', 'Offset', 
-                'Qcoeff', 'Gated', 'CloseTime' ]
+                'Name', 'From_Node', 'To_Node', 'Type', 'Offset',
+                'Qcoeff', 'Gated', 'CloseTime']
 
             dtype = {
                 'Name': str,
-                'From_Node': str, 
+                'From_Node': str,
                 'To_Node': str,
                 'Type': str
             }
@@ -436,7 +468,6 @@ class SWMMInpFile(BaseReader):
                               names=names, index_col=[0], dtype=dtype))
 
         return self._orifices
-
 
     @property
     def outlets(self):
@@ -450,7 +481,7 @@ class SWMMInpFile(BaseReader):
 
             dtype = {
                 'Name': str,
-                'Inlet_Node': str, 
+                'Inlet_Node': str,
                 'Outlet_Node': str
             }
 
@@ -459,7 +490,6 @@ class SWMMInpFile(BaseReader):
                               names=names, index_col=[0], dtype=dtype))
 
         return self._outlets
-
 
     @property
     def weirs(self):
@@ -472,7 +502,7 @@ class SWMMInpFile(BaseReader):
 
             dtype = {
                 'Name': str,
-                'From_Node': str, 
+                'From_Node': str,
                 'To_Node': str,
                 'Type': str
             }
@@ -483,6 +513,25 @@ class SWMMInpFile(BaseReader):
 
         return self._weirs
 
+    @property
+    def pumps(self):
+        if self._pumps is None:
+            names = [
+                'Name', 'From_Node', 'To_Node',
+            ]
+
+            dtype = {
+                'Name': str,
+                'From_Node': str,
+                'To_Node': str,
+            }
+
+            self._pumps = (
+                self._make_df('pumps', comment=';', sep='\s+', header=None,
+                              names=names, usecols=range(3),
+                              index_col=[0], dtype=dtype))
+
+        return self._pumps
 
     @property
     def xsections(self):
@@ -545,7 +594,6 @@ class SWMMInpFile(BaseReader):
 
         return self._curves
 
-
     @property
     def timeseries(self):
         if self._timeseries is None:
@@ -557,7 +605,6 @@ class SWMMInpFile(BaseReader):
 
         return self._timeseries
 
-
     @property
     def report(self):
         if self._report is None:
@@ -567,7 +614,6 @@ class SWMMInpFile(BaseReader):
                               names=names, index_col=[0]))
 
         return self._report
-
 
     @property
     def tags(self):
@@ -581,7 +627,6 @@ class SWMMInpFile(BaseReader):
 
         return self._tags
 
-
     @property
     def map(self):
         raise(NotImplementedError)
@@ -594,14 +639,13 @@ class SWMMInpFile(BaseReader):
 
         return self._map
 
-
     @property
     def coordinates(self):
         if self._coordinates is None:
             names = ['Node', 'X_Coord', 'Y_Coord']
             dtype = {
                 'Node': str,
-                'X_Coord': np.float64, 
+                'X_Coord': np.float64,
                 'Y_Coord': np.float64,
             }
             self._coordinates = (
@@ -610,14 +654,13 @@ class SWMMInpFile(BaseReader):
 
         return self._coordinates
 
-
     @property
     def vertices(self):
         if self._vertices is None:
             names = ['Link', 'X_Coord', 'Y_Coord']
             dtype = {
                 'Link': str,
-                'X_Coord': np.float64, 
+                'X_Coord': np.float64,
                 'Y_Coord': np.float64,
             }
             self._vertices = (
@@ -626,15 +669,14 @@ class SWMMInpFile(BaseReader):
 
         return self._vertices
 
-
     @property
     def polygons(self):
         if self._polygons is None:
             names = ['Subcatchment', 'X_Coord', 'Y_Coord']
-            
+
             dtype = {
                 'Subcatchment': str,
-                'X_Coord': np.float64, 
+                'X_Coord': np.float64,
                 'Y_Coord': np.float64,
             }
 
@@ -643,7 +685,6 @@ class SWMMInpFile(BaseReader):
                               names=names, index_col=[0], dtype=dtype))
 
         return self._polygons
-
 
     @property
     def symbols(self):
@@ -660,8 +701,8 @@ class SWMMInpFile(BaseReader):
     def pollutants(self):
         if self._pollutants is None:
             names = ['Name', 'Units', 'Crain', 'Cgw',
-                        'Crdii', 'Kdecay', 'SnowOnly',
-                        'Co_Pollutant', 'Co_Frac', 'Cdwf', 'Cinit']
+                     'Crdii', 'Kdecay', 'SnowOnly',
+                     'Co_Pollutant', 'Co_Frac', 'Cdwf', 'Cinit']
             dtype = {'Name': str}
             self._pollutants = (
                 self._make_df('pollutants', comment=';', sep='\s+', header=None,
