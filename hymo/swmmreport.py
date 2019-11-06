@@ -217,8 +217,9 @@ class _ReportHeaders(object):
     Dev: You make headers
     _ReportHeaders: Oh my god
     """
-    def __init__(self, ftype):
+    def __init__(self, ftype, version = '5.1.013'):
         self.ftype = ftype.upper().strip()
+        self.version = version
 
         if self.ftype not in ['CFS', 'LPS']:
             e = 'Only "CFS" and "LPS" supported.'
