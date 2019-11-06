@@ -6,7 +6,7 @@ class SWMMReportFile(BaseReader):
     """
     A class to read a SWMM model report file.
     """
-    def __init__(self, path):
+    def __init__(self, path, version='5.1.013'):
         """
         Requires:
         - path: str, the full file path to the existing SWMM model .inp.
@@ -15,6 +15,7 @@ class SWMMReportFile(BaseReader):
 
         # check units
         self.unit = self.orig_file[self.find_line_num('Flow Units')].split('.')[-1].strip().upper()
+        self.version = version
 
         self._headers = _ReportHeaders(self.unit)
 
@@ -226,24 +227,43 @@ class _ReportHeaders(object):
 
     @property
     def subcatchment_runoff_results(self):
-        if self.ftype == 'CFS':
-            names = [
-                'Subcatchment', 'Total_Precip_in',
-                'Total_Runon_in', 'Total_Evap_in',
-                'Total_Infil_in', 'Imperv_Runoff_in', 
-                'Perv_Runoff_in', 'Total_Runoff_in',
-                'Total_Runoff_mgal', 'Peak_Runoff_CFS',
-                'Runoff_Coeff']
+        if self.version == '5.1.010':
+            if self.ftype == 'CFS': 
+                names = [ 
+                    'Subcatchment', 'Total_Precip_in', 
+                    'Total_Runon_in', 'Total_Evap_in', 
+                    'Total_Infil_in', 'Total_Runoff_in', 
+                    'Total_Runoff_mgal', 'Peak_Runoff_CFS', 
+                    'Runoff_Coeff'] 
 
-        elif self.ftype == 'LPS':
-            names = [
-                'Subcatchment', 'Total_Precip_mm',
-                'Total_Runon_mm', 'Total_Evap_mm',
-                'Total_Infil_mm', 'Imperv_Runoff_mm', 
-                'Perv_Runoff_mm', 'Total_Runoff_mm',
-                'Total_Runoff_mltr', 'Peak_Runoff_LPS',
-                'Runoff_Coeff']
-        dtype = {'Subcatchment': str}
+            elif self.ftype == 'LPS': 
+                names = [ 
+                    'Subcatchment', 'Total_Precip_mm', 
+                    'Total_Runon_mm', 'Total_Evap_mm', 
+                    'Total_Infil_mm', 'Total_Runoff_mm', 
+                    'Total_Runoff_mltr', 'Peak_Runoff_LPS', 
+                    'Runoff_Coeff'] 
+            dtype = {'Subcatchment': str} 
+
+        elif self.version == '5.1.013':
+            if self.ftype == 'CFS':
+                names = [
+                    'Subcatchment', 'Total_Precip_in',
+                    'Total_Runon_in', 'Total_Evap_in',
+                    'Total_Infil_in', 'Imperv_Runoff_in', 
+                    'Perv_Runoff_in', 'Total_Runoff_in',
+                    'Total_Runoff_mgal', 'Peak_Runoff_CFS',
+                    'Runoff_Coeff']
+
+            elif self.ftype == 'LPS':
+                names = [
+                    'Subcatchment', 'Total_Precip_mm',
+                    'Total_Runon_mm', 'Total_Evap_mm',
+                    'Total_Infil_mm', 'Imperv_Runoff_mm', 
+                    'Perv_Runoff_mm', 'Total_Runoff_mm',
+                    'Total_Runoff_mltr', 'Peak_Runoff_LPS',
+                    'Runoff_Coeff']
+            dtype = {'Subcatchment': str}
         return names, dtype
 
     @property
