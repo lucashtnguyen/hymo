@@ -253,6 +253,7 @@ class _ReportHeaders(object):
                 'Maximum_HGL_Feet', 'Time_of_Max_Occurrence_days',
                 'Time_of_Max_Occurrence_hours', 'Reported_Max_Depth_Feet'
             ]
+
         elif self.ftype == 'LPS':
             names = [
                 'Node', 'Type',
@@ -273,6 +274,7 @@ class _ReportHeaders(object):
                 'Lateral_Inflow_Volume_mgals', 'Total_Inflow_Volume_mgals',
                 'Flow_Balance_Error_Percent', 'flag'
             ]
+
         elif self.ftype == 'LPS':
             names = [
                 'Node', 'Type',
@@ -292,6 +294,7 @@ class _ReportHeaders(object):
                 'Hours_Surcharged', 'Max_Height_Above_Crown_Feet',
                 'Min_Depth_Below_Rim_Feet'
             ]
+
         elif self.ftype == 'LPS':
             names = [
                 'Node', 'Type',
@@ -311,6 +314,7 @@ class _ReportHeaders(object):
                 'Time_of_Max_Occurrence_days', 'Time_of_Max_Occurrence_hours',
                 'Total_Flood_Volume_mgal', 'Maximum_Ponded_Depth_Feet'
             ]
+
         elif self.ftype == 'LPS':
             names = [
                 'Node',
