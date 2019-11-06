@@ -230,7 +230,8 @@ class _ReportHeaders(object):
             names = [
                 'Subcatchment', 'Total_Precip_in',
                 'Total_Runon_in', 'Total_Evap_in',
-                'Total_Infil_in', 'Total_Runoff_in',
+                'Total_Infil_in', 'Imperv_Runoff_in', 
+                'Perv_Runoff_in', 'Total_Runoff_in',
                 'Total_Runoff_mgal', 'Peak_Runoff_CFS',
                 'Runoff_Coeff']
 
@@ -238,7 +239,8 @@ class _ReportHeaders(object):
             names = [
                 'Subcatchment', 'Total_Precip_mm',
                 'Total_Runon_mm', 'Total_Evap_mm',
-                'Total_Infil_mm', 'Total_Runoff_mm',
+                'Total_Infil_mm', 'Imperv_Runoff_mm', 
+                'Perv_Runoff_mm', 'Total_Runoff_mm',
                 'Total_Runoff_mltr', 'Peak_Runoff_LPS',
                 'Runoff_Coeff']
         dtype = {'Subcatchment': str}
