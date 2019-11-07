@@ -10,6 +10,7 @@ class SWMMReportFile(BaseReader):
         """
         Requires:
         - path: str, the full file path to the existing SWMM model .inp.
+        - version: str, the full SWMM version. Default is most recent (5.1.013).
         """
         BaseReader.__init__(self, path)
 
@@ -228,7 +229,7 @@ class _ReportHeaders(object):
 
     @property
     def subcatchment_runoff_results(self):
-        if self.version == '5.1.010':
+        if self.version != '5.1.013':
             if self.ftype == 'CFS': 
                 names = [ 
                     'Subcatchment', 'Total_Precip_in', 
