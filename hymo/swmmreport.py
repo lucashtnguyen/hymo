@@ -16,8 +16,24 @@ class SWMMReportFile(BaseReader):
         # check units
         self.unit = self.orig_file[self.find_line_num('Flow Units')].split('.')[-1].strip().upper()
 
+        # check swmm version
+        self.version = self.orig_file[self.find_line_num('VERSION')].split(' - ')[1].split(' ')[1]
+
         self._headers = _ReportHeaders(self.unit)
 
+        # INPUTS == YES Blocks
+        self._element_count = None
+        self._raingage_summary = None
+        self._subcatchment_summary = None
+        self._node_summary = None
+        self._link_summary = None
+        self._cross_section_summary = None
+
+        # Continuity Data Blocks
+        self._runoff_quantity_continuity = None
+        self._flow_routing_continuity = None
+
+        # Results Blocks
         self._subcatchment_runoff_results = None
         self._node_depth_results = None
         self._node_inflow_results = None
@@ -32,6 +48,12 @@ class SWMMReportFile(BaseReader):
 
         self._startlines = {
             #dict = {'block_name': ('rpt_header', n_comment_lines)}
+            'element_count': ('Element Count', 2),
+            'raingage_summary': ('Raingage Summary', 5),
+            'subcatchment_summary': ('Subcatchment Summary', 5),
+            'node_summary': ('Node Summary', 5),
+            'link_summary': ('Link Summary', 4),
+            'cross_section_summary': ('Cross Section Summary', 5),
             'subcatchment_runoff': ('Subcatchment Runoff Summary', 8),
             'node_depth': ('Node Depth Summary', 8),
             'node_inflow': ('Node Inflow Summary', 9),
@@ -44,6 +66,130 @@ class SWMMReportFile(BaseReader):
             'conduit_surcharge': ('Conduit Surcharge Summary', 8), #special conditions EOF
             'link_pollutant_load': ('Link Pollutant Load Summary', 7)
         }
+
+    @property
+    def element_count(self):
+        """
+        The number of elements used in your simulation.
+        Created by INPUTS = YES in [REPORT] section of input file
+        """
+        if self._element_count is None:
+            names, dtype = self._headers.element_count
+
+        self._element_count = self._make_df('element_count', sep='\.+', header=None, index_col=[0], dtype=str, engine='python')
+        self._element_count.set_index(pd.Index(names), drop=True, inplace=True)  # Replace old row names w/ headers
+        self._element_count.rename(columns={self._element_count.columns.values[0]: 'num_elements'}, inplace=True)
+        # self._element_count = self._element_count.transpose()
+
+        return self._element_count
+
+    @property
+    def raingage_summary(self):
+        if self._raingage_summary is None:
+            names, dtype = self._headers.raingage_summary
+
+        self._raingage_summary = self._make_df('raingage_summary', sep='\s+', header=None, names=names, index_col=[0], dtype=dtype)
+
+        return self._raingage_summary
+
+    @property
+    def subcatchment_summary(self):
+        #TODO There is a bug in the SWMM Report File generator that doesn't put a space between the Area and Width
+        # if the Area is too large. We need to split it based on two places after the decimal point.
+        if self._subcatchment_summary is None:
+            names, dtype = self._headers.subcatchment_summary
+
+        self._subcatchment_summary = self._make_df('subcatchment_summary', sep='\s+', header=None, names=names, index_col=[0], dtype=dtype)
+
+        return self._subcatchment_summary
+
+    @property
+    def node_summary(self):
+        if self._node_summary is None:
+            names, dtype = self._headers.node_summary
+
+        self._node_summary = self._make_df('node_summary', sep='\s+', header=None, names=names, index_col=[0], dtype=dtype)
+
+        return self._node_summary
+
+    @property
+    def link_summary(self):
+        if self._link_summary is None:
+            names, dtype = self._headers.link_summary
+
+        self._link_summary = self._make_df('link_summary', sep='\s+', header=None, names=names, index_col=[0], dtype=dtype)
+
+        return self._link_summary
+
+    @property
+    def cross_section_summary(self):
+        if self._cross_section_summary is None:
+            names, dtype = self._headers.cross_section_summary
+
+        self._cross_section_summary = self._make_df('cross_section_summary', sep='\s+', header=None, names=names, index_col=[0], dtype=dtype)
+        return self._cross_section_summary
+
+    @property
+    def runoff_quantity_continuity(self):
+        if self._runoff_quantity_continuity is None:
+            names, dtype = self._headers.runoff_quantity_continuity
+
+        var_conversion = {'Total Precipitation': 'Total_Precipitation', 'Evaporation Loss': 'Evaporation_Loss',
+                          'Infiltration Loss': 'Infiltration_Loss', 'Surface Runoff': 'Surface_Runoff',
+                          'Final Storage': 'Final_Storage', 'Continuity Error (%)': 'Continuity_Error_pcnt'}
+
+        self._runoff_quantity_continuity = pd.DataFrame(columns=names)
+        for var in var_conversion:
+            line_number = self.find_line_num(var)
+            data = self.orig_file[line_number].split()
+            if var != 'Continuity Error (%)':
+                data = pd.Series([data[3], data[4]], index=[names[0], names[1]], name = var_conversion[var])
+            else:
+                data = pd.Series([data[4], data[4]], index=[names[0], names[1]], name = var_conversion[var])
+
+            self._runoff_quantity_continuity = self._runoff_quantity_continuity.append(data)
+
+        return self._runoff_quantity_continuity
+
+    @property
+    def flow_routing_continuity(self):
+        if self._flow_routing_continuity is None:
+            names, dtype = self._headers.flow_routing_continuity
+
+        var_conversion = {'Dry Weather Inflow': 'Dry_Weather_Inflow',
+                          'Wet Weather Inflow': 'Wet_Weather_Inflow',
+                          'Groundwater Inflow': 'Groundwater_Inflow',
+                          'RDII Inflow': 'RDII_Inflow',
+                          'External Inflow': 'External_Inflow',
+                          'External Outflow': 'External_Outflow',
+                          'Flooding Loss': 'Flooding_Loss',
+                          'Evaporation Loss': 'Evaporation_Loss',
+                          'Exfiltration Loss': 'Exfiltration_Loss',
+                          'Initial Stored Volume': 'Intial_Stored_Volume',
+                          'Final Stored Volume': 'Final_Stored_Volume',
+                          'Continuity Error (%)': 'Continuity_Error_pcnt'
+                        }
+
+        self._flow_routing_continuity = pd.DataFrame(columns=names)
+        for var in var_conversion:
+            line_number = self.find_line_num(var)
+
+            # There are two 'Evaporation Loss' sections: This will find the second one
+            if var == 'Evaporation Loss':
+                subdata = self.orig_file[line_number+1:]
+                line_number = self.find_line_num(var, lookup=subdata) + line_number
+
+            data = list(filter(lambda x: '.' in x, self.orig_file[line_number].split()))
+
+            if var != 'Continuity Error (%)':
+                data = pd.Series([data[1], data[2]], index=[names[0], names[1]], name=var_conversion[var])
+
+            # Write the continuity error twice since it has no units
+            else:
+                data = pd.Series([data[1], data[1]], index=[names[0], names[1]], name=var_conversion[var])
+
+            self._flow_routing_continuity = self._flow_routing_continuity.append(data)
+        return self._flow_routing_continuity
 
     @property
     def subcatchment_runoff_results(self):
@@ -223,6 +369,88 @@ class _ReportHeaders(object):
             e = 'Only "CFS" and "LPS" supported.'
             raise ValueError(e)
 
+    @property
+    def element_count(self):
+        # names are the same for both CFS and LPS
+        names = [
+            'Rain_gages', 'Subcatchments',
+            'Nodes', 'Links',
+            'Pollutants', 'Land_uses'
+        ]
+        dtype = {'Rain_gages': str}
+        return names, dtype
+
+
+    @property
+    def raingage_summary(self):
+        names = [ 'Name', 'Data_Source',
+                  'Data_Type', 'Recording_Interval_time',
+                  'Recording_Interval_units'
+                ]
+        dtype = {'Name': str}
+        return names, dtype
+
+    @property
+    def subcatchment_summary(self):
+        names = [ 'Name', 'Area',
+                  'Width', '%Imperv',
+                  '%Slope', 'Rain_Gage',
+                  'Outlet'
+        ]
+        dtype = {'Name': str}
+        return names, dtype
+
+    @property
+    def node_summary(self):
+        names = [ 'Name', 'Type',
+                  'Invert Elev.', 'Max. Depth',
+                  'Ponded_Area', 'External_Inflow'
+        ]
+        dtype = {'Name': str}
+        return names, dtype
+
+    @property
+    def link_summary(self):
+        names = [ 'Name', 'From_Node',
+                  'To_Node', 'Type',
+                  'Length', '%Slope',
+                  'Roughness'
+        ]
+
+        dtype = {'Name': str}
+        return names, dtype
+
+    @property
+    def cross_section_summary(self):
+        names = ['Conduit', 'Shape',
+                 'Full_Depth', 'Full_Area',
+                 'Hyd._Rad.', 'Max_Width',
+                 'No_of_Barrels', 'Full_Flow'
+        ]
+
+        dtype = {'Conduit': str}
+        return names, dtype
+
+    @property
+    def runoff_quantity_continuity(self):
+        if self.ftype == 'CFS':
+            names = ['Volume_acre_feet', 'Depth_inches']
+        elif self.ftype == 'LPS':
+            names = ['Volume_hectare_feet', 'Depth_mm']
+
+        dtype = {'Volume_acre_feet': str}
+
+        return names, dtype
+
+    @property
+    def flow_routing_continuity(self):
+        if self.ftype == 'CFS':
+            names = ['Volume_acre_feet', 'Depth_inches']
+        elif self.type == 'LPS':
+            names = ['Volume_hectare_feet', 'Depth_mm']
+
+        dtype = {'Volume_acre_feet': str}
+        return names, dtype
 
     @property
     def subcatchment_runoff_results(self):
@@ -230,7 +458,8 @@ class _ReportHeaders(object):
             names = [
                 'Subcatchment', 'Total_Precip_in',
                 'Total_Runon_in', 'Total_Evap_in',
-                'Total_Infil_in', 'Total_Runoff_in',
+                'Total_Infil_in', 'Imperv_Runoff_in',
+                'Perv_Runoff_in', 'Total_Runoff_in',
                 'Total_Runoff_mgal', 'Peak_Runoff_CFS',
                 'Runoff_Coeff']
 
@@ -238,7 +467,8 @@ class _ReportHeaders(object):
             names = [
                 'Subcatchment', 'Total_Precip_mm',
                 'Total_Runon_mm', 'Total_Evap_mm',
-                'Total_Infil_mm', 'Total_Runoff_mm',
+                'Total_Infil_mm', 'Imperv_Runoff_mm',
+                'Perv_Runoff_mm', 'Total_Runoff_mm',
                 'Total_Runoff_mltr', 'Peak_Runoff_LPS',
                 'Runoff_Coeff']
         dtype = {'Subcatchment': str}
@@ -343,7 +573,6 @@ class _ReportHeaders(object):
 
         dtype = {'Storage_Unit': str}
         return names, dtype
-
 
     @property
     def link_flow_results(self):
