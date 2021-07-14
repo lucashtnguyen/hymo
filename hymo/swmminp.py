@@ -588,9 +588,18 @@ class SWMMInpFile(BaseReader):
         if self._curves is None:
             names = ['Name', 'Type', 'X_Value', 'Y_Value']
             dtype = {'Name': str}
-            self._curves = (
+
+            df_raw = (
                 self._make_df('curves', comment=';', sep='\s+', header=None,
                               names=names, index_col=[0], dtype=dtype))
+
+            df = (df_raw.assign(_Y_Value=lambda df: np.where(df.Y_Value.isnull(), df.X_Value, df.Y_Value))
+                .assign(_X_Value=lambda df: np.where(df.Y_Value.isnull(), df.Type, df.X_Value))
+                .assign(_Type=lambda df: np.where(df.Y_Value.isnull(), np.nan, df.Type))
+                .loc[:, ['_Type', '_X_Value', '_Y_Value']]
+                .rename(columns=lambda s: s.strip('_'))
+            )
+            self._curves = df
 
         return self._curves
 
