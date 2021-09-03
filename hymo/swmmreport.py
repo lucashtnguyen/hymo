@@ -147,7 +147,7 @@ class SWMMReportFile(BaseReader):
                 header=None, names=names, index_col=[0], dtype=dtype)
 
             # drop sep
-            drop_from_index = [_ for _ in df.index if '-' in _]
+            drop_from_index = [_ for _ in df.index if '-------------------' in _]
             df = df.drop(drop_from_index)
 
             self._outfall_loading_results = df
