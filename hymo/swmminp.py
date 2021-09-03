@@ -1,4 +1,3 @@
-import warnings
 import pandas as pd
 import numpy as np
 
@@ -54,6 +53,7 @@ class SWMMInpFile(BaseReader):
 
         self._not_in_inp = None
         self.cards_in_inp = None
+        self.not_mapped = set()
 
         self._startlines = {
             # Because the user can add comments into the swmm.inp
@@ -117,6 +117,12 @@ class SWMMInpFile(BaseReader):
 
         self._check_headers()
 
+    def __getattr__(self, name):
+        if name in self.not_mapped:
+            raise NotImplementedError("Card {} currently not supported.".format(name))
+        else:  
+            raise AttributeError(name)
+
     def find_line_num(self, line, lookup=None):
         """
         Given a text string returns the line number that the string
@@ -156,10 +162,7 @@ class SWMMInpFile(BaseReader):
         self.cards_in_inp = cards_in_inp
 
         # check if this inp has any cards not mapped
-        not_mapped = cards_in_inp.difference(known_cards)
-        for card in not_mapped:
-            warnings.warn(
-                "Card {} currently not supported.".format(card), Warning)
+        self.not_mapped = cards_in_inp.difference(known_cards)
 
         # check which cards are not in the inp
         self._not_in_inp = known_cards.difference(cards_in_inp)
