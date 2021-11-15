@@ -50,6 +50,7 @@ class SWMMInpFile(BaseReader):
         self._vertices = None
         self._polygons = None
         self._symbols = None
+        self._inflows = None
 
         self._not_in_inp = None
         self.cards_in_inp = None
@@ -96,7 +97,8 @@ class SWMMInpFile(BaseReader):
             'vertices': ('[VERTICES]', 2),
             'polygons': ('[Polygons]', 2),
             'symbols': ('[SYMBOLS]', 2),
-            'pollutants': ('[POLLUTANTS]', 2)
+            'pollutants': ('[POLLUTANTS]', 2),
+            'inflows': ('[INFLOWS]', 2)
             # TODO
             # controls
             # snowpacks
@@ -109,7 +111,6 @@ class SWMMInpFile(BaseReader):
             # rdii
             # buildup
             # dwf
-            # inflows
             # coverage
             # dividers # added minimum required info for flow network
             # landuses
@@ -721,3 +722,15 @@ class SWMMInpFile(BaseReader):
                               names=names, index_col=[0], dtype=dtype))
 
         return self._pollutants
+
+    @property
+    def inflows(self):
+        if self._inflows is None:
+            names = ['Node', 'Constituent', 'Time_Series', 'Type',
+            'Mfactor', 'Sfactor', 'Baseline', 'Pattern']
+            dtype = {'Node': str}
+            self._inflows = (
+                self._make_df('inflows', comment=';', sep='\s+', header=None,
+                              names=names, index_col=[0], dtype=dtype))
+
+        return self._inflows
