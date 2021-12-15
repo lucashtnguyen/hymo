@@ -521,18 +521,22 @@ class SWMMInpFile(BaseReader):
     def pumps(self):
         if self._pumps is None:
             names = [
-                'Name', 'From_Node', 'To_Node',
+                'Name', 'From_Node', 'To_Node', 'Pump_Curve', 'Status', 'Startup', 'Shutoff'
             ]
 
             dtype = {
                 'Name': str,
                 'From_Node': str,
                 'To_Node': str,
+                'Pump_Curve': str,
+                'Status': str,
+                'Startup': float,
+                'Shutoff': float
             }
 
             self._pumps = (
                 self._make_df('pumps', comment=';', sep='\s+', header=None,
-                              names=names, usecols=range(3),
+                              names=names, usecols=range(7),
                               index_col=[0], dtype=dtype))
 
         return self._pumps
