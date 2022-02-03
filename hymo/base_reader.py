@@ -1,3 +1,4 @@
+from pathlib import PurePath
 from io import StringIO
 
 import pandas as pd
@@ -11,6 +12,9 @@ class BaseReader(object):
         Requires:
         - path: str, the full file path to the existing SWMM model .inp.
         """
+        if isinstance(path, PurePath):
+            path = path.resolve().as_posix()
+
         self.path = path
         self.endline = endline
         self._orig_file = None
