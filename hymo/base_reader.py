@@ -151,7 +151,7 @@ class BaseReader(object):
         else:
             string_block = self.raw_block(block)
 
-        return pd.read_csv(StringIO(string_block), **kwargs)
+        return pd.read_csv(StringIO(string_block), engine='python', **kwargs)
 
     def infer_columns(self, start_line_str, blank_space, n_lines):
         def replace(x):
