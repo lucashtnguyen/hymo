@@ -51,6 +51,8 @@ class SWMMInpFile(BaseReader):
         self._polygons = None
         self._symbols = None
         self._inflows = None
+        self._rdii = None
+        self._hydrographs = None
 
         self._not_in_inp = None
         self.cards_in_inp = None
@@ -98,7 +100,9 @@ class SWMMInpFile(BaseReader):
             'polygons': ('[Polygons]', 2),
             'symbols': ('[SYMBOLS]', 2),
             'pollutants': ('[POLLUTANTS]', 2),
-            'inflows': ('[INFLOWS]', 2)
+            'inflows': ('[INFLOWS]', 2),
+            'rdii': ('[RDII]', 2),
+            'hydrographs': ('[HYDROGRAPHS]', 3),
             # TODO
             # controls
             # snowpacks
@@ -202,6 +206,28 @@ class SWMMInpFile(BaseReader):
                               names=names, index_col=[0]))
 
         return self._evaporation
+
+    @property
+    def rdii(self):
+        if self._rdii is None:
+            names = ['Node', 'Unit Hydrograph', 'Sewer Area']
+
+            self._rdii = (
+                self._make_df('rdii', comment=';', sep='\s+', header=None,
+                              names=names, index_col=[0]))
+
+        return self._rdii
+
+    @property
+    def hydrographs(self):
+        if self._hydrographs is None:
+            names = ['Name', 'Rain Gage', 'Response', 'R', 'T', 'K', 'IA_max', 'IA_rec', 'IA_ini']
+
+            self._hydrographs = (
+                self._make_df('hydrographs', comment=';', sep='\s+', header=None,
+                              names=names, index_col=[0]))
+
+        return self._hydrographs
 
     @property
     def temperature(self):
