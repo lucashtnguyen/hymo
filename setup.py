@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 DESCRIPTION = "hymo: EPA SWMM Report File reader"
 NAME = "hymo"
-VERSION = "0.1.1b"
+VERSION = "0.1.2"
 AUTHOR = "Lucas Nguyen (Geosyntec Consultants)"
 AUTHOR_EMAIL = "lnguyen@geosyntec.com"
 URL = "https://github.com/lucashtnguyen/hymo"
@@ -25,7 +25,7 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
 ]
-INSTALL_REQUIRES = ['pandas', 'pytest']
+INSTALL_REQUIRES = ['pandas']
 PACKAGE_DATA = {
     'hymo.tests._data.lspc': [ '*.csv', '*.rpt', '*.inp', '*.out'],
     'hymo.tests._data.swmm': [ '*.csv', '*.rpt', '*.inp', '*.out'],
@@ -46,5 +46,8 @@ setup(
     classifiers=CLASSIFIERS,
     install_requires=INSTALL_REQUIRES,
     zip_safe=False,
-    py_modules=['hymo']
+    py_modules=['hymo'],
+    extras_require={
+            "testing": ["pytest"],
+        },
 )

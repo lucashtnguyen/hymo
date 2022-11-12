@@ -1,8 +1,6 @@
 import os
-import pytest
 from pkg_resources import resource_filename
 
-import pytest
 import pandas as pd
 import pandas.util.testing as pdtest
 
@@ -14,6 +12,7 @@ class base_SWMMInpFileMixin(object):
         None
 
     def test_attributes(self):
+        import pytest
         with pytest.raises(NotImplementedError):
             assert hasattr(self.inp, 'title')
             assert isinstance(self.inp.title, pd.DataFrame)

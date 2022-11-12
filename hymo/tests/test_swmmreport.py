@@ -1,8 +1,6 @@
 import os
-import pytest
 from pkg_resources import resource_filename
 
-import pytest
 import pandas as pd
 import pandas.util.testing as pdtest
 

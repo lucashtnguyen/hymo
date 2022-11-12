@@ -1,5 +1,4 @@
 import os
-import pytest
 from io import StringIO
 
 import pandas as pd
@@ -187,6 +186,7 @@ class Test_LSPCResults(object):
         assert self.known_summary_path == self.lspc.summary_path
 
     def test_summary_EOF(self):
+        import pytest
         with pytest.raises(ValueError):
             LSPCResultsFile(self.known_results_path,
                         self.known_summary_path,
