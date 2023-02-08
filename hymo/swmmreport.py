@@ -91,22 +91,22 @@ class SWMMReportFile(BaseReader):
         if self._element_count is None:
             names, dtype = self._headers.element_count
 
-        self._element_count = self._make_df(
-            "element_count",
-            sep="\.+",
-            header=None,
-            index_col=[0],
-            dtype=str,
-            engine="python",
-        )
-        self._element_count.set_index(
-            pd.Index(names), drop=True, inplace=True
-        )  # Replace old row names w/ headers
-        self._element_count.rename(
-            columns={self._element_count.columns.values[0]: "num_elements"},
-            inplace=True,
-        )
-        # self._element_count = self._element_count.transpose()
+            self._element_count = self._make_df(
+                "element_count",
+                sep="\.+",
+                header=None,
+                index_col=[0],
+                dtype=str,
+                engine="python",
+            )
+            self._element_count.set_index(
+                pd.Index(names), drop=True, inplace=True
+            )  # Replace old row names w/ headers
+            self._element_count.rename(
+                columns={self._element_count.columns.values[0]: "num_elements"},
+                inplace=True,
+            )
+            # self._element_count = self._element_count.transpose()
 
         return self._element_count
 
@@ -115,14 +115,14 @@ class SWMMReportFile(BaseReader):
         if self._raingage_summary is None:
             names, dtype = self._headers.raingage_summary
 
-        self._raingage_summary = self._make_df(
-            "raingage_summary",
-            sep="\s+",
-            header=None,
-            names=names,
-            index_col=[0],
-            dtype=dtype,
-        )
+            self._raingage_summary = self._make_df(
+                "raingage_summary",
+                sep="\s+",
+                header=None,
+                names=names,
+                index_col=[0],
+                dtype=dtype,
+            )
 
         return self._raingage_summary
 
@@ -133,14 +133,14 @@ class SWMMReportFile(BaseReader):
         if self._subcatchment_summary is None:
             names, dtype = self._headers.subcatchment_summary
 
-        self._subcatchment_summary = self._make_df(
-            "subcatchment_summary",
-            sep="\s+",
-            header=None,
-            names=names,
-            index_col=[0],
-            dtype=dtype,
-        )
+            self._subcatchment_summary = self._make_df(
+                "subcatchment_summary",
+                sep="\s+",
+                header=None,
+                names=names,
+                index_col=[0],
+                dtype=dtype,
+            )
 
         return self._subcatchment_summary
 
@@ -149,14 +149,14 @@ class SWMMReportFile(BaseReader):
         if self._node_summary is None:
             names, dtype = self._headers.node_summary
 
-        self._node_summary = self._make_df(
-            "node_summary",
-            sep="\s+",
-            header=None,
-            names=names,
-            index_col=[0],
-            dtype=dtype,
-        )
+            self._node_summary = self._make_df(
+                "node_summary",
+                sep="\s+",
+                header=None,
+                names=names,
+                index_col=[0],
+                dtype=dtype,
+            )
 
         return self._node_summary
 
@@ -165,14 +165,14 @@ class SWMMReportFile(BaseReader):
         if self._link_summary is None:
             names, dtype = self._headers.link_summary
 
-        self._link_summary = self._make_df(
-            "link_summary",
-            sep="\s+",
-            header=None,
-            names=names,
-            index_col=[0],
-            dtype=dtype,
-        )
+            self._link_summary = self._make_df(
+                "link_summary",
+                sep="\s+",
+                header=None,
+                names=names,
+                index_col=[0],
+                dtype=dtype,
+            )
 
         return self._link_summary
 
@@ -181,14 +181,14 @@ class SWMMReportFile(BaseReader):
         if self._cross_section_summary is None:
             names, dtype = self._headers.cross_section_summary
 
-        self._cross_section_summary = self._make_df(
-            "cross_section_summary",
-            sep="\s+",
-            header=None,
-            names=names,
-            index_col=[0],
-            dtype=dtype,
-        )
+            self._cross_section_summary = self._make_df(
+                "cross_section_summary",
+                sep="\s+",
+                header=None,
+                names=names,
+                index_col=[0],
+                dtype=dtype,
+            )
         return self._cross_section_summary
 
     @property
@@ -196,35 +196,35 @@ class SWMMReportFile(BaseReader):
         if self._runoff_quantity_continuity is None:
             names, dtype = self._headers.runoff_quantity_continuity
 
-        var_conversion = {
-            "Total Precipitation": "Total_Precipitation",
-            "Evaporation Loss": "Evaporation_Loss",
-            "Infiltration Loss": "Infiltration_Loss",
-            "Surface Runoff": "Surface_Runoff",
-            "Final Storage": "Final_Storage",
-            "Continuity Error (%)": "Continuity_Error_pcnt",
-        }
+            var_conversion = {
+                "Total Precipitation": "Total_Precipitation",
+                "Evaporation Loss": "Evaporation_Loss",
+                "Infiltration Loss": "Infiltration_Loss",
+                "Surface Runoff": "Surface_Runoff",
+                "Final Storage": "Final_Storage",
+                "Continuity Error (%)": "Continuity_Error_pcnt",
+            }
 
-        self._runoff_quantity_continuity = pd.DataFrame(columns=names)
-        for var in var_conversion:
-            line_number = self.find_line_num(var)
-            data = self.orig_file[line_number].split()
-            if var != "Continuity Error (%)":
-                data = pd.Series(
-                    [data[3], data[4]],
-                    index=[names[0], names[1]],
-                    name=var_conversion[var],
-                )
-            else:
-                data = pd.Series(
-                    [data[4], data[4]],
-                    index=[names[0], names[1]],
-                    name=var_conversion[var],
-                )
+            self._runoff_quantity_continuity = pd.DataFrame(columns=names)
+            for var in var_conversion:
+                line_number = self.find_line_num(var)
+                data = self.orig_file[line_number].split()
+                if var != "Continuity Error (%)":
+                    data = pd.Series(
+                        [data[3], data[4]],
+                        index=[names[0], names[1]],
+                        name=var_conversion[var],
+                    )
+                else:
+                    data = pd.Series(
+                        [data[4], data[4]],
+                        index=[names[0], names[1]],
+                        name=var_conversion[var],
+                    )
 
-            self._runoff_quantity_continuity = self._runoff_quantity_continuity.append(
-                data
-            )
+                self._runoff_quantity_continuity = self._runoff_quantity_continuity.append(
+                    data
+                )
 
         return self._runoff_quantity_continuity
 
@@ -233,48 +233,48 @@ class SWMMReportFile(BaseReader):
         if self._flow_routing_continuity is None:
             names, dtype = self._headers.flow_routing_continuity
 
-        var_conversion = {
-            "Dry Weather Inflow": "Dry_Weather_Inflow",
-            "Wet Weather Inflow": "Wet_Weather_Inflow",
-            "Groundwater Inflow": "Groundwater_Inflow",
-            "RDII Inflow": "RDII_Inflow",
-            "External Inflow": "External_Inflow",
-            "External Outflow": "External_Outflow",
-            "Flooding Loss": "Flooding_Loss",
-            "Evaporation Loss": "Evaporation_Loss",
-            "Exfiltration Loss": "Exfiltration_Loss",
-            "Initial Stored Volume": "Intial_Stored_Volume",
-            "Final Stored Volume": "Final_Stored_Volume",
-            "Continuity Error (%)": "Continuity_Error_pcnt",
-        }
+            var_conversion = {
+                "Dry Weather Inflow": "Dry_Weather_Inflow",
+                "Wet Weather Inflow": "Wet_Weather_Inflow",
+                "Groundwater Inflow": "Groundwater_Inflow",
+                "RDII Inflow": "RDII_Inflow",
+                "External Inflow": "External_Inflow",
+                "External Outflow": "External_Outflow",
+                "Flooding Loss": "Flooding_Loss",
+                "Evaporation Loss": "Evaporation_Loss",
+                "Exfiltration Loss": "Exfiltration_Loss",
+                "Initial Stored Volume": "Intial_Stored_Volume",
+                "Final Stored Volume": "Final_Stored_Volume",
+                "Continuity Error (%)": "Continuity_Error_pcnt",
+            }
 
-        self._flow_routing_continuity = pd.DataFrame(columns=names)
-        for var in var_conversion:
-            line_number = self.find_line_num(var)
+            self._flow_routing_continuity = pd.DataFrame(columns=names)
+            for var in var_conversion:
+                line_number = self.find_line_num(var)
 
-            # There are two 'Evaporation Loss' sections: This will find the second one
-            if var == "Evaporation Loss":
-                subdata = self.orig_file[line_number + 1 :]
-                line_number = self.find_line_num(var, lookup=subdata) + line_number
+                # There are two 'Evaporation Loss' sections: This will find the second one
+                if var == "Evaporation Loss":
+                    subdata = self.orig_file[line_number + 1 :]
+                    line_number = self.find_line_num(var, lookup=subdata) + line_number
 
-            data = list(filter(lambda x: "." in x, self.orig_file[line_number].split()))
+                data = list(filter(lambda x: "." in x, self.orig_file[line_number].split()))
 
-            if var != "Continuity Error (%)":
-                data = pd.Series(
-                    [data[1], data[2]],
-                    index=[names[0], names[1]],
-                    name=var_conversion[var],
-                )
+                if var != "Continuity Error (%)":
+                    data = pd.Series(
+                        [data[1], data[2]],
+                        index=[names[0], names[1]],
+                        name=var_conversion[var],
+                    )
 
-            # Write the continuity error twice since it has no units
-            else:
-                data = pd.Series(
-                    [data[1], data[1]],
-                    index=[names[0], names[1]],
-                    name=var_conversion[var],
-                )
+                # Write the continuity error twice since it has no units
+                else:
+                    data = pd.Series(
+                        [data[1], data[1]],
+                        index=[names[0], names[1]],
+                        name=var_conversion[var],
+                    )
 
-            self._flow_routing_continuity = self._flow_routing_continuity.append(data)
+                self._flow_routing_continuity = self._flow_routing_continuity.append(data)
         return self._flow_routing_continuity
 
     @property

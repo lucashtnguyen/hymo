@@ -248,7 +248,7 @@ class SWMMInpFile(BaseReader):
             names = [
                 'Name', 'Format',
                 'Interval', 'SCF',
-                'Source', 'Path'
+                'Source', 'Path', 'Units'
             ]
 
             dtype = {
