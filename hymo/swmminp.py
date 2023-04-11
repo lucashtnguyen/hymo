@@ -302,11 +302,16 @@ class SWMMInpFile(BaseReader):
             self._raingages = self._make_df(
                 "raingages",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
+                # delim_whitespace=True,
                 header=None,
                 names=names,
                 index_col=[0],
                 dtype=dtype,
+                quotechar='"',
+                quoting=1,
+                engine='c'
+
             )
 
         return self._raingages
