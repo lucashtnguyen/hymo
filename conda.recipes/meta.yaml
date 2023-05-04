@@ -1,7 +1,7 @@
 {% set data = load_setuptools()%}
 package:
   name: hymo
-  version: "0.0.1"
+  version: "0.1.4"
 
 source:
   path: ../../
