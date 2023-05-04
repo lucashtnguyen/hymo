@@ -267,7 +267,17 @@ class SWMMInpFile(BaseReader):
             ]
 
             self._dwf = self._make_df(
-                "dwf", comment=";", sep="\s+", header=None, names=names, index_col=[0]
+                "dwf",
+                comment=";",
+                sep=r"\s+",
+                header=None,
+                names=names,
+                index_col=[0],
+                # delim_whitespace=True,
+                # dtype=dtype,
+                quotechar='"',
+                quoting=1,
+                engine='c'
             )
 
         return self._dwf
