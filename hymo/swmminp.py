@@ -303,7 +303,7 @@ class SWMMInpFile(BaseReader):
     @property
     def raingages(self):
         if self._raingages is None:
-            names = ["Name", "Format", "Interval", "SCF", "Source", "Path", "Units"]
+            names = ["Name", "Format", "Interval", "SCF", "Source", "Path", "ID", "Units"]
 
             dtype = {
                 "Name": str,
