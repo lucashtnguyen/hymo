@@ -66,44 +66,44 @@ class SWMMInpFile(BaseReader):
             # direct to data. Then we will remove all comments
             # using the function _clean_comments().
             # dict = {'block_name': ('rpt_header', n_comment_lines)}
-            "title": ("[TITLE]", 2),
-            "options": ("[OPTIONS]", 2),
-            "evaporation": ("[EVAPORATION]", 2),
-            "temperature": ("[TEMPERATURE]", 2),  # requires special parsing
-            "raingages": ("[RAINGAGES]", 2),
-            "subcatchments": ("[SUBCATCHMENTS]", 2),
-            "subareas": ("[SUBAREAS]", 2),
-            "infiltration": ("[INFILTRATION]", 2),
-            "lid_controls": ("[LID_CONTROLS]", 2),
-            "lid_usage": ("[LID_USAGE]", 2),
-            "aquifers": ("[AQUIFERS]", 2),
-            "groundwater": ("[GROUNDWATER]", 2),
-            "junctions": ("[JUNCTIONS]", 2),
-            "outfalls": ("[OUTFALLS]", 2),
-            "storage": ("[STORAGE]", 2),
-            "dividers": ("[DIVIDERS]", 2),
-            "conduits": ("[CONDUITS]", 2),
-            "orifices": ("[ORIFICES]", 2),
-            "outlets": ("[OUTLETS]", 2),
-            "weirs": ("[WEIRS]", 2),
-            "pumps": ("[PUMPS]", 2),
-            "xsections": ("[XSECTIONS]", 2),
-            "curves": ("[CURVES]", 2),
-            "transects": ("[TRANSECTS]", 2),
-            "losses": ("[LOSSES]", 2),
-            "timeseries": ("[TIMESERIES]", 2),
-            "report": ("[REPORT]", 2),
+            "title": ("[TITLE]", 1),
+            "options": ("[OPTIONS]", 1),
+            "evaporation": ("[EVAPORATION]", 1),
+            "temperature": ("[TEMPERATURE]", 1),  # requires special parsing
+            "raingages": ("[RAINGAGES]", 1),
+            "subcatchments": ("[SUBCATCHMENTS]", 1),
+            "subareas": ("[SUBAREAS]", 1),
+            "infiltration": ("[INFILTRATION]", 1),
+            "lid_controls": ("[LID_CONTROLS]", 1),
+            "lid_usage": ("[LID_USAGE]", 1),
+            "aquifers": ("[AQUIFERS]", 1),
+            "groundwater": ("[GROUNDWATER]", 1),
+            "junctions": ("[JUNCTIONS]", 1),
+            "outfalls": ("[OUTFALLS]", 1),
+            "storage": ("[STORAGE]", 1),
+            "dividers": ("[DIVIDERS]", 1),
+            "conduits": ("[CONDUITS]", 1),
+            "orifices": ("[ORIFICES]", 1),
+            "outlets": ("[OUTLETS]", 1),
+            "weirs": ("[WEIRS]", 1),
+            "pumps": ("[PUMPS]", 1),
+            "xsections": ("[XSECTIONS]", 1),
+            "curves": ("[CURVES]", 1),
+            "transects": ("[TRANSECTS]", 1),
+            "losses": ("[LOSSES]", 1),
+            "timeseries": ("[TIMESERIES]", 1),
+            "report": ("[REPORT]", 1),
             "tags": ("[TAGS]", 1),
-            "map": ("[MAP]", 2),
-            "coordinates": ("[COORDINATES]", 2),
-            "vertices": ("[VERTICES]", 2),
-            "polygons": ("[Polygons]", 2),
-            "symbols": ("[SYMBOLS]", 2),
-            "pollutants": ("[POLLUTANTS]", 2),
-            "inflows": ("[INFLOWS]", 2),
-            "rdii": ("[RDII]", 2),
-            "hydrographs": ("[HYDROGRAPHS]", 2),
-            "dwf": ("[DWF]", 2)
+            "map": ("[MAP]", 1),
+            "coordinates": ("[COORDINATES]", 1),
+            "vertices": ("[VERTICES]", 1),
+            "polygons": ("[Polygons]", 1),
+            "symbols": ("[SYMBOLS]", 1),
+            "pollutants": ("[POLLUTANTS]", 1),
+            "inflows": ("[INFLOWS]", 1),
+            "rdii": ("[RDII]", 1),
+            "hydrographs": ("[HYDROGRAPHS]", 1),
+            "dwf": ("[DWF]", 1)
             # TODO
             # controls
             # snowpacks
@@ -277,7 +277,7 @@ class SWMMInpFile(BaseReader):
                 # dtype=dtype,
                 quotechar='"',
                 quoting=1,
-                engine='c'
+                engine="c",
             )
 
         return self._dwf
@@ -320,8 +320,7 @@ class SWMMInpFile(BaseReader):
                 dtype=dtype,
                 quotechar='"',
                 quoting=1,
-                engine='c'
-
+                engine="c",
             )
 
         return self._raingages
@@ -538,7 +537,6 @@ class SWMMInpFile(BaseReader):
 
     @property
     def storage(self):
-
         if self._storage is None:
             names = [
                 "Name",
@@ -571,7 +569,6 @@ class SWMMInpFile(BaseReader):
 
     @property
     def dividers(self):
-
         if self._dividers is None:
             names = [
                 "Name",
@@ -630,7 +627,6 @@ class SWMMInpFile(BaseReader):
 
     @property
     def orifices(self):
-
         if self._orifices is None:
             names = [
                 "Name",
@@ -882,7 +878,6 @@ class SWMMInpFile(BaseReader):
 
     @property
     def tags(self):
-
         if self._tags is None:
             names = ["Object", "Name", "Type"]
             dtype = {"Name": str}
