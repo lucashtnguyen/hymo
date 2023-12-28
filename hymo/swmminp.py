@@ -303,13 +303,22 @@ class SWMMInpFile(BaseReader):
     @property
     def raingages(self):
         if self._raingages is None:
-            names = ["Name", "Format", "Interval", "SCF", "Source", "Path", "ID", "Units"]
+            names = [
+                "Name",
+                "Format",
+                "Interval",
+                "SCF",
+                "Source",
+                "Path",
+                "ID",
+                "Units",
+            ]
 
             dtype = {
                 "Name": str,
             }
 
-            self._raingages = self._make_df(
+            df = self._make_df(
                 "raingages",
                 comment=";",
                 sep=r"\s+",
@@ -322,6 +331,14 @@ class SWMMInpFile(BaseReader):
                 quoting=1,
                 engine="c",
             )
+
+            df = df.assign(
+                ID=lambda df: np.where(
+                    df.Source.str.lower() == "timeseries", df.Path, df.ID
+                )
+            )
+
+            self._raingages = df
 
         return self._raingages
 

@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 DESCRIPTION = "hymo: EPA SWMM Report File reader"
 NAME = "hymo"
-VERSION = "0.1.5"
+VERSION = "0.1.6"
 AUTHOR = "Lucas Nguyen"
 AUTHOR_EMAIL = "lucashtnguyen@geosyntec.com"
 URL = "https://github.com/lucashtnguyen/hymo"
