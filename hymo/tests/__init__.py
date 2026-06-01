@@ -1,10 +1,10 @@
-from pkg_resources import resource_filename
+from importlib.resources import files
 
 import hymo
 from .utils import data_path
 
 def test(*args):
     import pytest
-    options = [resource_filename('hymo', 'tests')]
+    options = [str(files("hymo") / "tests")]
     options.extend(list(args))
     return pytest.main(options)

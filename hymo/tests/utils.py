@@ -1,5 +1,4 @@
-from pkg_resources import resource_filename
+from importlib.resources import files
 
 def data_path(filename):
-    path = resource_filename("hymo.tests._data", filename)
-    return path
+    return str(files("hymo.tests._data") / filename)

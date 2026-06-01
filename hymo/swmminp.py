@@ -189,7 +189,7 @@ class SWMMInpFile(BaseReader):
             self._options = self._make_df(
                 "options",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -208,7 +208,7 @@ class SWMMInpFile(BaseReader):
             self._evaporation = self._make_df(
                 "evaporation",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -222,7 +222,7 @@ class SWMMInpFile(BaseReader):
             names = ["Node", "Unit Hydrograph", "Sewer Area"]
 
             self._rdii = self._make_df(
-                "rdii", comment=";", sep="\s+", header=None, names=names, index_col=[0]
+                "rdii", comment=";", sep=r"\s+", header=None, names=names, index_col=[0]
             )
 
         return self._rdii
@@ -245,7 +245,7 @@ class SWMMInpFile(BaseReader):
             self._hydrographs = self._make_df(
                 "hydrographs",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -292,7 +292,7 @@ class SWMMInpFile(BaseReader):
             self._temperature = self._make_df(
                 "temperature",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -366,7 +366,7 @@ class SWMMInpFile(BaseReader):
             self._subcatchments = self._make_df(
                 "subcatchments",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -397,7 +397,7 @@ class SWMMInpFile(BaseReader):
             self._subareas = self._make_df(
                 "subareas",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -418,7 +418,7 @@ class SWMMInpFile(BaseReader):
             self._infiltration = self._make_df(
                 "infiltration",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -436,7 +436,7 @@ class SWMMInpFile(BaseReader):
             self._lid_controls = self._make_df(
                 "lid_controls",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -453,7 +453,7 @@ class SWMMInpFile(BaseReader):
             self._lid_usage = self._make_df(
                 "lid_usage",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -470,7 +470,7 @@ class SWMMInpFile(BaseReader):
             self._aquifers = self._make_df(
                 "aquifers",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -487,7 +487,7 @@ class SWMMInpFile(BaseReader):
             self._groundwater = self._make_df(
                 "groundwater",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -514,7 +514,7 @@ class SWMMInpFile(BaseReader):
             self._junctions = self._make_df(
                 "junctions",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -543,7 +543,7 @@ class SWMMInpFile(BaseReader):
             self._outfalls = self._make_df(
                 "outfalls",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -574,7 +574,7 @@ class SWMMInpFile(BaseReader):
             self._storage = self._make_df(
                 "storage",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 usecols=range(5),
@@ -603,7 +603,7 @@ class SWMMInpFile(BaseReader):
             self._dividers = self._make_df(
                 "dividers",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 usecols=range(4),
@@ -633,7 +633,7 @@ class SWMMInpFile(BaseReader):
             self._conduits = self._make_df(
                 "conduits",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -661,7 +661,7 @@ class SWMMInpFile(BaseReader):
             self._orifices = self._make_df(
                 "orifices",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -689,7 +689,7 @@ class SWMMInpFile(BaseReader):
             self._outlets = self._make_df(
                 "outlets",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -721,7 +721,7 @@ class SWMMInpFile(BaseReader):
             self._weirs = self._make_df(
                 "weirs",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -756,7 +756,7 @@ class SWMMInpFile(BaseReader):
             self._pumps = self._make_df(
                 "pumps",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 usecols=range(7),
@@ -778,7 +778,7 @@ class SWMMInpFile(BaseReader):
             self._xsections = self._make_df(
                 "xsections",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -796,7 +796,7 @@ class SWMMInpFile(BaseReader):
             self._transects = self._make_df(
                 "transects",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -817,7 +817,7 @@ class SWMMInpFile(BaseReader):
             self._losses = self._make_df(
                 "losses",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -835,7 +835,7 @@ class SWMMInpFile(BaseReader):
             df_raw = self._make_df(
                 "curves",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -869,7 +869,7 @@ class SWMMInpFile(BaseReader):
             self._timeseries = self._make_df(
                 "timeseries",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -885,7 +885,7 @@ class SWMMInpFile(BaseReader):
             self._report = self._make_df(
                 "report",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -901,7 +901,7 @@ class SWMMInpFile(BaseReader):
             self._tags = self._make_df(
                 "tags",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -917,7 +917,7 @@ class SWMMInpFile(BaseReader):
         if self._map is None:
             names = []
             self._map = self._make_df(
-                "map", comment=";", sep="\s+", header=None, names=names, index_col=[0]
+                "map", comment=";", sep=r"\s+", header=None, names=names, index_col=[0]
             )
 
         return self._map
@@ -934,7 +934,7 @@ class SWMMInpFile(BaseReader):
             self._coordinates = self._make_df(
                 "coordinates",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -955,7 +955,7 @@ class SWMMInpFile(BaseReader):
             self._vertices = self._make_df(
                 "vertices",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -978,7 +978,7 @@ class SWMMInpFile(BaseReader):
             self._polygons = self._make_df(
                 "polygons",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -995,7 +995,7 @@ class SWMMInpFile(BaseReader):
             self._symbols = self._make_df(
                 "symbols",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -1024,7 +1024,7 @@ class SWMMInpFile(BaseReader):
             self._pollutants = self._make_df(
                 "pollutants",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -1050,7 +1050,7 @@ class SWMMInpFile(BaseReader):
             self._inflows = self._make_df(
                 "inflows",
                 comment=";",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],

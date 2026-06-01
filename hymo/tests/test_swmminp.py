@@ -1,15 +1,14 @@
 import os
-from pkg_resources import resource_filename
 
 import pandas as pd
-import pandas.util.testing as pdtest
+import pandas.testing as pdtest
 
 from hymo import SWMMInpFile
 from hymo.tests import data_path
 
 
 class base_SWMMInpFileMixin(object):
-    def teardown(self):
+    def teardown_method(self):
         None
 
     def test_attributes(self):
@@ -136,6 +135,11 @@ class base_SWMMInpFileMixin(object):
 
 
 class Test_SWMMInpFile(base_SWMMInpFileMixin):
-    def setup(self):
+    def setup_method(self):
         self.known_path = data_path(os.path.join("swmm", "test_inp.inp"))
         self.inp = SWMMInpFile(self.known_path)
+
+if __name__ == "__main__":
+    known_path = data_path(os.path.join("swmm", "test_inp.inp"))
+    inp = SWMMInpFile(known_path)
+    print(inp.conduits.head())

@@ -102,7 +102,11 @@ class LSPCResultsFile(object):
                     'description': desc
                 }
 
-            self._parsed_summary = pd.DataFrame(parsed_summary).T
+            self._parsed_summary = (
+                pd.DataFrame(parsed_summary)
+                .T[["description", "unit"]]
+                .sort_index()
+            )
 
         return self._parsed_summary
 

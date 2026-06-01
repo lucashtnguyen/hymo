@@ -1,14 +1,13 @@
 import os
-from pkg_resources import resource_filename
 
 import pandas as pd
-import pandas.util.testing as pdtest
+import pandas.testing as pdtest
 
 from hymo import SWMMReportFile
 from .utils import data_path
 
 class base_ReportFileMixin(object):
-    def teardown(self):
+    def teardown_method(self):
         None
 
     def test_attributes(self):
@@ -50,7 +49,7 @@ class base_ReportFileMixin(object):
 
 
 class Test_ReportFile(base_ReportFileMixin):
-    def setup(self):
+    def setup_method(self):
         # TODO
         # subcatchment results
         # pollutants

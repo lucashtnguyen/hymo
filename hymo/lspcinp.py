@@ -50,7 +50,7 @@ class LSPCInpFile(BaseReader):
             nrepeat = 1
 
             self._c10 = self._clean_comments(
-                self._make_df("c10", sep="\s+", header=None, skiprows=1)
+                self._make_df("c10", sep=r"\s+", header=None, skiprows=1)
             )
 
             ncols = len(self._c10.columns)
@@ -67,7 +67,7 @@ class LSPCInpFile(BaseReader):
             nrepeat = 1
 
             self._c15 = self._clean_comments(
-                self._make_df("c15", sep="\s+", header=None, skiprows=1)
+                self._make_df("c15", sep=r"\s+", header=None, skiprows=1)
             )
 
             ncols = len(self._c15.columns)
@@ -84,7 +84,7 @@ class LSPCInpFile(BaseReader):
             nrepeat = 2
 
             self._c60 = self._clean_comments(
-                self._make_df("c60", sep="\s+", header=None, skiprows=1)
+                self._make_df("c60", sep=r"\s+", header=None, skiprows=1)
             )
 
             ncols = len(self._c60.columns)
@@ -100,7 +100,7 @@ class LSPCInpFile(BaseReader):
             names = ["deluid", "deluname", "premult", "petmult"]
 
             self._c70 = self._clean_comments(
-                self._make_df("c70", sep="\s+", header=None, names=names, skiprows=1)
+                self._make_df("c70", sep=r"\s+", header=None, names=names, skiprows=1)
             )
 
         return self._c70
@@ -119,7 +119,7 @@ class LSPCInpFile(BaseReader):
             ]
 
             self._c90 = self._clean_comments(
-                self._make_df("c90", sep="\s+", header=None, names=names, skiprows=1)
+                self._make_df("c90", sep=r"\s+", header=None, names=names, skiprows=1)
             )
 
         return self._c90

@@ -8,7 +8,7 @@ from .utils import data_path
 
 class base_SWMMInterfaceFileMixin(object):
 
-    def teardown(self):
+    def teardown_method(self):
         None
 
     def test_attributes(self):
@@ -43,6 +43,6 @@ class base_SWMMInterfaceFileMixin(object):
 
 class Test_SWMMInterfaceFile(base_SWMMInterfaceFileMixin):
 
-    def setup(self):
+    def setup_method(self):
         self.known_path = data_path(os.path.join('swmm', 'test_interface.txt'))
         self.interface = SWMMInterfaceFile(self.known_path)

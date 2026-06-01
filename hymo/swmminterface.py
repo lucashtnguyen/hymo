@@ -81,7 +81,7 @@ class SWMMInterfaceFile(BaseReader):
             self._interface = (
                 pd.read_csv(
                     StringIO(block), 
-                    sep='\s+', header=None,
+                    sep=r'\s+', header=None,
                     names=names, 
                     index_col=None,
                 )

@@ -2,7 +2,7 @@ import os
 from io import StringIO
 
 import pandas as pd
-import pandas.util.testing as pdtest
+import pandas.testing as pdtest
 
 from hymo import LSPCResultsFile
 from .utils import data_path
@@ -155,14 +155,13 @@ TT     This is header file for the landuse summary file landuse.csv
 )
 
 class Test_LSPCResults(object):
-    def setup(self):
+    def setup_method(self):
 
         self.known_results_path = data_path(os.path.join('lspc', 'landuse.csv'))
         self.known_summary_path = data_path(os.path.join('lspc', 'landuse.out'))
         self.known_summary_EOF = -2
 
-        self.known_results = pd.read_csv(
-            StringIO(RESULT_STRING), delim_whitespace=True)
+        self.known_results = pd.read_csv(StringIO(RESULT_STRING), sep=r"\s+")
 
         self.known_raw_summary = SUMMARY_STRING
 
@@ -176,7 +175,7 @@ class Test_LSPCResults(object):
                                  self.known_summary_path,
                                  self.known_summary_EOF)
         
-    def teardown(self):
+    def teardown_method(self):
         None
 
     def test_results_path(self):

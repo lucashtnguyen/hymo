@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hymo"
+version = "0.1.6"
+description = "hymo: EPA SWMM Report File reader"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "BSD 3-clause" }
+authors = [
+    { name = "Lucas Nguyen", email = "lucashtnguyen@geosyntec.com" },
+]
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "pandas>=3.0.3",
+]
+
+[project.optional-dependencies]
+testing = [
+    "pytest",
+]
+
+[project.urls]
+Homepage = "https://github.com/lucashtnguyen/hymo"
+Download = "https://github.com/lucashtnguyen/hymo/archive/master.zip"
+
+[tool.setuptools]
+packages = { find = {} }
+py-modules = ["hymo"]
+zip-safe = false
+
+[tool.setuptools.package-data]
+"hymo.tests._data.lspc" = ["*.csv", "*.rpt", "*.inp", "*.out"]
+"hymo.tests._data.swmm" = ["*.csv", "*.rpt", "*.inp", "*.out"]
+
+[dependency-groups]
+dev = [
+    "pytest",
+]

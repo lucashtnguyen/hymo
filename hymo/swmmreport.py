@@ -93,7 +93,7 @@ class SWMMReportFile(BaseReader):
 
             self._element_count = self._make_df(
                 "element_count",
-                sep="\.+",
+                sep=r"\.+",
                 header=None,
                 index_col=[0],
                 dtype=str,
@@ -117,7 +117,7 @@ class SWMMReportFile(BaseReader):
 
             self._raingage_summary = self._make_df(
                 "raingage_summary",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -135,7 +135,7 @@ class SWMMReportFile(BaseReader):
 
             self._subcatchment_summary = self._make_df(
                 "subcatchment_summary",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -151,7 +151,7 @@ class SWMMReportFile(BaseReader):
 
             self._node_summary = self._make_df(
                 "node_summary",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -167,7 +167,7 @@ class SWMMReportFile(BaseReader):
 
             self._link_summary = self._make_df(
                 "link_summary",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -183,7 +183,7 @@ class SWMMReportFile(BaseReader):
 
             self._cross_section_summary = self._make_df(
                 "cross_section_summary",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -205,7 +205,7 @@ class SWMMReportFile(BaseReader):
                 "Continuity Error (%)": "Continuity_Error_pcnt",
             }
 
-            self._runoff_quantity_continuity = pd.DataFrame(columns=names)
+            rows = []
             for var in var_conversion:
                 line_number = self.find_line_num(var)
                 data = self.orig_file[line_number].split()
@@ -222,9 +222,9 @@ class SWMMReportFile(BaseReader):
                         name=var_conversion[var],
                     )
 
-                self._runoff_quantity_continuity = self._runoff_quantity_continuity.append(
-                    data
-                )
+                rows.append(data)
+
+            self._runoff_quantity_continuity = pd.DataFrame(rows, columns=names)
 
         return self._runoff_quantity_continuity
 
@@ -248,7 +248,7 @@ class SWMMReportFile(BaseReader):
                 "Continuity Error (%)": "Continuity_Error_pcnt",
             }
 
-            self._flow_routing_continuity = pd.DataFrame(columns=names)
+            rows = []
             for var in var_conversion:
                 line_number = self.find_line_num(var)
 
@@ -274,7 +274,9 @@ class SWMMReportFile(BaseReader):
                         name=var_conversion[var],
                     )
 
-                self._flow_routing_continuity = self._flow_routing_continuity.append(data)
+                rows.append(data)
+
+            self._flow_routing_continuity = pd.DataFrame(rows, columns=names)
         return self._flow_routing_continuity
 
     @property
@@ -287,7 +289,7 @@ class SWMMReportFile(BaseReader):
 
             self._subcatchment_runoff_results = self._make_df(
                 "subcatchment_runoff",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -307,7 +309,7 @@ class SWMMReportFile(BaseReader):
 
             self._node_depth_results = self._make_df(
                 "node_depth",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -326,7 +328,7 @@ class SWMMReportFile(BaseReader):
 
             self._node_inflow_results = self._make_df(
                 "node_inflow",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -346,7 +348,7 @@ class SWMMReportFile(BaseReader):
 
             self._node_surcharge_results = self._make_df(
                 "node_surcharge",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -362,7 +364,7 @@ class SWMMReportFile(BaseReader):
 
             self._node_flooding_results = self._make_df(
                 "node_flooding",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -378,7 +380,7 @@ class SWMMReportFile(BaseReader):
 
             self._storage_volume_results = self._make_df(
                 "storage_volume",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -407,7 +409,7 @@ class SWMMReportFile(BaseReader):
 
             df = self._make_df(
                 "outfall_loading",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -429,7 +431,7 @@ class SWMMReportFile(BaseReader):
 
             self._link_flow_results = self._make_df(
                 "link_flow",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -445,7 +447,7 @@ class SWMMReportFile(BaseReader):
 
             self._flow_classification_results = self._make_df(
                 "flow_classification",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -464,7 +466,7 @@ class SWMMReportFile(BaseReader):
 
             self._conduit_surcharge_results = self._make_df(
                 "conduit_surcharge",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
@@ -488,7 +490,7 @@ class SWMMReportFile(BaseReader):
 
             self._link_pollutant_load_results = self._make_df(
                 "link_pollutant_load",
-                sep="\s+",
+                sep=r"\s+",
                 header=None,
                 names=names,
                 index_col=[0],
