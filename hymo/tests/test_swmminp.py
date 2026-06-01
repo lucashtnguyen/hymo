@@ -2,6 +2,7 @@ import os
 
 import pandas as pd
 import pandas.testing as pdtest
+import pytest
 
 from hymo import SWMMInpFile
 from hymo.tests import data_path
@@ -138,6 +139,30 @@ class Test_SWMMInpFile(base_SWMMInpFileMixin):
     def setup_method(self):
         self.known_path = data_path(os.path.join("swmm", "test_inp.inp"))
         self.inp = SWMMInpFile(self.known_path)
+
+    def test_representative_sections_parse_expected_fixture_values(self):
+        assert self.inp.options.loc["FLOW_UNITS", "Value"] == "CFS"
+        assert self.inp.options.loc["FLOW_ROUTING", "Value"] == "DYNWAVE"
+
+        assert self.inp.raingages.shape == (5, 7)
+        assert self.inp.raingages.loc["SCS_6h_2.785in", "Source"] == "TIMESERIES"
+        assert self.inp.raingages.loc["SCS_6h_2.785in", "ID"] == "SCS_6h_2.785in"
+
+        assert self.inp.subcatchments.shape == (47, 8)
+        assert self.inp.subcatchments.loc["CarE4000", "Outlet"] == "585"
+        assert self.inp.subcatchments.loc["CarE4000", "Area"] == 15.374814
+
+        assert self.inp.junctions.shape == (138, 5)
+        assert self.inp.junctions.loc["1082", "Invert_Elev"] == 630.37
+        assert self.inp.junctions.loc["1082", "Max_Depth"] == 2.63
+
+        assert self.inp.conduits.shape == (135, 8)
+        assert self.inp.conduits.loc["C1", "Inlet_Node"] == "J2"
+        assert self.inp.conduits.loc["C1", "Length"] == 94.33
+
+    @pytest.mark.skip(reason="SWMM .inp column schemas vary by SWMM version.")
+    def test_versioned_inp_schema_contract(self):
+        assert False
 
 if __name__ == "__main__":
     known_path = data_path(os.path.join("swmm", "test_inp.inp"))

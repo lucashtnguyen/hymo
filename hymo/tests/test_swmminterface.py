@@ -40,6 +40,39 @@ class base_SWMMInterfaceFileMixin(object):
         assert len(self.interface.interface) + \
             1 == len(self.interface.orig_file) - header_length
 
+    def test_interface_shape_columns_and_boundary_rows(self):
+        df = self.interface.interface
+
+        assert df.shape == (960, 11)
+        assert df.columns.tolist() == [
+            "Node",
+            "Year",
+            "Mon",
+            "Day",
+            "Hr",
+            "Min",
+            "Sec",
+            "FLOW",
+            "water",
+            "nitrogen",
+            "",
+        ]
+        assert df.iloc[0].loc[["Node", "Year", "Mon", "Day", "Hr", "Min"]].to_dict() == {
+            "Node": "OF-1",
+            "Year": 2016,
+            "Mon": 1,
+            "Day": 1,
+            "Hr": 0,
+            "Min": 0,
+        }
+        assert df.iloc[-1].loc[["Node", "Day", "Hr", "Min", "FLOW"]].to_dict() == {
+            "Node": "INF-BR",
+            "Day": 5,
+            "Hr": 23,
+            "Min": 45,
+            "FLOW": 0.0,
+        }
+
 
 class Test_SWMMInterfaceFile(base_SWMMInterfaceFileMixin):
 

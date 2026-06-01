@@ -1,6 +1,18 @@
 from .base_reader import BaseReader
 
+import re
 import pandas as pd
+
+
+def _numbers_from_line(line):
+    return re.findall(r"[-+]?\d+\.\d+", line)
+
+
+def _find_line_num_after(lines, start, text):
+    for n, line in enumerate(lines[start:], start=start):
+        if text.lower() in line.lower():
+            return n
+    raise ValueError("Could not find {!r} after line {}".format(text, start))
 
 
 class SWMMReportFile(BaseReader):
@@ -196,6 +208,12 @@ class SWMMReportFile(BaseReader):
         if self._runoff_quantity_continuity is None:
             names, dtype = self._headers.runoff_quantity_continuity
 
+            if not any("Runoff Quantity Continuity" in line for line in self.orig_file):
+                self._runoff_quantity_continuity = pd.DataFrame(columns=names)
+                return self._runoff_quantity_continuity
+
+            continuity_start = self.find_line_num("Runoff Quantity Continuity")
+
             var_conversion = {
                 "Total Precipitation": "Total_Precipitation",
                 "Evaporation Loss": "Evaporation_Loss",
@@ -207,17 +225,17 @@ class SWMMReportFile(BaseReader):
 
             rows = []
             for var in var_conversion:
-                line_number = self.find_line_num(var)
-                data = self.orig_file[line_number].split()
+                line_number = _find_line_num_after(self.orig_file, continuity_start, var)
+                data = _numbers_from_line(self.orig_file[line_number])
                 if var != "Continuity Error (%)":
                     data = pd.Series(
-                        [data[3], data[4]],
+                        [data[0], data[1]],
                         index=[names[0], names[1]],
                         name=var_conversion[var],
                     )
                 else:
                     data = pd.Series(
-                        [data[4], data[4]],
+                        [data[0], data[0]],
                         index=[names[0], names[1]],
                         name=var_conversion[var],
                     )
@@ -249,19 +267,15 @@ class SWMMReportFile(BaseReader):
             }
 
             rows = []
+            continuity_start = self.find_line_num("Flow Routing Continuity")
             for var in var_conversion:
-                line_number = self.find_line_num(var)
+                line_number = _find_line_num_after(self.orig_file, continuity_start, var)
 
-                # There are two 'Evaporation Loss' sections: This will find the second one
-                if var == "Evaporation Loss":
-                    subdata = self.orig_file[line_number + 1 :]
-                    line_number = self.find_line_num(var, lookup=subdata) + line_number
-
-                data = list(filter(lambda x: "." in x, self.orig_file[line_number].split()))
+                data = _numbers_from_line(self.orig_file[line_number])
 
                 if var != "Continuity Error (%)":
                     data = pd.Series(
-                        [data[1], data[2]],
+                        [data[0], data[1]],
                         index=[names[0], names[1]],
                         name=var_conversion[var],
                     )
@@ -269,7 +283,7 @@ class SWMMReportFile(BaseReader):
                 # Write the continuity error twice since it has no units
                 else:
                     data = pd.Series(
-                        [data[1], data[1]],
+                        [data[0], data[0]],
                         index=[names[0], names[1]],
                         name=var_conversion[var],
                     )

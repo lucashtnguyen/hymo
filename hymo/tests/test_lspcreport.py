@@ -211,3 +211,9 @@ class Test_LSPCResults(object):
     def test_parsed_results(self):
         pdtest.assert_frame_equal(
             self.known_parsed_results, self.lspc.parsed_results)
+
+    def test_parsed_summary_ordering(self):
+        assert self.lspc.parsed_summary.index.tolist() == sorted(
+            self.lspc.parsed_summary.index.tolist()
+        )
+        assert self.lspc.parsed_summary.columns.tolist() == ["description", "unit"]

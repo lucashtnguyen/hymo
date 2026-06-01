@@ -136,3 +136,18 @@ class Test_ReportFile(base_ReportFileMixin):
             self.rpt.conduit_surcharge_results,
             self.known_conduit_surcharge_results
         )
+
+    def test_runoff_quantity_continuity_is_empty_when_runoff_is_disabled(self):
+        continuity = self.rpt.runoff_quantity_continuity
+
+        assert continuity.empty
+        assert continuity.columns.tolist() == ["Volume_acre_feet", "Depth_inches"]
+
+    def test_flow_routing_continuity(self):
+        continuity = self.rpt.flow_routing_continuity
+
+        assert continuity.shape == (12, 2)
+        assert continuity.loc["External_Inflow", "Volume_acre_feet"] == "434.488"
+        assert continuity.loc["External_Inflow", "Depth_inches"] == "141.584"
+        assert continuity.loc["Continuity_Error_pcnt", "Volume_acre_feet"] == "-0.733"
+        assert continuity.loc["Continuity_Error_pcnt", "Depth_inches"] == "-0.733"
