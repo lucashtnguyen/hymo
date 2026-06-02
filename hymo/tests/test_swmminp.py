@@ -160,6 +160,38 @@ class Test_SWMMInpFile(base_SWMMInpFileMixin):
         assert self.inp.conduits.loc["C1", "Inlet_Node"] == "J2"
         assert self.inp.conduits.loc["C1", "Length"] == 94.33
 
+    def test_conduit_slopes_for_requested_conduits(self):
+        slopes = self.inp.conduit_slopes(["C1", "C10"])
+
+        assert slopes.index.tolist() == ["C1", "C10"]
+        assert slopes.loc["C1", "Inlet_Node_Invert_Elev"] == 627.943
+        assert slopes.loc["C1", "Outlet_Node_Invert_Elev"] == 625.555
+        assert slopes.loc["C1", "Inlet_Pipe_Invert_Elev"] == 627.943
+        assert slopes.loc["C1", "Outlet_Pipe_Invert_Elev"] == 625.555
+        assert slopes.loc["C1", "Slope"] == pytest.approx(
+            (627.943 - 625.555) / 94.33
+        )
+
+    def test_conduit_slopes_uses_offsets_as_elevations_when_configured(self):
+        self.inp._options = self.inp.options.copy()
+        self.inp._options.loc["LINK_OFFSETS", "Value"] = "ELEVATION"
+        self.inp._conduits = self.inp.conduits.copy()
+        self.inp._conduits.loc["C1", "Inlet_Offset"] = 628.0
+        self.inp._conduits.loc["C1", "Outlet_Offset"] = 625.0
+
+        slopes = self.inp.conduit_slopes(["C1"])
+
+        assert slopes.loc["C1", "Inlet_Pipe_Invert_Elev"] == 628.0
+        assert slopes.loc["C1", "Outlet_Pipe_Invert_Elev"] == 625.0
+        assert slopes.loc["C1", "Slope"] == pytest.approx((628.0 - 625.0) / 94.33)
+
+    def test_conduit_slopes_defaults_to_all_conduits(self):
+        slopes = self.inp.conduit_slopes()
+
+        assert len(slopes) == len(self.inp.conduits)
+        assert slopes.index.equals(self.inp.conduits.index)
+        assert "Slope" in slopes.columns
+
     @pytest.mark.skip(reason="SWMM .inp column schemas vary by SWMM version.")
     def test_versioned_inp_schema_contract(self):
         assert False
@@ -168,3 +200,5 @@ if __name__ == "__main__":
     known_path = data_path(os.path.join("swmm", "test_inp.inp"))
     inp = SWMMInpFile(known_path)
     print(inp.conduits.head())
+    print(inp.junctions.head())
+    print(inp.xsections.head())

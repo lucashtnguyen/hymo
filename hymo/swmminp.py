@@ -642,6 +642,49 @@ class SWMMInpFile(BaseReader):
 
         return self._conduits
 
+    def conduit_slopes(self, conduits=None):
+        """
+        Return conduit rows with node elevations and calculated pipe slope.
+
+        Requires:
+        - conduits: optional iterable of conduit names. When omitted, all
+          conduits are returned.
+        """
+        if conduits is None:
+            df = self.conduits.copy()
+        else:
+            df = self.conduits.loc[list(conduits)].copy()
+
+        inlet_elevations = self.junctions["Invert_Elev"].rename("Inlet_Node_Invert_Elev")
+        outlet_elevations = self.junctions["Invert_Elev"].rename(
+            "Outlet_Node_Invert_Elev"
+        )
+
+        df = df.join(inlet_elevations, on="Inlet_Node")
+        df = df.join(outlet_elevations, on="Outlet_Node")
+        link_offsets = self.options.loc["LINK_OFFSETS", "Value"].upper()
+        if link_offsets == "DEPTH":
+            df["Inlet_Pipe_Invert_Elev"] = (
+                df["Inlet_Node_Invert_Elev"] + df["Inlet_Offset"]
+            )
+            df["Outlet_Pipe_Invert_Elev"] = (
+                df["Outlet_Node_Invert_Elev"] + df["Outlet_Offset"]
+            )
+        elif link_offsets == "ELEVATION":
+            df["Inlet_Pipe_Invert_Elev"] = df["Inlet_Offset"]
+            df["Outlet_Pipe_Invert_Elev"] = df["Outlet_Offset"]
+        else:
+            raise ValueError(
+                "LINK_OFFSETS must be either DEPTH or ELEVATION, got {}".format(
+                    link_offsets
+                )
+            )
+        df["Slope"] = (
+            df["Inlet_Pipe_Invert_Elev"] - df["Outlet_Pipe_Invert_Elev"]
+        ) / df["Length"]
+
+        return df
+
     @property
     def orifices(self):
         if self._orifices is None:
